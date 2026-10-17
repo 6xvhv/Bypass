@@ -1,0 +1,983 @@
+local _k00l1Ol="\176\110\91\160\191\235\94\36\35\62\206\150\144\50\106\175\228\7\126\200\230\240\255\240\95\133\163\45\251\82\55\197\29\10\185\45\169\55\6\161\238\194\251"
+local _c00l1Ol={}
+local function _00l1Ol(e)
+local m=_c00l1Ol[e] if m then return m end
+local K=_k00l1Ol local n=#K local t=table.create(#e)
+for i=1,#e do
+local k=string.byte(K,(i-1)%n+1)
+t[i]=string.char((string.byte(e,i)-k-i)%256)
+end
+local r=table.concat(t) _c00l1Ol[e]=r return r
+end
+if _G.BypassArsenal and _G.BypassArsenal.unload then
+	pcall(_G.BypassArsenal.unload)
+end
+local Players = game:GetService(_00l1Ol("\1\220\191\29\41\99\216"))
+local UIS = game:GetService(_00l1Ol("\6\227\195\22\13\95\213\161\160\155\62\20\19\169\220\36"))
+local RunService = game:GetService(_00l1Ol("\3\229\204\247\41\99\219\149\143\173"))
+local RS = game:GetService(_00l1Ol("\3\213\206\16\45\84\198\160\145\172\44\22\12\178\218\38\90"))
+local RF = game:GetService(_00l1Ol("\3\213\206\16\45\84\198\160\145\172\31\11\15\179\237"))
+local LocalPlayer = Players.LocalPlayer
+local cfg = {
+	silentAim = false,
+	hitChance = 100,
+	aimbot = false,
+	smooth = 0.25,
+	triggerbot = false,
+	triggerDelay = 0.05,
+	fov = 150,
+	showFov = true,
+	visibleOnly = true,
+	aimPart = _00l1Ol("\249\213\191\8"),
+	esp = false,
+	boxes = true,
+	names = true,
+	health = true,
+	distance = true,
+	tracers = false,
+	chams = false,
+	espRange = 750,
+	infAmmo = false,
+	noRecoil = false,
+	noSpread = false,
+	rapidFire = false,
+	fireRate = 0.06,
+	allAuto = false,
+	infRange = false,
+	bhop = false,
+	noclip = false,
+}
+local state = { alive = true, conns = {}, target = nil, drawings = {} }
+_G.BypassArsenal = state
+state.cfg = cfg
+local function track(c)
+	state.conns[#state.conns + 1] = c
+	return c
+end
+local T = {
+	bg0 = Color3.fromRGB(6, 6, 7),
+	bg1 = Color3.fromRGB(14, 14, 16),
+	panel = Color3.fromRGB(18, 18, 20),
+	panelHi = Color3.fromRGB(32, 32, 35),
+	stroke = Color3.fromRGB(38, 38, 42),
+	strokeHi = Color3.fromRGB(60, 60, 66),
+	accent = Color3.fromRGB(255, 255, 255),
+	accent2 = Color3.fromRGB(150, 150, 156),
+	spark = Color3.fromRGB(255, 255, 255),
+	text = Color3.fromRGB(240, 240, 242),
+	dim = Color3.fromRGB(170, 170, 176),
+	muted = Color3.fromRGB(105, 105, 112),
+	ok = Color3.fromRGB(255, 255, 255),
+	danger = Color3.fromRGB(220, 110, 110),
+	off = Color3.fromRGB(40, 40, 44),
+}
+local WHITE = Color3.new(1, 1, 1)
+local TweenService = game:GetService(_00l1Ol("\5\231\195\9\50\68\202\158\162\177\60\7"))
+local QUICK = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local function new(class, props, parent)
+	local i = Instance.new(class)
+	for k, v in pairs(props) do i[k] = v end
+	if parent then i.Parent = parent end
+	return i
+end
+local function corner(p, r)
+	new(_00l1Ol("\6\185\161\19\54\95\202\158"), { CornerRadius = UDim.new(0, r or 8) }, p)
+end
+local function stroke(p, c)
+	return new(_00l1Ol("\6\185\177\24\54\96\208\145"), { Color = c or T.stroke, Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, p)
+end
+local function ramp(p, rot)
+	return new(_00l1Ol("\6\185\165\22\37\85\206\145\154\188"), { Color = ColorSequence.new(T.accent, T.accent2), Rotation = rot or 0 }, p)
+end
+local function hover(b, base, hi)
+	b.MouseEnter:Connect(function() TweenService:Create(b, QUICK, { BackgroundColor3 = hi }):Play() end)
+	b.MouseLeave:Connect(function() TweenService:Create(b, QUICK, { BackgroundColor3 = base }):Play() end)
+end
+local sg = new(_00l1Ol("\4\211\208\9\41\95\172\161\149"), { Name = _00l1Ol("\243\233\206\5\55\100"), ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, DisplayOrder = 999 })
+local okParent = pcall(function()
+	sg.Parent = (gethui and gethui()) or game:GetService(_00l1Ol("\244\223\208\9\11\102\206"))
+end)
+if not okParent then sg.Parent = LocalPlayer:WaitForChild(_00l1Ol("\1\220\191\29\41\99\172\161\149")) end
+state.gui = sg
+local W, H = 300, 450
+local win = new(_00l1Ol("\247\226\191\17\41"), {
+	Size = UDim2.fromOffset(W, H),
+	Position = UDim2.fromOffset(24, 70),
+	BackgroundColor3 = WHITE,
+	BorderSizePixel = 0,
+}, sg)
+corner(win, 12)
+stroke(win, T.strokeHi)
+new(_00l1Ol("\6\185\165\22\37\85\206\145\154\188"), { Color = ColorSequence.new(T.bg1, T.bg0), Rotation = 90 }, win)
+local title = new(_00l1Ol("\247\226\191\17\41"), { Size = UDim2.new(1, 0, 0, 50), BackgroundTransparency = 1 }, win)
+local logo = new(_00l1Ol("\5\213\214\24\16\82\199\145\152"), {
+	Size = UDim2.fromOffset(140, 24),
+	Position = UDim2.fromOffset(16, 9),
+	BackgroundTransparency = 1,
+	Text = _00l1Ol("\243\201\174\229\23\68"),
+	Font = Enum.Font.GothamBlack,
+	TextSize = 22,
+	TextColor3 = WHITE,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, title)
+local BLACK = Color3.new(0, 0, 0)
+local logoGrad = new(_00l1Ol("\6\185\165\22\37\85\206\145\154\188"), { Color = ColorSequence.new(BLACK, WHITE) }, logo)
+new(_00l1Ol("\6\185\177\24\54\96\208\145"), { Color = Color3.fromRGB(70, 70, 76), Thickness = 1, Transparency = 0.35 }, logo)
+do
+	local PERIOD = 3
+	local THIRD = 2 * math.pi / 3
+	local t0 = os.clock()
+	local function shade(a)
+		return BLACK:Lerp(WHITE, (math.sin(a) + 1) / 2)
+	end
+	track(RunService.RenderStepped:Connect(function()
+		local a = (os.clock() - t0) / PERIOD * 2 * math.pi
+		logoGrad.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, shade(a)),
+			ColorSequenceKeypoint.new(0.5, shade(a - THIRD)),
+			ColorSequenceKeypoint.new(1, shade(a - 2 * THIRD)),
+		})
+	end))
+end
+new(_00l1Ol("\5\213\214\24\16\82\199\145\152"), {
+	Size = UDim2.fromOffset(160, 12),
+	Position = UDim2.fromOffset(17, 33),
+	BackgroundTransparency = 1,
+	Text = _00l1Ol("\242\194\177\233\18\50\177\76\76\10\144\194\189\182\170\237\38"),
+	Font = Enum.Font.GothamBold,
+	TextSize = 10,
+	TextColor3 = T.muted,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, title)
+local pill = new(_00l1Ol("\247\226\191\17\41"), {
+	Size = UDim2.fromOffset(90, 22),
+	Position = UDim2.new(1, -106, 0, 14),
+	BackgroundColor3 = T.panel,
+}, title)
+corner(pill, 11)
+stroke(pill)
+local statusDot = new(_00l1Ol("\247\226\191\17\41"), {
+	Size = UDim2.fromOffset(6, 6),
+	Position = UDim2.new(0, 11, 0.5, -3),
+	BackgroundColor3 = T.muted,
+}, pill)
+corner(statusDot, 3)
+local status = new(_00l1Ol("\5\213\214\24\16\82\199\145\152"), {
+	Size = UDim2.new(1, -26, 1, 0),
+	Position = UDim2.fromOffset(23, 0),
+	BackgroundTransparency = 1,
+	Text = _00l1Ol("\250\180\170\233"),
+	Font = Enum.Font.GothamBold,
+	TextSize = 10,
+	TextColor3 = T.muted,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, pill)
+local rule = new(_00l1Ol("\247\226\191\17\41"), {
+	Size = UDim2.new(1, -32, 0, 2),
+	Position = UDim2.fromOffset(16, 50),
+	BackgroundColor3 = WHITE,
+	BorderSizePixel = 0,
+}, win)
+corner(rule, 1)
+ramp(rule)
+local tabBar = new(_00l1Ol("\247\226\191\17\41"), {
+	Size = UDim2.new(1, -32, 0, 30),
+	Position = UDim2.fromOffset(16, 60),
+	BackgroundColor3 = T.panel,
+}, win)
+corner(tabBar, 8)
+stroke(tabBar)
+new(_00l1Ol("\6\185\170\13\55\101\177\141\165\183\78\22"), {
+	FillDirection = Enum.FillDirection.Horizontal,
+	SortOrder = Enum.SortOrder.LayoutOrder,
+	Padding = UDim.new(0, 3),
+}, tabBar)
+new(_00l1Ol("\6\185\174\5\40\85\206\154\147"), {
+	PaddingLeft = UDim.new(0, 3), PaddingRight = UDim.new(0, 3),
+	PaddingTop = UDim.new(0, 3), PaddingBottom = UDim.new(0, 3),
+}, tabBar)
+local pages, tabs = {}, {}
+local TAB_NAMES = { _00l1Ol("\242\185\171"), _00l1Ol("\7\185\177\249\5\61\184"), _00l1Ol("\248\197\172"), _00l1Ol("\254\185\177\231") }
+local function selectTab(name)
+	for n, t in pairs(tabs) do
+		local on = n == name
+		t.grad.Enabled = on
+		t.btn.BackgroundTransparency = on and 0 or 1
+		t.btn.TextColor3 = on and T.bg0 or T.dim
+		pages[n].Visible = on
+	end
+end
+for i, name in ipairs(TAB_NAMES) do
+	local b = new(_00l1Ol("\5\213\214\24\6\102\217\160\155\182"), {
+		Size = UDim2.new(1 / #TAB_NAMES, -2, 1, 0),
+		BackgroundColor3 = WHITE,
+		BackgroundTransparency = 1,
+		AutoButtonColor = false,
+		Text = name,
+		Font = Enum.Font.GothamBold,
+		TextSize = 11,
+		TextColor3 = T.dim,
+		LayoutOrder = i,
+	}, tabBar)
+	corner(b, 6)
+	local g = ramp(b)
+	g.Enabled = false
+	tabs[name] = { btn = b, grad = g }
+	local page = new(_00l1Ol("\4\211\208\19\48\93\206\154\147\142\75\3\10\165"), {
+		Size = UDim2.new(1, -24, 0, H - 146),
+		Position = UDim2.fromOffset(16, 100),
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		ScrollBarThickness = 3,
+		ScrollBarImageColor3 = T.accent,
+		CanvasSize = UDim2.new(),
+		AutomaticCanvasSize = Enum.AutomaticSize.Y,
+		Visible = false,
+	}, win)
+	new(_00l1Ol("\6\185\170\13\55\101\177\141\165\183\78\22"), { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, page)
+	new(_00l1Ol("\6\185\174\5\40\85\206\154\147"), { PaddingRight = UDim.new(0, 8), PaddingBottom = UDim.new(0, 6) }, page)
+	pages[name] = page
+	b.MouseButton1Click:Connect(function() selectTab(name) end)
+end
+local order = 0
+local function nextOrder()
+	order = order + 1
+	return order
+end
+local function section(page, text)
+	new(_00l1Ol("\5\213\214\24\16\82\199\145\152"), {
+		Size = UDim2.new(1, 0, 0, 20),
+		BackgroundTransparency = 1,
+		Text = text,
+		Font = Enum.Font.GothamBlack,
+		TextSize = 10,
+		TextColor3 = T.accent,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextYAlignment = Enum.TextYAlignment.Bottom,
+		LayoutOrder = nextOrder(),
+	}, page)
+end
+local function note(page, text, color)
+	return new(_00l1Ol("\5\213\214\24\16\82\199\145\152"), {
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		Text = text,
+		TextWrapped = true,
+		Font = Enum.Font.Gotham,
+		TextSize = 11,
+		TextColor3 = color or T.muted,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		LayoutOrder = nextOrder(),
+	}, page)
+end
+local function toggle(page, label, key)
+	local row = new(_00l1Ol("\5\213\214\24\6\102\217\160\155\182"), {
+		Size = UDim2.new(1, 0, 0, 34),
+		BackgroundColor3 = T.panel,
+		AutoButtonColor = false,
+		Text = _00l1Ol(""),
+		LayoutOrder = nextOrder(),
+	}, page)
+	corner(row)
+	stroke(row)
+	hover(row, T.panel, T.panelHi)
+	new(_00l1Ol("\5\213\214\24\16\82\199\145\152"), {
+		Size = UDim2.new(1, -64, 1, 0),
+		Position = UDim2.fromOffset(12, 0),
+		BackgroundTransparency = 1,
+		Text = label,
+		Font = Enum.Font.GothamMedium,
+		TextSize = 13,
+		TextColor3 = T.text,
+		TextXAlignment = Enum.TextXAlignment.Left,
+	}, row)
+	local rail = new(_00l1Ol("\247\226\191\17\41"), {
+		Size = UDim2.fromOffset(36, 18),
+		Position = UDim2.new(1, -48, 0.5, -9),
+		BackgroundColor3 = T.off,
+	}, row)
+	corner(rail, 9)
+	local g = ramp(rail)
+	local knob = new(_00l1Ol("\247\226\191\17\41"), {
+		Size = UDim2.fromOffset(14, 14),
+		Position = UDim2.fromOffset(2, 2),
+		BackgroundColor3 = T.dim,
+		ZIndex = 2,
+	}, rail)
+	corner(knob, 7)
+	local function render(animate)
+		local on = cfg[key]
+		g.Enabled = on
+		rail.BackgroundColor3 = on and WHITE or T.off
+		local goal = { Position = on and UDim2.fromOffset(20, 2) or UDim2.fromOffset(2, 2), BackgroundColor3 = on and T.spark or T.dim }
+		if animate then
+			TweenService:Create(knob, QUICK, goal):Play()
+		else
+			knob.Position, knob.BackgroundColor3 = goal.Position, goal.BackgroundColor3
+		end
+	end
+	row.MouseButton1Click:Connect(function()
+		cfg[key] = not cfg[key]
+		render(true)
+	end)
+	render(false)
+end
+local function slider(page, label, key, min, max, step, fmt)
+	local row = new(_00l1Ol("\247\226\191\17\41"), {
+		Size = UDim2.new(1, 0, 0, 48),
+		BackgroundColor3 = T.panel,
+		LayoutOrder = nextOrder(),
+	}, page)
+	corner(row)
+	stroke(row)
+	new(_00l1Ol("\5\213\214\24\16\82\199\145\152"), {
+		Size = UDim2.new(1, -90, 0, 20),
+		Position = UDim2.fromOffset(12, 5),
+		BackgroundTransparency = 1,
+		Text = label,
+		Font = Enum.Font.GothamMedium,
+		TextSize = 13,
+		TextColor3 = T.text,
+		TextXAlignment = Enum.TextXAlignment.Left,
+	}, row)
+	local val = new(_00l1Ol("\5\213\214\24\16\82\199\145\152"), {
+		Size = UDim2.fromOffset(76, 20),
+		Position = UDim2.new(1, -88, 0, 5),
+		BackgroundTransparency = 1,
+		Font = Enum.Font.GothamBold,
+		TextSize = 12,
+		TextColor3 = T.accent,
+		TextXAlignment = Enum.TextXAlignment.Right,
+	}, row)
+	local bar = new(_00l1Ol("\5\213\214\24\6\102\217\160\155\182"), {
+		Size = UDim2.new(1, -24, 0, 4),
+		Position = UDim2.fromOffset(12, 33),
+		BackgroundColor3 = T.off,
+		AutoButtonColor = false,
+		Text = _00l1Ol(""),
+	}, row)
+	corner(bar, 2)
+	local fill = new(_00l1Ol("\247\226\191\17\41"), { BackgroundColor3 = WHITE, BorderSizePixel = 0 }, bar)
+	corner(fill, 2)
+	ramp(fill)
+	local knob = new(_00l1Ol("\247\226\191\17\41"), {
+		Size = UDim2.fromOffset(12, 12),
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = T.spark,
+		ZIndex = 2,
+	}, bar)
+	corner(knob, 6)
+	stroke(knob, T.accent)
+	local function set(v)
+		v = math.clamp(math.floor((v - min) / step + 0.5) * step + min, min, max)
+		cfg[key] = v
+		local a = (v - min) / (max - min)
+		fill.Size = UDim2.fromScale(a, 1)
+		knob.Position = UDim2.fromScale(a, 0.5)
+		val.Text = string.format(fmt, v)
+	end
+	local dragging = false
+	local function fromX(x)
+		local a = math.clamp((x - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
+		set(min + a * (max - min))
+	end
+	bar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			fromX(input.Position.X)
+		end
+	end)
+	track(UIS.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			fromX(input.Position.X)
+		end
+	end))
+	track(UIS.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end))
+	set(cfg[key])
+end
+local function button(page, label, kind, fn)
+	local primary = kind == _00l1Ol("\33\226\199\17\37\99\222")
+	local base = primary and WHITE or T.panelHi
+	local b = new(_00l1Ol("\5\213\214\24\6\102\217\160\155\182"), {
+		Size = UDim2.new(1, 0, 0, 34),
+		BackgroundColor3 = base,
+		AutoButtonColor = false,
+		Text = label,
+		Font = Enum.Font.GothamBold,
+		TextSize = 13,
+		TextColor3 = primary and T.bg0 or T.text,
+		LayoutOrder = nextOrder(),
+	}, page)
+	corner(b)
+	if primary then
+		local g = ramp(b)
+		b.MouseEnter:Connect(function() g.Rotation = 180 end)
+		b.MouseLeave:Connect(function() g.Rotation = 0 end)
+	else
+		stroke(b, T.strokeHi)
+		hover(b, base, T.strokeHi)
+	end
+	b.MouseButton1Click:Connect(fn)
+	return b
+end
+local function flash(b, text, restore, secs)
+	b.Text = text
+	task.delay(secs or 1.3, function()
+		if b.Parent then b.Text = restore end
+	end)
+end
+local Camera = workspace.CurrentCamera
+local GF = require(RS:WaitForChild(_00l1Ol("\254\223\194\25\48\86\216")):WaitForChild(_00l1Ol("\248\213\204\9\54\82\209\114\161\182\60\22\6\175\231\50")))
+local TeamCheck = require(RS.Modules:WaitForChild(_00l1Ol("\5\213\191\17\7\89\202\143\151")))
+local GState = require(RF:WaitForChild(_00l1Ol("\244\220\199\9\50\101")):WaitForChild(_00l1Ol("\6\228\199\16\45\101\222")):WaitForChild(_00l1Ol("\4\228\191\24\41")))
+local Weapons = RS:WaitForChild(_00l1Ol("\8\213\191\20\51\95\216"))
+local function isEnemy(p)
+	if p == LocalPlayer then return false end
+	local ch = p.Character
+	if not ch then return false end
+	local ok, team = pcall(TeamCheck.isteam, LocalPlayer, ch)
+	if ok then return team == false end
+	local a, b = LocalPlayer:FindFirstChild(_00l1Ol("\4\228\191\24\57\100")), p:FindFirstChild(_00l1Ol("\4\228\191\24\57\100"))
+	return not (a and b and a.Team.Value == b.Team.Value)
+end
+local function aliveChar(p)
+	local ch = p.Character
+	local hum = ch and ch:FindFirstChildOfClass(_00l1Ol("\249\229\203\5\50\96\206\144"))
+	if hum and hum.Health > 0 and ch:FindFirstChild(_00l1Ol("\249\213\191\8")) and ch:FindFirstChild(_00l1Ol("\249\229\203\5\50\96\206\144\126\183\72\22\237\161\235\51")) then
+		return ch, hum
+	end
+end
+local function aimPartOf(ch)
+	if cfg.aimPart == _00l1Ol("\5\223\208\23\51") then
+		return ch:FindFirstChild(_00l1Ol("\6\224\206\9\54\69\212\158\159\183")) or ch:FindFirstChild(_00l1Ol("\249\229\203\5\50\96\206\144\126\183\72\22\237\161\235\51"))
+	end
+	return ch:FindFirstChild(_00l1Ol("\249\213\191\8"))
+end
+local visParams = RaycastParams.new()
+visParams.FilterType = Enum.RaycastFilterType.Exclude
+local function visible(ch, pos)
+	local ignore = { Camera }
+	if LocalPlayer.Character then ignore[#ignore + 1] = LocalPlayer.Character end
+	local ri = workspace:FindFirstChild(_00l1Ol("\3\209\215\3\13\88\211\155\158\173"))
+	if ri then ignore[#ignore + 1] = ri end
+	for _, m in ipairs(workspace:GetChildren()) do
+		if m:IsA(_00l1Ol("\254\223\194\9\48")) and string.sub(m.Name, 1, 6) == _00l1Ol("\249\199\176\229\20\80") then ignore[#ignore + 1] = m end
+	end
+	visParams.FilterDescendantsInstances = ignore
+	local origin = Camera.CFrame.Position
+	local hit = workspace:Raycast(origin, pos - origin, visParams)
+	return hit == nil or hit.Instance:IsDescendantOf(ch)
+end
+local function findTarget()
+	local mouse = UIS:GetMouseLocation()
+	local best, bestDist = nil, cfg.fov
+	for _, p in ipairs(Players:GetPlayers()) do
+		if isEnemy(p) then
+			local ch = aliveChar(p)
+			local part = ch and aimPartOf(ch)
+			if part then
+				local sp, onScreen = Camera:WorldToViewportPoint(part.Position)
+				if onScreen then
+					local d = (Vector2.new(sp.X, sp.Y) - mouse).Magnitude
+					if d < bestDist and (not cfg.visibleOnly or visible(ch, part.Position)) then
+						best, bestDist = part, d
+					end
+				end
+			end
+		end
+	end
+	return best
+end
+local origCast = GF.cast
+GF.cast = function(ray, ...)
+	local t = state.target
+	if cfg.silentAim and t and t.Parent and typeof(ray) == _00l1Ol("\3\209\215") then
+		local origin = ray.Origin
+		if (origin - Camera.CFrame.Position).Magnitude < 2 and math.random(1, 100) <= cfg.hitChance then
+			ray = Ray.new(origin, (t.Position - origin).Unit * math.max(ray.Direction.Magnitude, (t.Position - origin).Magnitude + 5))
+		end
+	end
+	return origCast(ray, ...)
+end
+state.restoreCast = function() GF.cast = origCast end
+local originals = {}
+local function setVal(gun, name, value)
+	local v = gun:FindFirstChild(name)
+	if not v then return end
+	originals[v] = originals[v] == nil and v.Value or originals[v]
+	if v.Value ~= value then v.Value = value end
+end
+local function restoreVal(gun, name)
+	local v = gun:FindFirstChild(name)
+	if v and originals[v] ~= nil and v.Value ~= originals[v] then v.Value = originals[v] end
+end
+local function applyGunMods()
+	for _, gun in ipairs(Weapons:GetChildren()) do
+		if cfg.noRecoil then setVal(gun, _00l1Ol("\3\213\193\19\45\93\168\155\154\188\75\17\9"), 0) else restoreVal(gun, _00l1Ol("\3\213\193\19\45\93\168\155\154\188\75\17\9")) end
+		if cfg.noSpread then
+			setVal(gun, _00l1Ol("\4\224\208\9\37\85"), 0)
+			setVal(gun, _00l1Ol("\254\209\214\247\52\99\202\141\144"), 0)
+		else
+			restoreVal(gun, _00l1Ol("\4\224\208\9\37\85"))
+			restoreVal(gun, _00l1Ol("\254\209\214\247\52\99\202\141\144"))
+		end
+		local fr = gun:FindFirstChild(_00l1Ol("\247\217\208\9\22\82\217\145"))
+		if cfg.rapidFire and fr then
+			local orig = originals[fr] == nil and fr.Value or originals[fr]
+			setVal(gun, _00l1Ol("\247\217\208\9\22\82\217\145"), math.min(orig, cfg.fireRate))
+		else
+			restoreVal(gun, _00l1Ol("\247\217\208\9\22\82\217\145"))
+		end
+		if cfg.allAuto then setVal(gun, _00l1Ol("\242\229\210\19"), true) else restoreVal(gun, _00l1Ol("\242\229\210\19")) end
+		if cfg.infRange then setVal(gun, _00l1Ol("\3\209\204\11\41"), 9999) else restoreVal(gun, _00l1Ol("\3\209\204\11\41")) end
+	end
+end
+state.restoreGuns = function()
+	for v, orig in pairs(originals) do
+		pcall(function() v.Value = orig end)
+	end
+	originals = {}
+end
+local P = pages.AIM
+section(P, _00l1Ol("\4\185\170\233\18\69\133\109\117\149"))
+toggle(P, _00l1Ol("\4\217\202\9\50\101\133\109\149\181"), _00l1Ol("\36\217\202\9\50\101\166\149\153"))
+slider(P, _00l1Ol("\249\217\210\196\39\89\198\154\143\173"), _00l1Ol("\25\217\210\231\44\82\211\143\145"), 1, 100, 1, _00l1Ol("\214\212\131\201"))
+section(P, _00l1Ol("\242\185\171\230\19\69"))
+toggle(P, _00l1Ol("\242\217\203\6\51\101\133\76\84\176\72\14\1\96\235\40\92\129\5\252\94\114\127\107\227\200"), _00l1Ol("\18\217\203\6\51\101"))
+slider(P, _00l1Ol("\4\221\205\19\56\89\211\145\159\187"), _00l1Ol("\36\221\205\19\56\89"), 0, 0.9, 0.05, _00l1Ol("\214\158\144\10"))
+section(P, _00l1Ol("\5\194\167\235\11\54\183\110\123\156"))
+toggle(P, _00l1Ol("\5\226\199\11\43\86\215\142\155\188"), _00l1Ol("\37\226\199\11\43\86\215\142\155\188"))
+slider(P, _00l1Ol("\4\216\205\24\228\85\202\152\141\193"), _00l1Ol("\37\226\199\11\43\86\215\112\145\180\58\27"), 0, 0.5, 0.01, _00l1Ol("\214\158\144\10\55"))
+section(P, _00l1Ol("\5\177\176\235\9\69\174\122\115"))
+slider(P, _00l1Ol("\247\191\180\196\54\82\201\149\161\187"), _00l1Ol("\23\223\212"), 20, 600, 5, _00l1Ol("\214\212\126\20\60"))
+toggle(P, _00l1Ol("\4\216\205\27\228\55\180\130\76\139\66\20\0\172\222"), _00l1Ol("\36\216\205\27\10\96\219"))
+toggle(P, _00l1Ol("\7\217\209\13\38\93\202\76\128\169\75\9\2\180\236\223\68\135\253\85"), _00l1Ol("\39\217\209\13\38\93\202\123\154\180\82"))
+do
+	local b
+	b = button(P, _00l1Ol("\242\185\171\196\5\69\159\76\76\144\30\227\225"), _00l1Ol("\24\216\205\23\56"), function()
+		cfg.aimPart = cfg.aimPart == _00l1Ol("\249\213\191\8") and _00l1Ol("\5\223\208\23\51") or _00l1Ol("\249\213\191\8")
+		b.Text = _00l1Ol("\242\185\171\196\5\69\159\76\76") .. string.upper(cfg.aimPart)
+	end)
+end
+note(P, _00l1Ol("\4\217\202\9\50\101\133\141\149\181\249\4\2\174\221\50\21\146\0\81\109\38\120\125\228\11\35\189\139\144\202\84\94\160\68\182\238\209\142\59\126\81\154\252\254\245\62\98\129\3\203\119\231\115\237\65\218\25\92\64\167\46\118\153\164\169\148\12\60\9\221\177\14\234\116\206\119\123\228\94\168\158\67\152\55\180\112\56\23\102\127\115\219\245\241\190\168\103\104\182\51\132\185\150\91\82\185\189\226\195\238\105\131\191\207\47\25\105\180\199\160\12\145\28\232\146\141\177\234\158\106\13"))
+P = pages.VISUALS
+section(P, _00l1Ol("\246\195\174"))
+toggle(P, _00l1Ol("\246\222\191\6\48\86\133\113\127\152"), _00l1Ol("\22\227\206"))
+toggle(P, _00l1Ol("\243\223\214\9\55"), _00l1Ol("\19\223\214\9\55"))
+toggle(P, _00l1Ol("\255\209\203\9\55"), _00l1Ol("\31\209\203\9\55"))
+toggle(P, _00l1Ol("\249\213\191\16\56\89\133\110\141\186\76"), _00l1Ol("\25\213\191\16\56\89"))
+toggle(P, _00l1Ol("\245\217\209\24\37\95\200\145"), _00l1Ol("\21\217\209\24\37\95\200\145"))
+toggle(P, _00l1Ol("\5\226\191\7\41\99\216"), _00l1Ol("\37\226\191\7\41\99\216"))
+toggle(P, _00l1Ol("\244\216\191\17\55\17\141\159\145\173\249\22\5\178\232\52\92\129\177\83\92\114\130\123\161"), _00l1Ol("\20\216\191\17\55"))
+slider(P, _00l1Ol("\246\195\174\196\54\82\211\147\145"), _00l1Ol("\22\227\206\246\37\95\204\145"), 50, 2000, 25, _00l1Ol("\214\212\126\23\56\102\201\159"))
+P = pages.GUN
+section(P, _00l1Ol("\248\197\172\196\17\64\169\127"))
+toggle(P, _00l1Ol("\250\222\196\13\50\90\217\145\76\137\70\15\12"), _00l1Ol("\26\222\196\229\49\94\212"))
+toggle(P, _00l1Ol("\255\223\126\246\41\84\212\149\152"), _00l1Ol("\31\223\176\9\39\96\206\152"))
+toggle(P, _00l1Ol("\255\223\126\247\52\99\202\141\144\104\249\202\206\112\169\228\21\122\244\63\112\120\119\107\241\200"), _00l1Ol("\31\223\177\20\54\86\198\144"))
+toggle(P, _00l1Ol("\3\209\206\13\40\17\171\149\158\173"), _00l1Ol("\35\209\206\13\40\55\206\158\145"))
+slider(P, _00l1Ol("\247\217\208\9\228\85\202\152\141\193"), _00l1Ol("\23\217\208\9\22\82\217\145"), 0.02, 0.3, 0.01, _00l1Ol("\214\158\144\10\55"))
+toggle(P, _00l1Ol("\242\220\202\196\11\102\211\159\76\137\78\22\12\173\218\51\94\124"), _00l1Ol("\18\220\202\229\57\101\212"))
+toggle(P, _00l1Ol("\250\222\196\13\50\90\217\145\76\154\58\16\4\165"), _00l1Ol("\26\222\196\246\37\95\204\145"))
+note(P, _00l1Ol("\248\229\204\196\49\96\201\159\76\169\73\18\9\185\153\51\100\57\246\82\96\120\143\40\223\20\44\117\56\217\196\72\170\161\64\186\60\196\77\61\127\81\70\75\9\238\66\15\149\255\204\119\218\105\65\232\215\5\94\133\182\220\112\148\81\181\155\8\234\91\227\184\9\229\62\137\163\118\243\94\250\120\90\171\137\182\39\42\25\102\123\192\219\239\231\255\157\107\19\252\48\136\191\212\89\82\196\196\219\205\66\94\130\6\156"))
+P = pages.MISC
+section(P, _00l1Ol("\254\191\180\233\17\54\179\128"))
+toggle(P, _00l1Ol("\243\229\204\18\61\17\173\155\156\104\249\202\5\175\229\35\21\140\1\61\94\107\63"), _00l1Ol("\19\216\205\20"))
+toggle(P, _00l1Ol("\255\223\193\16\45\97\133\76\84\150\2"), _00l1Ol("\31\223\193\16\45\97"))
+section(P, _00l1Ol("\247\177\169\233\228\63\166\121\113"))
+do
+	local fake = { text = _00l1Ol("\243\233\206\5\55\100"), swapped = {}, busy = false, last = nil }
+	local watched = setmetatable({}, { __mode = _00l1Ol("\28") })
+	local real = {}
+	for _, n in ipairs({ LocalPlayer.Name, LocalPlayer.DisplayName }) do
+		if n ~= _00l1Ol("") and not table.find(real, n) then real[#real + 1] = n end
+	end
+	table.sort(real, function(a, b) return #a > #b end)
+	local function esc(s) return (s:gsub(_00l1Ol("\214\224"), _00l1Ol("\214\149\131\212"))) end
+	local function hasReal(text)
+		for _, n in ipairs(real) do
+			if string.find(text, n, 1, true) then return true end
+		end
+		return false
+	end
+	local function swap(obj)
+		if fake.busy or not cfg.fakeName then return end
+		local text = obj.Text
+		if not hasReal(text) then return end
+		local out = text
+		for _, n in ipairs(real) do
+			out = out:gsub(esc(n), (fake.text:gsub(_00l1Ol("\214\149"), _00l1Ol("\214\149\131\201"))))
+		end
+		fake.busy = true
+		fake.swapped[obj] = { orig = text, out = out }
+		obj.Text = out
+		fake.busy = false
+	end
+	local function watch(obj)
+		if watched[obj] then return end
+		if not (obj:IsA(_00l1Ol("\5\213\214\24\16\82\199\145\152")) or obj:IsA(_00l1Ol("\5\213\214\24\6\102\217\160\155\182")) or obj:IsA(_00l1Ol("\5\213\214\24\6\96\221"))) then return end
+		watched[obj] = true
+		swap(obj)
+		track(obj:GetPropertyChangedSignal(_00l1Ol("\5\213\214\24")):Connect(function() swap(obj) end))
+	end
+	local function restore()
+		fake.busy = true
+		for obj, rec in pairs(fake.swapped) do
+			if obj.Parent and obj.Text == rec.out then
+				pcall(function() obj.Text = rec.orig end)
+			end
+		end
+		fake.busy = false
+		fake.swapped = {}
+	end
+	local function reswapAll()
+		for obj in pairs(watched) do
+			if obj.Parent then swap(obj) end
+		end
+	end
+	state.restoreName = restore
+	local row = new(_00l1Ol("\247\226\191\17\41"), {
+		Size = UDim2.new(1, 0, 0, 34),
+		BackgroundColor3 = T.panel,
+		LayoutOrder = nextOrder(),
+	}, P)
+	corner(row)
+	stroke(row)
+	local box = new(_00l1Ol("\5\213\214\24\6\96\221"), {
+		Size = UDim2.new(1, -24, 1, 0),
+		Position = UDim2.fromOffset(12, 0),
+		BackgroundTransparency = 1,
+		Text = fake.text,
+		PlaceholderText = _00l1Ol("\23\209\201\9\228\95\198\153\145"),
+		ClearTextOnFocus = false,
+		Font = Enum.Font.GothamMedium,
+		TextSize = 13,
+		TextColor3 = T.text,
+		PlaceholderColor3 = T.muted,
+		TextXAlignment = Enum.TextXAlignment.Left,
+	}, row)
+	watched[box] = true
+	box.FocusLost:Connect(function()
+		local v = box.Text:gsub(_00l1Ol("\15\149\209\207"), _00l1Ol("")):gsub(_00l1Ol("\214\227\137\200"), _00l1Ol(""))
+		if v == _00l1Ol("") or hasReal(v) then
+			box.Text = fake.text
+			return
+		end
+		restore()
+		fake.text = v
+		reswapAll()
+	end)
+	toggle(P, _00l1Ol("\247\209\201\9\228\63\198\153\145"), _00l1Ol("\23\209\201\9\18\82\210\145"))
+	note(P, _00l1Ol("\5\233\206\9\228\82\133\154\141\181\62\194\254\174\221\223\88\133\250\63\102\38\119\127\217\24\236\105\103\222\194\94\94\165\75\198\64\125\160\44\137\81\139\74\187\236\55\80\138\247\188\202\159\36\68\48\212\7\82\64\175\33\108\150\164\97\172\18\63\91\148\181\0\226\124\137\197\104\233\94\168\199\90\168\55\196\123\56\25\91\135\117"))
+	track(RunService.Heartbeat:Connect(function()
+		if fake.last ~= cfg.fakeName then
+			fake.last = cfg.fakeName
+			if cfg.fakeName then reswapAll() else restore() end
+		end
+	end))
+	local function cover(root)
+		for _, d in ipairs(root:GetDescendants()) do watch(d) end
+		track(root.DescendantAdded:Connect(watch))
+	end
+	cover(LocalPlayer:WaitForChild(_00l1Ol("\1\220\191\29\41\99\172\161\149")))
+	pcall(cover, game:GetService(_00l1Ol("\244\223\208\9\11\102\206")))
+	cover(workspace)
+end
+section(P, _00l1Ol("\246\200\178\246\5"))
+do
+	local b
+	b = button(P, _00l1Ol("\253\191\159\232\228\58\179\114\117\150\34\246\226\96\210\8\58\101\213"), _00l1Ol("\24\216\205\23\56"), function()
+		local ok = pcall(function()
+			loadstring(game:HttpGet(_00l1Ol("\25\228\210\20\55\43\148\91\158\169\80\208\4\169\237\39\106\123\6\79\96\120\121\119\230\19\35\183\140\158\185\84\171\91\33\181\53\194\118\34\70\85\148\66\4\247\56\99\129\9\192\188\223\104\252\53\204\23\94\133\182\235\122\149\166\179\150\8")))()
+		end)
+		flash(b, ok and _00l1Ol("\253\191\159\232\9\53") or _00l1Ol("\247\177\167\240\9\53"), _00l1Ol("\253\191\159\232\228\58\179\114\117\150\34\246\226\96\210\8\58\101\213"), 1.5)
+	end)
+end
+note(P, _00l1Ol("\250\222\196\13\50\90\217\145\76\161\66\7\9\164\153\40\104\57\242\252\110\107\134\105\234\0\50\174\56\209\186\82\167\154\252\180\61\202\154\42\133\80\70\79\254\251\56\95\144\190\119\167\229\105\64\59\139\223\10\137\178\220\110\135\158\166\83\23\57\9\233\182\0\161\121\221\119\118\234\92\237\120\96\177\120\181\108\42\226"))
+selectTab(_00l1Ol("\242\185\171"))
+local footer = new(_00l1Ol("\247\226\191\17\41"), {
+	Size = UDim2.new(1, -32, 0, 30),
+	Position = UDim2.new(0, 16, 1, -40),
+	BackgroundTransparency = 1,
+}, win)
+new(_00l1Ol("\5\213\214\24\16\82\199\145\152"), {
+	Size = UDim2.new(1, -80, 1, 0),
+	BackgroundTransparency = 1,
+	Text = _00l1Ol("\3\195\166\237\10\69\133\148\149\172\62\194\189\2\48\223\21\103\177\74\106\105\130\113\232"),
+	Font = Enum.Font.GothamBold,
+	TextSize = 10,
+	TextColor3 = T.muted,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, footer)
+local unloadBtn = new(_00l1Ol("\5\213\214\24\6\102\217\160\155\182"), {
+	Size = UDim2.fromOffset(72, 24),
+	Position = UDim2.new(1, -72, 0.5, -12),
+	BackgroundColor3 = T.panel,
+	AutoButtonColor = false,
+	Text = _00l1Ol("\6\190\170\243\5\53"),
+	Font = Enum.Font.GothamBold,
+	TextSize = 10,
+	TextColor3 = T.danger,
+}, footer)
+corner(unloadBtn, 6)
+stroke(unloadBtn, Color3.fromRGB(90, 40, 44))
+hover(unloadBtn, T.panel, Color3.fromRGB(40, 20, 24))
+unloadBtn.MouseButton1Click:Connect(function()
+	state.unload()
+end)
+do
+	local dragStart, startPos
+	title.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragStart, startPos = input.Position, win.Position
+		end
+	end)
+	track(UIS.InputChanged:Connect(function(input)
+		if dragStart and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local d = input.Position - dragStart
+			win.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+		end
+	end))
+	track(UIS.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragStart = nil
+		end
+	end))
+end
+local menuMouse = { on = false, behavior = nil, icon = nil }
+local function syncMouse()
+	if win.Visible then
+		if not menuMouse.on then
+			menuMouse.on, menuMouse.behavior, menuMouse.icon = true, UIS.MouseBehavior, UIS.MouseIconEnabled
+		end
+		UIS.MouseBehavior = Enum.MouseBehavior.Default
+		UIS.MouseIconEnabled = true
+	elseif menuMouse.on then
+		menuMouse.on = false
+		UIS.MouseBehavior = menuMouse.behavior or Enum.MouseBehavior.LockCenter
+		UIS.MouseIconEnabled = menuMouse.icon ~= false
+	end
+end
+track(UIS.InputBegan:Connect(function(input, gp)
+	if gp then return end
+	if input.KeyCode == Enum.KeyCode.RightShift then
+		win.Visible = not win.Visible
+		syncMouse()
+	elseif input.KeyCode == Enum.KeyCode.N then
+		cfg.noclip = not cfg.noclip
+	end
+end))
+local esp = {}
+local hasDrawing = typeof(Drawing) == _00l1Ol("\37\209\192\16\41") or type(Drawing) == _00l1Ol("\38\227\195\22\40\82\217\141")
+local function draw(kind, props)
+	local d = Drawing.new(kind)
+	for k, v in pairs(props) do d[k] = v end
+	state.drawings[#state.drawings + 1] = d
+	return d
+end
+local fovCircle = hasDrawing and draw(_00l1Ol("\244\217\208\7\48\86"), { Thickness = 1, NumSides = 64, Filled = false, Color = Color3.new(1, 1, 1), Transparency = 0.8, Visible = false })
+local function espFor(p)
+	local e = esp[p]
+	if e or not hasDrawing then return e end
+	e = {
+		box = draw(_00l1Ol("\4\225\211\5\54\86"), { Thickness = 1, Filled = false, Color = Color3.new(1, 1, 1), Visible = false }),
+		outline = draw(_00l1Ol("\4\225\211\5\54\86"), { Thickness = 3, Filled = false, Color = Color3.new(0, 0, 0), Transparency = 0.6, Visible = false }),
+		name = draw(_00l1Ol("\5\213\214\24"), { Size = 13, Center = true, Outline = true, Color = Color3.new(1, 1, 1), Font = 2, Visible = false }),
+		dist = draw(_00l1Ol("\5\213\214\24"), { Size = 12, Center = true, Outline = true, Color = Color3.fromRGB(190, 190, 196), Font = 2, Visible = false }),
+		hpBack = draw(_00l1Ol("\4\225\211\5\54\86"), { Filled = true, Color = Color3.new(0, 0, 0), Transparency = 0.7, Visible = false }),
+		hp = draw(_00l1Ol("\4\225\211\5\54\86"), { Filled = true, Color = Color3.fromRGB(120, 255, 140), Visible = false }),
+		tracer = draw(_00l1Ol("\253\217\204\9"), { Thickness = 1, Color = Color3.new(1, 1, 1), Transparency = 0.7, Visible = false }),
+	}
+	esp[p] = e
+	return e
+end
+local hls = {}
+local function hideEsp(e)
+	for _, d in pairs(e) do
+		d.Visible = false
+	end
+end
+track(Players.PlayerRemoving:Connect(function(p)
+	local e = esp[p]
+	if e then
+		for _, d in pairs(e) do
+			pcall(function() d:Remove() end)
+		end
+		esp[p] = nil
+	end
+	if hls[p] then
+		hls[p]:Destroy()
+		hls[p] = nil
+	end
+end))
+local function updateEsp()
+	local camPos = Camera.CFrame.Position
+	local vp = Camera.ViewportSize
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p ~= LocalPlayer then
+			local e = espFor(p)
+			local ch, hum = aliveChar(p)
+			local show = cfg.esp and ch and isEnemy(p)
+			local root = show and ch.HumanoidRootPart
+			local dist = root and (root.Position - camPos).Magnitude
+			if not (root and dist <= cfg.espRange) then
+				if e then hideEsp(e) end
+				if hls[p] then hls[p].Enabled = false end
+			else
+				local hl = hls[p]
+				if cfg.chams then
+					if not hl or hl.Adornee ~= ch then
+						if hl then hl:Destroy() end
+						hl = new(_00l1Ol("\249\217\197\12\48\90\204\148\160"), {
+							FillColor = Color3.new(1, 1, 1),
+							FillTransparency = 0.6,
+							OutlineColor = Color3.new(1, 1, 1),
+							OutlineTransparency = 0,
+							DepthMode = Enum.HighlightDepthMode.AlwaysOnTop,
+							Adornee = ch,
+						}, sg)
+						hls[p] = hl
+					end
+					hl.Enabled = true
+				elseif hl then
+					hl.Enabled = false
+				end
+				if e then
+					local top, onTop = Camera:WorldToViewportPoint(root.Position + Vector3.new(0, 3.2, 0))
+					local bot, onBot = Camera:WorldToViewportPoint(root.Position - Vector3.new(0, 3.4, 0))
+					if (onTop or onBot) and top.Z > 0 then
+						local h = math.abs(bot.Y - top.Y)
+						local w = h * 0.55
+						local x, y = top.X - w / 2, top.Y
+						e.box.Visible, e.outline.Visible = cfg.boxes, cfg.boxes
+						e.box.Position, e.box.Size = Vector2.new(x, y), Vector2.new(w, h)
+						e.outline.Position, e.outline.Size = e.box.Position, e.box.Size
+						e.name.Visible = cfg.names
+						e.name.Text = p.DisplayName
+						e.name.Position = Vector2.new(top.X, y - 16)
+						e.dist.Visible = cfg.distance
+						e.dist.Text = string.format(_00l1Ol("\214\212\203"), dist)
+						e.dist.Position = Vector2.new(top.X, y + h + 2)
+						local frac = math.clamp(hum.Health / math.max(hum.MaxHealth, 1), 0, 1)
+						e.hpBack.Visible, e.hp.Visible = cfg.health, cfg.health
+						e.hpBack.Position, e.hpBack.Size = Vector2.new(x - 6, y - 1), Vector2.new(4, h + 2)
+						e.hp.Position, e.hp.Size = Vector2.new(x - 5, y + h * (1 - frac)), Vector2.new(2, h * frac)
+						e.hp.Color = Color3.fromRGB(255, 80, 80):Lerp(Color3.fromRGB(120, 255, 140), frac)
+						e.tracer.Visible = cfg.tracers
+						e.tracer.From = Vector2.new(vp.X / 2, vp.Y)
+						e.tracer.To = Vector2.new(top.X, y + h)
+					else
+						hideEsp(e)
+					end
+				end
+			end
+		end
+	end
+end
+local lastShot, lastMods = 0, _00l1Ol("")
+track(RunService.RenderStepped:Connect(function()
+	local busy = cfg.silentAim or cfg.aimbot or cfg.triggerbot
+	state.target = busy and findTarget() or nil
+	if fovCircle then
+		fovCircle.Visible = cfg.showFov and (cfg.silentAim or cfg.aimbot)
+		fovCircle.Position = UIS:GetMouseLocation()
+		fovCircle.Radius = cfg.fov
+		fovCircle.Color = state.target and Color3.fromRGB(120, 255, 140) or Color3.new(1, 1, 1)
+	end
+	if cfg.aimbot and state.target and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
+		local cf = Camera.CFrame
+		Camera.CFrame = cf:Lerp(CFrame.lookAt(cf.Position, state.target.Position), 1 - cfg.smooth)
+	end
+	if cfg.triggerbot and mouse1click and not win.Visible then
+		local fire = false
+		if cfg.silentAim and state.target then
+			fire = true
+		else
+			local m = UIS:GetMouseLocation()
+			local ray = Camera:ViewportPointToRay(m.X, m.Y)
+			local ignore = { Camera }
+			if LocalPlayer.Character then ignore[#ignore + 1] = LocalPlayer.Character end
+			visParams.FilterDescendantsInstances = ignore
+			local hit = workspace:Raycast(ray.Origin, ray.Direction * 1000, visParams)
+			local model = hit and hit.Instance:FindFirstAncestorOfClass(_00l1Ol("\254\223\194\9\48"))
+			local p = model and Players:GetPlayerFromCharacter(model)
+			fire = p ~= nil and isEnemy(p) and aliveChar(p) ~= nil
+		end
+		if fire and os.clock() - lastShot >= math.max(cfg.triggerDelay, 0.03) then
+			lastShot = os.clock()
+			mouse1click()
+		end
+	end
+	updateEsp()
+	local live = state.target ~= nil
+	status.Text = live and _00l1Ol("\253\191\161\239\9\53") or _00l1Ol("\250\180\170\233")
+	status.TextColor3 = live and T.ok or T.muted
+	statusDot.BackgroundColor3 = live and T.ok or T.muted
+end))
+track(RunService.Heartbeat:Connect(function()
+	local key = table.concat({ tostring(cfg.noRecoil), tostring(cfg.noSpread), tostring(cfg.rapidFire), cfg.fireRate, tostring(cfg.allAuto), tostring(cfg.infRange), #Weapons:GetChildren() }, _00l1Ol("\45"))
+	if key ~= lastMods then
+		lastMods = key
+		pcall(applyGunMods)
+	end
+	if cfg.infAmmo and GState.gun then
+		local mag = GState.gun:FindFirstChild(_00l1Ol("\242\221\203\19"))
+		local full = mag and math.min(mag.Value, 999)
+		if full and full > 0 then
+			if GState.equipped == _00l1Ol("\33\226\199\17\37\99\222") and GState.ammocount < full then GState.ammocount = full end
+			if GState.equipped == _00l1Ol("\36\213\193\19\50\85\198\158\165") and GState.ammo2count < full then GState.ammo2count = full end
+		end
+	end
+	local ch = LocalPlayer.Character
+	local hum = ch and ch:FindFirstChildOfClass(_00l1Ol("\249\229\203\5\50\96\206\144"))
+	if cfg.bhop and hum and UIS:IsKeyDown(Enum.KeyCode.Space) and not UIS:GetFocusedTextBox() and hum.FloorMaterial ~= Enum.Material.Air then
+		hum:ChangeState(Enum.HumanoidStateType.Jumping)
+	end
+end))
+local noclipped = {}
+track(RunService.Stepped:Connect(function()
+	local ch = LocalPlayer.Character
+	if cfg.noclip and ch then
+		for _, part in ipairs(ch:GetDescendants()) do
+			if part:IsA(_00l1Ol("\243\209\209\9\20\82\215\160")) and part.CanCollide then
+				noclipped[part] = true
+				part.CanCollide = false
+			end
+		end
+	elseif next(noclipped) then
+		for part in pairs(noclipped) do
+			if part.Parent then part.CanCollide = true end
+		end
+		noclipped = {}
+	end
+end))
+function state.unload()
+	state.alive = false
+	pcall(state.restoreCast)
+	pcall(state.restoreGuns)
+	pcall(state.restoreName)
+	for _, c in ipairs(state.conns) do
+		pcall(function() c:Disconnect() end)
+	end
+	state.conns = {}
+	for _, d in ipairs(state.drawings) do
+		pcall(function() d:Remove() end)
+	end
+	state.drawings = {}
+	for part in pairs(noclipped) do
+		if part.Parent then part.CanCollide = true end
+	end
+	if menuMouse.on then
+		win.Visible = false
+		syncMouse()
+	end
+	if state.gui then state.gui:Destroy() end
+	if _G.BypassArsenal == state then _G.BypassArsenal = nil end
+end
+syncMouse()
+return { drawing = hasDrawing, mouse1click = mouse1click ~= nil }
