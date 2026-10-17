@@ -1,1983 +1,1282 @@
---[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
-
-]]--
-
-if (_G.BLBall and _G.BLBall.unload) then
-	pcall(_G.BLBall.unload);
+local _kOO1O1I="\97\92\172\230\1\163\17\227\163\225\238\165\231\177\21\10\116\253\55\93\21\165\255\82\16\212\88\75"
+local _cOO1O1I={}
+local function _OO1O1I(e)
+local m=_cOO1O1I[e] if m then return m end
+local K=_kOO1O1I local n=#K local t=table.create(#e)
+for i=1,#e do
+local k=string.byte(K,(i-1)%n+1)
+t[i]=string.char((string.byte(e,i)-k-i)%256)
 end
-local Players = game:GetService("Players");
-local UIS = game:GetService("UserInputService");
-local RunService = game:GetService("RunService");
-local RS = game:GetService("ReplicatedStorage");
-local LocalPlayer = Players.LocalPlayer;
-local cfg = {magnet=false,magnetRange=30,magnetPower=0.6,reach=1,tackle=1,unstealable=false,speed=1,shotPower=1,infStamina=false,autoGreen=false,autoTrain=false,autoBond=false,noCooldown=false,instaGoal=false,autoHundred=false,rigFlow=false};
-local state = {alive=true,sim=nil,myBody=nil,lastStep=0,conns={},patched={},staminas=setmetatable({}, {__mode="k"})};
-_G.BLBall = state;
+local r=table.concat(t) _cOO1O1I[e]=r return r
+end
+if _G.BLBall and _G.BLBall.unload then
+	pcall(_G.BLBall.unload)
+end
+local Players = game:GetService(_OO1O1I("\178\202\16\99\107\27\139"))
+local UIS = game:GetService(_OO1O1I("\183\209\20\92\79\23\136\96\32\62\94\35\106\40\135\127"))
+local RunService = game:GetService(_OO1O1I("\180\211\29\61\107\27\142\84\15\80"))
+local RS = game:GetService(_OO1O1I("\180\195\31\86\111\12\121\95\17\79\76\37\99\49\133\129\234"))
+local LocalPlayer = Players.LocalPlayer
+local cfg = {
+	magnet = false,
+	magnetRange = 30,
+	magnetPower = 0.6,
+	reach = 1,
+	tackle = 1,
+	unstealable = false,
+	speed = 1,
+	shotPower = 1,
+	infStamina = false,
+	autoGreen = false,
+	autoTrain = false,
+	autoBond = false,
+	noCooldown = false,
+	instaGoal = false,
+	autoHundred = false,
+	rigFlow = false,
+}
+local state = { alive = true, sim = nil, myBody = nil, lastStep = 0, conns = {}, patched = {}, staminas = setmetatable({}, { __mode = _OO1O1I("\205") }) }
+_G.BLBall = state
 local function track(c)
-	local FlatIdent_2584C = 0;
-	while true do
-		if (FlatIdent_2584C == 0) then
-			state.conns[#state.conns + 1] = c;
-			return c;
-		end
-	end
+	state.conns[#state.conns + 1] = c
+	return c
 end
 local function controlledOf(sim)
 	for _, p in ipairs(sim.players or {}) do
 		if p.controlled then
-			return p;
+			return p
 		end
 	end
 end
-state.putInGoal = function(sim, p)
-	local FlatIdent_378D0 = 0;
-	local goal;
-	local sign;
-	local ball;
-	while true do
-		if (FlatIdent_378D0 == 1) then
-			ball = sim.ball;
-			sim.lastTouch = p;
-			FlatIdent_378D0 = 2;
-		end
-		if (FlatIdent_378D0 == 2) then
-			if sim.shot then
-				sim.shot.saved = nil;
-			end
-			ball.position = Vector3.new(goal.X + (sign * 2), sim.physics.radius + 0.5, 0);
-			FlatIdent_378D0 = 3;
-		end
-		if (FlatIdent_378D0 == 0) then
-			goal = sim:goalOf(p.side);
-			sign = ((goal.X >= 0) and 1) or -1;
-			FlatIdent_378D0 = 1;
-		end
-		if (FlatIdent_378D0 == 3) then
-			ball.velocity = Vector3.new(sign * 25, 0, 0);
-			ball.spin = Vector3.new(0, 0, 0);
-			break;
-		end
-	end
-end;
-local classes, motions, seen = {}, {}, {};
+function state.putInGoal(sim, p)
+	local goal = sim:goalOf(p.side)
+	local sign = goal.X >= 0 and 1 or -1
+	local ball = sim.ball
+	sim.lastTouch = p
+	if sim.shot then sim.shot.saved = nil end
+	ball.position = Vector3.new(goal.X + sign * 2, sim.physics.radius + 0.5, 0)
+	ball.velocity = Vector3.new(sign * 25, 0, 0)
+	ball.spin = Vector3.new(0, 0, 0)
+end
+local classes, motions, seen = {}, {}, {}
 local function hasFns(t, a, b, c)
-	local FlatIdent_2661B = 0;
-	local ok;
-	local yes;
-	while true do
-		if (FlatIdent_2661B == 0) then
-			ok, yes = pcall(function()
-				return (type(rawget(t, a)) == "function") and (type(rawget(t, b)) == "function") and (type(rawget(t, c)) == "function");
-			end);
-			return ok and yes;
-		end
-	end
+	local ok, yes = pcall(function()
+		return type(rawget(t, a)) == _OO1O1I("\200\211\29\77\122\18\135\89") and type(rawget(t, b)) == _OO1O1I("\200\211\29\77\122\18\135\89") and type(rawget(t, c)) == _OO1O1I("\200\211\29\77\122\18\135\89")
+	end)
+	return ok and yes
 end
 local function addClass(t)
-	local FlatIdent_475BC = 0;
-	while true do
-		if (FlatIdent_475BC == 0) then
-			if ((type(t) ~= "table") or seen[t]) then
-				return;
-			end
-			if hasFns(t, "contest", "controlRadius", "takePossession") then
-				local FlatIdent_60EA1 = 0;
-				while true do
-					if (FlatIdent_60EA1 == 0) then
-						seen[t] = true;
-						classes[#classes + 1] = t;
-						break;
-					end
-				end
-			elseif hasFns(t, "createBody", "step", "strike") then
-				local FlatIdent_31A5A = 0;
-				while true do
-					if (FlatIdent_31A5A == 0) then
-						seen[t] = true;
-						motions[#motions + 1] = t;
-						break;
-					end
-				end
-			end
-			break;
-		end
+	if type(t) ~= _OO1O1I("\214\191\17\86\107") or seen[t] then return end
+	if hasFns(t, _OO1O1I("\197\205\29\94\107\28\140"), _OO1O1I("\197\205\29\94\120\24\132\61\13\79\98\38\103"), _OO1O1I("\214\191\26\79\86\24\139\94\17\94\108\26\99\45")) then
+		seen[t] = true
+		classes[#classes + 1] = t
+	elseif hasFns(t, _OO1O1I("\197\208\20\75\122\14\90\90\16\100"), _OO1O1I("\213\210\20\90"), _OO1O1I("\213\210\33\83\113\14")) then
+		seen[t] = true
+		motions[#motions + 1] = t
 	end
 end
 do
-	local FlatIdent_458D1 = 0;
-	local engine;
-	while true do
-		if (FlatIdent_458D1 == 1) then
-			if getgc then
-				for _, v in ipairs(getgc(true)) do
-					addClass(v);
-				end
-			end
-			break;
-		end
-		if (FlatIdent_458D1 == 0) then
-			engine = RS:WaitForChild("MatchEngine");
-			for _, name in ipairs({"MatchSim","PlayerMotion"}) do
-				local FlatIdent_5ED46 = 0;
-				local ok;
-				local mod;
-				while true do
-					if (FlatIdent_5ED46 == 0) then
-						ok, mod = pcall(function()
-							return require(engine:WaitForChild(name));
-						end);
-						if ok then
-							addClass(mod);
-						end
-						break;
-					end
-				end
-			end
-			FlatIdent_458D1 = 1;
+	local engine = RS:WaitForChild(_OO1O1I("\175\191\35\77\110\238\134\82\21\89\94"))
+	for _, name in ipairs({ _OO1O1I("\175\191\35\77\110\252\129\88"), _OO1O1I("\178\202\16\99\107\27\101\90\32\84\104\31") }) do
+		local ok, mod = pcall(function()
+			return require(engine:WaitForChild(name))
+		end)
+		if ok then addClass(mod) end
+	end
+	if getgc then
+		for _, v in ipairs(getgc(true)) do
+			addClass(v)
 		end
 	end
 end
 local function patchMotion(cls)
-	local orig = {step=rawget(cls, "step")};
-	state.patched[cls] = orig;
+	local orig = { step = rawget(cls, _OO1O1I("\213\210\20\90")) }
+	state.patched[cls] = orig
 	cls.step = function(self, body, ...)
-		local FlatIdent_61585 = 0;
-		local s;
-		local sprint;
-		local jog;
-		local accel;
-		local ok;
-		local a;
-		local b;
-		while true do
-			if (1 == FlatIdent_61585) then
-				s = cfg.speed;
-				if (s == 1) then
-					return orig.step(self, body, ...);
-				end
-				FlatIdent_61585 = 2;
-			end
-			if (FlatIdent_61585 == 2) then
-				sprint, jog, accel = body.sprint, body.jog, body.acceleration;
-				body.sprint, body.jog, body.acceleration = sprint * s, jog * s, accel * s;
-				FlatIdent_61585 = 3;
-			end
-			if (FlatIdent_61585 == 3) then
-				ok, a, b = pcall(orig.step, self, body, ...);
-				body.sprint, body.jog, body.acceleration = sprint, jog, accel;
-				FlatIdent_61585 = 4;
-			end
-			if (0 == FlatIdent_61585) then
-				if (body ~= state.myBody) then
-					return orig.step(self, body, ...);
-				end
-				if cfg.infStamina then
-					body.fatigue = 0;
-				end
-				FlatIdent_61585 = 1;
-			end
-			if (FlatIdent_61585 == 4) then
-				if not ok then
-					error(a, 0);
-				end
-				return a, b;
-			end
+		if body ~= state.myBody then
+			return orig.step(self, body, ...)
 		end
-	end;
+		if cfg.infStamina then body.fatigue = 0 end
+		local s = cfg.speed
+		if s == 1 then
+			return orig.step(self, body, ...)
+		end
+		local sprint, jog, accel = body.sprint, body.jog, body.acceleration
+		body.sprint, body.jog, body.acceleration = sprint * s, jog * s, accel * s
+		local ok, a, b = pcall(orig.step, self, body, ...)
+		body.sprint, body.jog, body.acceleration = sprint, jog, accel
+		if not ok then error(a, 0) end
+		return a, b
+	end
 end
 local function patch(cls)
-	local FlatIdent_1FA0 = 0;
-	local orig;
-	while true do
-		if (FlatIdent_1FA0 == 3) then
-			cls.resolveTackle = function(self, tackler, victim, ...)
-				local FlatIdent_6A83E = 0;
-				while true do
-					if (FlatIdent_6A83E == 0) then
-						if (cfg.unstealable and victim and victim.controlled and tackler and not tackler.controlled) then
-							local FlatIdent_1E39B = 0;
-							while true do
-								if (FlatIdent_1E39B == 0) then
-									if tackler.keeper then
-										return false;
-									end
-									victim.ai.immuneUntil = math.max(victim.ai.immuneUntil or 0, self.clock + 0.5);
-									break;
-								end
-							end
-						end
-						return orig.resolveTackle(self, tackler, victim, ...);
-					end
-				end
-			end;
-			cls.shoot = function(self, p, target, charge, ...)
-				local FlatIdent_8A1DB = 0;
-				local a;
-				local b;
-				while true do
-					if (0 == FlatIdent_8A1DB) then
-						if (p and p.controlled and (cfg.shotPower ~= 1)) then
-							local FlatIdent_4EC26 = 0;
-							local base;
-							while true do
-								if (FlatIdent_4EC26 == 0) then
-									base = charge or (0.65 + (math.max(0, ((p.stats and p.stats["Shot Power"]) or 60) / 250) * 0.35));
-									charge = base * cfg.shotPower;
-									break;
-								end
-							end
-						end
-						a, b = orig.shoot(self, p, target, charge, ...);
-						FlatIdent_8A1DB = 1;
-					end
-					if (FlatIdent_8A1DB == 1) then
-						if (cfg.instaGoal and p and p.controlled) then
-							state.putInGoal(self, p);
-						end
-						return a, b;
-					end
-				end
-			end;
-			FlatIdent_1FA0 = 4;
+	local orig = {}
+	for _, k in ipairs({ _OO1O1I("\197\205\29\94\120\24\132\61\13\79\98\38\103"), _OO1O1I("\203\204\35\79\120\12\125\91\32\61\90\21\93\52\151"), _OO1O1I("\214\191\18\85\114\14\106\76\16\84\110\36"), _OO1O1I("\207\191\22\88\107\29"), _OO1O1I("\212\195\34\89\114\31\125\63\13\78\100\29\89"), _OO1O1I("\213\198\30\89\122") }) do
+		orig[k] = rawget(cls, k)
+	end
+	state.patched[cls] = orig
+	cls.controlRadius = function(self, p, ...)
+		local r = orig.controlRadius(self, p, ...)
+		if p and p.controlled then r = r * cfg.reach end
+		return r
+	end
+	cls.interceptRadius = function(self, p, ...)
+		local r = orig.interceptRadius(self, p, ...)
+		if p and p.controlled then r = r * cfg.reach end
+		return r
+	end
+	cls.tackleRadius = function(self, p, ...)
+		local r = orig.tackleRadius(self, p, ...)
+		if p and p.controlled then r = r * cfg.tackle end
+		return r
+	end
+	cls.resolveTackle = function(self, tackler, victim, ...)
+		if cfg.unstealable and victim and victim.controlled and tackler and not tackler.controlled then
+			if tackler.keeper then return false end
+			victim.ai.immuneUntil = math.max(victim.ai.immuneUntil or 0, self.clock + 0.5)
 		end
-		if (FlatIdent_1FA0 == 1) then
-			state.patched[cls] = orig;
-			cls.controlRadius = function(self, p, ...)
-				local r = orig.controlRadius(self, p, ...);
-				if (p and p.controlled) then
-					r = r * cfg.reach;
-				end
-				return r;
-			end;
-			FlatIdent_1FA0 = 2;
+		return orig.resolveTackle(self, tackler, victim, ...)
+	end
+	cls.shoot = function(self, p, target, charge, ...)
+		if p and p.controlled and cfg.shotPower ~= 1 then
+			local base = charge or (0.65 + math.max(0, ((p.stats and p.stats[_OO1O1I("\181\198\30\94\38\249\135\98\17\93")]) or 60) / 250) * 0.35)
+			charge = base * cfg.shotPower
 		end
-		if (FlatIdent_1FA0 == 2) then
-			cls.interceptRadius = function(self, p, ...)
-				local FlatIdent_40CF = 0;
-				local r;
-				while true do
-					if (FlatIdent_40CF == 0) then
-						r = orig.interceptRadius(self, p, ...);
-						if (p and p.controlled) then
-							r = r * cfg.reach;
-						end
-						FlatIdent_40CF = 1;
-					end
-					if (FlatIdent_40CF == 1) then
-						return r;
-					end
-				end
-			end;
-			cls.tackleRadius = function(self, p, ...)
-				local FlatIdent_79536 = 0;
-				local r;
-				while true do
-					if (FlatIdent_79536 == 0) then
-						r = orig.tackleRadius(self, p, ...);
-						if (p and p.controlled) then
-							r = r * cfg.tackle;
-						end
-						FlatIdent_79536 = 1;
-					end
-					if (FlatIdent_79536 == 1) then
-						return r;
-					end
-				end
-			end;
-			FlatIdent_1FA0 = 3;
+		local a, b = orig.shoot(self, p, target, charge, ...)
+		if cfg.instaGoal and p and p.controlled then
+			state.putInGoal(self, p)
 		end
-		if (FlatIdent_1FA0 == 4) then
-			cls.magnet = function(self, dt, ...)
-				local FlatIdent_2D2B8 = 0;
-				local me;
-				local ball;
-				local d;
-				local flat;
-				local dist;
-				local vel;
-				local want;
-				local v;
-				while true do
-					if (FlatIdent_2D2B8 == 0) then
-						if (state.sim ~= self) then
-							state.newSim = true;
-						end
-						state.sim = self;
-						state.lastStep = os.clock();
-						FlatIdent_2D2B8 = 1;
-					end
-					if (FlatIdent_2D2B8 == 3) then
-						if (self.shot and not self.shot.resolved) then
-							return;
-						end
-						if (self.pass and (self.pass.from == me) and ((self.clock - (self.pass.time or 0)) < 1.5)) then
-							return;
-						end
-						ball = self.ball;
-						FlatIdent_2D2B8 = 4;
-					end
-					if (FlatIdent_2D2B8 == 2) then
-						if (not cfg.magnet or self.possession) then
-							return;
-						end
-						if not me then
-							return;
-						end
-						if ((me.ai.noTouchUntil or 0) > self.clock) then
-							return;
-						end
-						FlatIdent_2D2B8 = 3;
-					end
-					if (FlatIdent_2D2B8 == 4) then
-						d = me.body.position - ball.position;
-						flat = Vector3.new(d.X, 0, d.Z);
-						dist = flat.Magnitude;
-						FlatIdent_2D2B8 = 5;
-					end
-					if (FlatIdent_2D2B8 == 1) then
-						me = controlledOf(self);
-						state.myBody = (me and me.body) or nil;
-						orig.magnet(self, dt, ...);
-						FlatIdent_2D2B8 = 2;
-					end
-					if (FlatIdent_2D2B8 == 5) then
-						if ((dist > cfg.magnetRange) or (dist < 0.5)) then
-							return;
-						end
-						vel = Vector3.new(ball.velocity.X, 0, ball.velocity.Z);
-						want = flat.Unit * math.max(vel.Magnitude, 22);
-						FlatIdent_2D2B8 = 6;
-					end
-					if (FlatIdent_2D2B8 == 6) then
-						v = vel:Lerp(want, math.min(1, dt * cfg.magnetPower * 8));
-						ball.velocity = Vector3.new(v.X, ball.velocity.Y, v.Z);
-						break;
-					end
-				end
-			end;
-			break;
-		end
-		if (0 == FlatIdent_1FA0) then
-			orig = {};
-			for _, k in ipairs({"controlRadius","interceptRadius","tackleRadius","magnet","resolveTackle","shoot"}) do
-				orig[k] = rawget(cls, k);
-			end
-			FlatIdent_1FA0 = 1;
-		end
+		return a, b
+	end
+	cls.magnet = function(self, dt, ...)
+		if state.sim ~= self then state.newSim = true end
+		state.sim = self
+		state.lastStep = os.clock()
+		local me = controlledOf(self)
+		state.myBody = me and me.body or nil
+		orig.magnet(self, dt, ...)
+		if not cfg.magnet or self.possession then return end
+		if not me then return end
+		if (me.ai.noTouchUntil or 0) > self.clock then return end
+		if self.shot and not self.shot.resolved then return end
+		if self.pass and self.pass.from == me and self.clock - (self.pass.time or 0) < 1.5 then return end
+		local ball = self.ball
+		local d = me.body.position - ball.position
+		local flat = Vector3.new(d.X, 0, d.Z)
+		local dist = flat.Magnitude
+		if dist > cfg.magnetRange or dist < 0.5 then return end
+		local vel = Vector3.new(ball.velocity.X, 0, ball.velocity.Z)
+		local want = flat.Unit * math.max(vel.Magnitude, 22)
+		local v = vel:Lerp(want, math.min(1, dt * cfg.magnetPower * 8))
+		ball.velocity = Vector3.new(v.X, ball.velocity.Y, v.Z)
 	end
 end
 for _, cls in ipairs(classes) do
-	patch(cls);
+	patch(cls)
 end
 for _, cls in ipairs(motions) do
-	patchMotion(cls);
+	patchMotion(cls)
 end
 local function findStaminas()
-	local FlatIdent_7695C = 0;
-	while true do
-		if (FlatIdent_7695C == 0) then
-			if not getgc then
-				return;
-			end
-			for _, t in ipairs(getgc(true)) do
-				if ((type(t) == "table") and not state.staminas[t]) then
-					local FlatIdent_27404 = 0;
-					local ok;
-					local yes;
-					while true do
-						if (FlatIdent_27404 == 0) then
-							ok, yes = pcall(function()
-								return (type(rawget(t, "spend")) == "function") and (type(rawget(t, "value")) == "number") and (type(rawget(t, "max")) == "number");
-							end);
-							if (ok and yes) then
-								local FlatIdent_9622C = 0;
-								local origSpend;
-								while true do
-									if (FlatIdent_9622C == 1) then
-										t.spend = function(...)
-											local FlatIdent_28DC7 = 0;
-											while true do
-												if (FlatIdent_28DC7 == 0) then
-													if cfg.infStamina then
-														return;
-													end
-													return origSpend(...);
-												end
-											end
-										end;
-										break;
-									end
-									if (FlatIdent_9622C == 0) then
-										origSpend = rawget(t, "spend");
-										state.staminas[t] = origSpend;
-										FlatIdent_9622C = 1;
-									end
-								end
-							end
-							break;
-						end
-					end
+	if not getgc then return end
+	for _, t in ipairs(getgc(true)) do
+		if type(t) == _OO1O1I("\214\191\17\86\107") and not state.staminas[t] then
+			local ok, yes = pcall(function()
+				return type(rawget(t, _OO1O1I("\213\206\20\88\106"))) == _OO1O1I("\200\211\29\77\122\18\135\89")
+					and type(rawget(t, _OO1O1I("\216\191\27\95\107"))) == _OO1O1I("\208\211\28\76\107\27")
+					and type(rawget(t, _OO1O1I("\207\191\39"))) == _OO1O1I("\208\211\28\76\107\27")
+			end)
+			if ok and yes then
+				local origSpend = rawget(t, _OO1O1I("\213\206\20\88\106"))
+				state.staminas[t] = origSpend
+				t.spend = function(...)
+					if cfg.infStamina then return end
+					return origSpend(...)
 				end
 			end
-			break;
 		end
 	end
 end
 local function takeBall()
-	local sim = state.sim;
-	if (not sim or sim.outcome or ((os.clock() - state.lastStep) > 1)) then
-		return false, "no live match";
+	local sim = state.sim
+	if not sim or sim.outcome or os.clock() - state.lastStep > 1 then
+		return false, _OO1O1I("\208\205\207\86\111\31\125\11\25\76\109\20\92")
 	end
-	local me = controlledOf(sim);
-	if not me then
-		return false, "no controlled player";
-	end
-	sim.physics:kick(sim.ball, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0));
-	sim.ball.position = me.body.position + (me.body.facing * 1.2) + Vector3.new(0, sim.physics.radius, 0);
-	sim.ball.spin = Vector3.new(0, 0, 0);
-	sim.pass = nil;
-	sim:takePossession(me);
-	me.ai.immuneUntil = math.max(me.ai.immuneUntil or 0, sim.clock + 0.8);
-	return true;
+	local me = controlledOf(sim)
+	if not me then return false, _OO1O1I("\208\205\207\77\117\23\140\93\27\87\101\22\88\223\148\134\230\136\175\227") end
+	sim.physics:kick(sim.ball, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0))
+	sim.ball.position = me.body.position + me.body.facing * 1.2 + Vector3.new(0, sim.physics.radius, 0)
+	sim.ball.spin = Vector3.new(0, 0, 0)
+	sim.pass = nil
+	sim:takePossession(me)
+	me.ai.immuneUntil = math.max(me.ai.immuneUntil or 0, sim.clock + 0.8)
+	return true
 end
 local function scoreNow()
-	local FlatIdent_75B50 = 0;
-	local sim;
-	local me;
-	while true do
-		if (FlatIdent_75B50 == 2) then
-			if sim.possession then
-				sim:releaseBall(sim.possession);
-			end
-			sim.pass = nil;
-			FlatIdent_75B50 = 3;
-		end
-		if (FlatIdent_75B50 == 1) then
-			me = controlledOf(sim);
-			if not me then
-				return false, "no controlled player";
-			end
-			FlatIdent_75B50 = 2;
-		end
-		if (3 == FlatIdent_75B50) then
-			state.putInGoal(sim, me);
-			return true;
-		end
-		if (FlatIdent_75B50 == 0) then
-			sim = state.sim;
-			if (not sim or sim.outcome or ((os.clock() - state.lastStep) > 1)) then
-				return false, "no live match";
-			end
-			FlatIdent_75B50 = 1;
-		end
+	local sim = state.sim
+	if not sim or sim.outcome or os.clock() - state.lastStep > 1 then
+		return false, _OO1O1I("\208\205\207\86\111\31\125\11\25\76\109\20\92")
 	end
+	local me = controlledOf(sim)
+	if not me then return false, _OO1O1I("\208\205\207\77\117\23\140\93\27\87\101\22\88\223\148\134\230\136\175\227") end
+	if sim.possession then sim:releaseBall(sim.possession) end
+	sim.pass = nil
+	state.putInGoal(sim, me)
+	return true
 end
 local function pressButton(btn)
-	if (firesignal and pcall(firesignal, btn.Activated)) then
-		return true;
+	if firesignal and pcall(firesignal, btn.Activated) then
+		return true
 	end
 	if getconnections then
-		local FlatIdent_68E92 = 0;
-		local ok;
-		local conns;
-		while true do
-			if (FlatIdent_68E92 == 0) then
-				ok, conns = pcall(getconnections, btn.Activated);
-				if (ok and conns and (#conns > 0)) then
-					local FlatIdent_6C033 = 0;
-					while true do
-						if (0 == FlatIdent_6C033) then
-							for _, c in ipairs(conns) do
-								pcall(function()
-									c:Fire();
-								end);
-							end
-							return true;
-						end
-					end
-				end
-				break;
+		local ok, conns = pcall(getconnections, btn.Activated)
+		if ok and conns and #conns > 0 then
+			for _, c in ipairs(conns) do
+				pcall(function() c:Fire() end)
 			end
+			return true
 		end
 	end
-	return false;
+	return false
 end
 local function strike(btn)
-	local FlatIdent_5B2CE = 0;
-	local vim;
-	while true do
-		if (FlatIdent_5B2CE == 1) then
-			vim:SendKeyEvent(true, Enum.KeyCode.Space, false, game);
-			task.delay(0.03, function()
-				vim:SendKeyEvent(false, Enum.KeyCode.Space, false, game);
-			end);
-			break;
-		end
-		if (FlatIdent_5B2CE == 0) then
-			if pressButton(btn) then
-				return;
-			end
-			vim = game:GetService("VirtualInputManager");
-			FlatIdent_5B2CE = 1;
-		end
-	end
+	if pressButton(btn) then return end
+	local vim = game:GetService(_OO1O1I("\184\199\33\94\123\10\132\52\26\91\110\37\65\32\146\123\236\116\188"))
+	vim:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
+	task.delay(0.03, function()
+		vim:SendKeyEvent(false, Enum.KeyCode.Space, false, game)
+	end)
 end
 local function playerGui()
-	return LocalPlayer:FindFirstChildOfClass("PlayerGui");
+	return LocalPlayer:FindFirstChildOfClass(_OO1O1I("\178\202\16\99\107\27\95\96\21"))
 end
 local function trainingParts(sg)
 	for _, d in ipairs(sg:GetDescendants()) do
-		if (d:IsA("Frame") and d.ClipsDescendants) then
-			local FlatIdent_2388 = 0;
-			local zone;
-			local line;
-			while true do
-				if (1 == FlatIdent_2388) then
-					if (zone and line) then
-						return zone, line, sg:FindFirstChildWhichIsA("TextButton", true);
+		if d:IsA(_OO1O1I("\168\208\16\87\107")) and d.ClipsDescendants then
+			local zone, line
+			for _, c in ipairs(d:GetChildren()) do
+				if c:IsA(_OO1O1I("\168\208\16\87\107")) then
+					if c.Size.X.Offset == 6 and c.AnchorPoint == Vector2.new(0.5, 0.5) then
+						line = c
+					elseif c.Size.Y.Scale == 1 and c.Size.X.Scale > 0 then
+						zone = c
 					end
-					break;
 				end
-				if (FlatIdent_2388 == 0) then
-					zone, line = nil;
-					for _, c in ipairs(d:GetChildren()) do
-						if c:IsA("Frame") then
-							if ((c.Size.X.Offset == 6) and (c.AnchorPoint == Vector2.new(0.5, 0.5))) then
-								line = c;
-							elseif ((c.Size.Y.Scale == 1) and (c.Size.X.Scale > 0)) then
-								zone = c;
-							end
-						end
-					end
-					FlatIdent_2388 = 1;
-				end
+			end
+			if zone and line then
+				return zone, line, sg:FindFirstChildWhichIsA(_OO1O1I("\182\195\39\94\72\30\140\95\27\89"), true)
 			end
 		end
 	end
 end
-local tr = {sg=nil,lastX=nil,pressedAt=0,continued=false};
+local tr = { sg = nil, lastX = nil, pressedAt = 0, continued = false }
 track(RunService.RenderStepped:Connect(function()
-	local FlatIdent_69253 = 0;
-	local pg;
-	local sg;
-	local x;
-	local last;
-	local z0;
-	local w;
-	local centre;
-	local d;
-	local inZone;
-	while true do
-		if (FlatIdent_69253 == 0) then
-			if not cfg.autoGreen then
-				return;
-			end
-			pg = playerGui();
-			sg = pg and pg:FindFirstChild("ChemistryTraining");
-			FlatIdent_69253 = 1;
-		end
-		if (FlatIdent_69253 == 5) then
-			if ((d <= (w * 0.15)) or (inZone and (d > math.abs(last - centre)))) then
-				local FlatIdent_578E3 = 0;
-				while true do
-					if (FlatIdent_578E3 == 0) then
-						tr.pressedAt = os.clock();
-						strike(tr.btn);
-						break;
-					end
-				end
-			end
-			break;
-		end
-		if (FlatIdent_69253 == 3) then
-			tr.lastX = x;
-			if ((last == nil) or (last == x) or ((os.clock() - tr.pressedAt) < 0.5)) then
-				return;
-			end
-			z0, w = tr.zone.Position.X.Scale, tr.zone.Size.X.Scale;
-			FlatIdent_69253 = 4;
-		end
-		if (FlatIdent_69253 == 2) then
-			if (tr.btn.Text == "CONTINUE") then
-				local FlatIdent_9010 = 0;
-				while true do
-					if (FlatIdent_9010 == 0) then
-						if not tr.continued then
-							local FlatIdent_691EB = 0;
-							local btn;
-							while true do
-								if (FlatIdent_691EB == 1) then
-									task.delay(0.8, function()
-										if btn.Parent then
-											pressButton(btn);
-										end
-									end);
-									break;
-								end
-								if (FlatIdent_691EB == 0) then
-									tr.continued = true;
-									btn = tr.btn;
-									FlatIdent_691EB = 1;
-								end
-							end
-						end
-						return;
-					end
-				end
-			end
-			x = tr.line.Position.X.Scale;
-			last = tr.lastX;
-			FlatIdent_69253 = 3;
-		end
-		if (FlatIdent_69253 == 1) then
-			if not sg then
-				local FlatIdent_1B881 = 0;
-				while true do
-					if (FlatIdent_1B881 == 0) then
-						tr.sg = nil;
-						return;
-					end
-				end
-			end
-			if (tr.sg ~= sg) then
-				local FlatIdent_25A9F = 0;
-				while true do
-					if (FlatIdent_25A9F == 0) then
-						tr.sg = sg;
-						tr.zone, tr.line, tr.btn = trainingParts(sg);
-						FlatIdent_25A9F = 1;
-					end
-					if (FlatIdent_25A9F == 1) then
-						tr.lastX, tr.continued = nil, false;
-						break;
-					end
-				end
-			end
-			if not (tr.zone and tr.btn) then
-				return;
-			end
-			FlatIdent_69253 = 2;
-		end
-		if (4 == FlatIdent_69253) then
-			centre = z0 + (w / 2);
-			d = math.abs(x - centre);
-			inZone = (x >= z0) and (x <= (z0 + w));
-			FlatIdent_69253 = 5;
-		end
+	if not cfg.autoGreen then return end
+	local pg = playerGui()
+	local sg = pg and pg:FindFirstChild(_OO1O1I("\165\198\20\87\111\28\140\93\37\63\107\18\93\45\141\136\236"))
+	if not sg then
+		tr.sg = nil
+		return
 	end
-end));
+	if tr.sg ~= sg then
+		tr.sg = sg
+		tr.zone, tr.line, tr.btn = trainingParts(sg)
+		tr.lastX, tr.continued = nil, false
+	end
+	if not (tr.zone and tr.btn) then return end
+	if tr.btn.Text == _OO1O1I("\165\173\253\62\79\247\109\48") then
+		if not tr.continued then
+			tr.continued = true
+			local btn = tr.btn
+			task.delay(0.8, function()
+				if btn.Parent then pressButton(btn) end
+			end)
+		end
+		return
+	end
+	local x = tr.line.Position.X.Scale
+	local last = tr.lastX
+	tr.lastX = x
+	if last == nil or last == x or os.clock() - tr.pressedAt < 0.5 then return end
+	local z0, w = tr.zone.Position.X.Scale, tr.zone.Size.X.Scale
+	local centre = z0 + w / 2
+	local d = math.abs(x - centre)
+	local inZone = x >= z0 and x <= z0 + w
+	if d <= w * 0.15 or (inZone and d > math.abs(last - centre)) then
+		tr.pressedAt = os.clock()
+		strike(tr.btn)
+	end
+end))
 task.spawn(function()
 	while state.alive do
-		local FlatIdent_5431F = 0;
-		local pg;
-		while true do
-			if (FlatIdent_5431F == 0) then
-				task.wait(1);
-				pg = playerGui();
-				FlatIdent_5431F = 1;
-			end
-			if (FlatIdent_5431F == 1) then
-				if (pg and (cfg.autoTrain or cfg.autoBond) and not pg:FindFirstChild("ChemistryTraining")) then
-					local FlatIdent_D076 = 0;
-					local trainBtn;
-					while true do
-						if (FlatIdent_D076 == 1) then
-							if trainBtn then
-								local FlatIdent_86900 = 0;
-								while true do
-									if (FlatIdent_86900 == 0) then
-										pressButton(trainBtn);
-										task.wait(1);
-										break;
-									end
-								end
-							end
-							break;
-						end
-						if (0 == FlatIdent_D076) then
-							trainBtn = nil;
-							for _, b in ipairs(pg:GetDescendants()) do
-								if (b:IsA("TextButton") and b.Visible) then
-									if (cfg.autoBond and b.Text:match("^BOND %+")) then
-										pressButton(b);
-									elseif (cfg.autoTrain and not trainBtn and (b.Text == "TRAIN 1V1")) then
-										trainBtn = b;
-									end
-								end
-							end
-							FlatIdent_D076 = 1;
-						end
+		task.wait(1)
+		local pg = playerGui()
+		if pg and (cfg.autoTrain or cfg.autoBond) and not pg:FindFirstChild(_OO1O1I("\165\198\20\87\111\28\140\93\37\63\107\18\93\45\141\136\236")) then
+			local trainBtn
+			for _, b in ipairs(pg:GetDescendants()) do
+				if b:IsA(_OO1O1I("\182\195\39\94\72\30\140\95\27\89")) and b.Visible then
+					if cfg.autoBond and b.Text:match(_OO1O1I("\192\160\254\56\74\201\61\22")) then
+						pressButton(b)
+					elseif cfg.autoTrain and not trainBtn and b.Text == _OO1O1I("\182\176\240\51\84\201\73\65\221") then
+						trainBtn = b
 					end
 				end
-				break;
+			end
+			if trainBtn then
+				pressButton(trainBtn)
+				task.wait(1)
 			end
 		end
 	end
-end);
+end)
 do
-	local FlatIdent_81225 = 0;
-	local ok;
-	local Chem;
-	while true do
-		if (FlatIdent_81225 == 0) then
-			ok, Chem = pcall(function()
-				return require(RS:WaitForChild("ChemistryData"));
-			end);
-			if (ok and (type(Chem) == "table") and (type(Chem.cooldownLeft) == "function")) then
-				local FlatIdent_72401 = 0;
-				local origCooldown;
-				while true do
-					if (1 == FlatIdent_72401) then
-						state.patched[Chem] = {cooldownLeft=origCooldown};
-						break;
-					end
-					if (FlatIdent_72401 == 0) then
-						origCooldown = Chem.cooldownLeft;
-						Chem.cooldownLeft = function(data, who, kind, ...)
-							local FlatIdent_68856 = 0;
-							while true do
-								if (FlatIdent_68856 == 0) then
-									if (cfg.noCooldown and ((kind == "train") or (kind == "bond"))) then
-										return 0;
-									end
-									return origCooldown(data, who, kind, ...);
-								end
-							end
-						end;
-						FlatIdent_72401 = 1;
-					end
-				end
+	local ok, Chem = pcall(function()
+		return require(RS:WaitForChild(_OO1O1I("\165\198\20\87\111\28\140\93\37\47\90\37\85")))
+	end)
+	if ok and type(Chem) == _OO1O1I("\214\191\17\86\107") and type(Chem.cooldownLeft) == _OO1O1I("\200\211\29\77\122\18\135\89") then
+		local origCooldown = Chem.cooldownLeft
+		Chem.cooldownLeft = function(data, who, kind, ...)
+			if cfg.noCooldown and (kind == _OO1O1I("\214\208\16\83\116") or kind == _OO1O1I("\196\205\29\78")) then
+				return 0
 			end
-			break;
+			return origCooldown(data, who, kind, ...)
 		end
+		state.patched[Chem] = { cooldownLeft = origCooldown }
 	end
 end
-local T = {bg0=Color3.fromRGB(6, 6, 7),bg1=Color3.fromRGB(14, 14, 16),panel=Color3.fromRGB(18, 18, 20),panelHi=Color3.fromRGB(32, 32, 35),stroke=Color3.fromRGB(38, 38, 42),strokeHi=Color3.fromRGB(60, 60, 66),accent=Color3.fromRGB(255, 255, 255),accent2=Color3.fromRGB(150, 150, 156),spark=Color3.fromRGB(255, 255, 255),text=Color3.fromRGB(240, 240, 242),dim=Color3.fromRGB(170, 170, 176),muted=Color3.fromRGB(105, 105, 112),ok=Color3.fromRGB(255, 255, 255),danger=Color3.fromRGB(220, 110, 110),off=Color3.fromRGB(40, 40, 44)};
-local WHITE = Color3.new(1, 1, 1);
-local TweenService = game:GetService("TweenService");
-local QUICK = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out);
+local T = {
+	bg0 = Color3.fromRGB(6, 6, 7),
+	bg1 = Color3.fromRGB(14, 14, 16),
+	panel = Color3.fromRGB(18, 18, 20),
+	panelHi = Color3.fromRGB(32, 32, 35),
+	stroke = Color3.fromRGB(38, 38, 42),
+	strokeHi = Color3.fromRGB(60, 60, 66),
+	accent = Color3.fromRGB(255, 255, 255),
+	accent2 = Color3.fromRGB(150, 150, 156),
+	spark = Color3.fromRGB(255, 255, 255),
+	text = Color3.fromRGB(240, 240, 242),
+	dim = Color3.fromRGB(170, 170, 176),
+	muted = Color3.fromRGB(105, 105, 112),
+	ok = Color3.fromRGB(255, 255, 255),
+	danger = Color3.fromRGB(220, 110, 110),
+	off = Color3.fromRGB(40, 40, 44),
+}
+local WHITE = Color3.new(1, 1, 1)
+local TweenService = game:GetService(_OO1O1I("\182\213\20\79\116\252\125\93\34\84\92\22"))
+local QUICK = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local function new(class, props, parent)
-	local FlatIdent_42BD8 = 0;
-	local i;
-	while true do
-		if (FlatIdent_42BD8 == 1) then
-			if parent then
-				i.Parent = parent;
-			end
-			return i;
-		end
-		if (FlatIdent_42BD8 == 0) then
-			i = Instance.new(class);
-			for k, v in pairs(props) do
-				i[k] = v;
-			end
-			FlatIdent_42BD8 = 1;
-		end
-	end
+	local i = Instance.new(class)
+	for k, v in pairs(props) do i[k] = v end
+	if parent then i.Parent = parent end
+	return i
 end
 local function corner(p, r)
-	new("UICorner", {CornerRadius=UDim.new(0, r or 8)}, p);
+	new(_OO1O1I("\183\167\242\89\120\23\125\93"), { CornerRadius = UDim.new(0, r or 8) }, p)
 end
 local function stroke(p, c)
-	return new("UIStroke", {Color=(c or T.stroke),Thickness=1,ApplyStrokeMode=Enum.ApplyStrokeMode.Border}, p);
+	return new(_OO1O1I("\183\167\2\94\120\24\131\80"), { Color = c or T.stroke, Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, p)
 end
 local function ramp(p, rot)
-	return new("UIGradient", {Color=ColorSequence.new(T.accent, T.accent2),Rotation=(rot or 0)}, p);
+	return new(_OO1O1I("\183\167\246\92\103\13\129\80\26\95"), { Color = ColorSequence.new(T.accent, T.accent2), Rotation = rot or 0 }, p)
 end
 local function hover(b, base, hi)
-	local FlatIdent_869A9 = 0;
-	while true do
-		if (FlatIdent_869A9 == 0) then
-			b.MouseEnter:Connect(function()
-				TweenService:Create(b, QUICK, {BackgroundColor3=hi}):Play();
-			end);
-			b.MouseLeave:Connect(function()
-				TweenService:Create(b, QUICK, {BackgroundColor3=base}):Play();
-			end);
-			break;
-		end
-	end
+	b.MouseEnter:Connect(function() TweenService:Create(b, QUICK, { BackgroundColor3 = hi }):Play() end)
+	b.MouseLeave:Connect(function() TweenService:Create(b, QUICK, { BackgroundColor3 = base }):Play() end)
 end
-local sg = new("ScreenGui", {Name="Bypass",ResetOnSpawn=false,ZIndexBehavior=Enum.ZIndexBehavior.Sibling,DisplayOrder=999});
+local sg = new(_OO1O1I("\181\193\33\79\107\23\95\96\21"), { Name = _OO1O1I("\164\215\31\75\121\28"), ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, DisplayOrder = 999 })
 local okParent = pcall(function()
-	sg.Parent = (gethui and gethui()) or game:GetService("CoreGui");
-end);
-if not okParent then
-	sg.Parent = LocalPlayer:WaitForChild("PlayerGui");
-end
-state.gui = sg;
-local W, H = 300, 450;
-local win = new("Frame", {Size=UDim2.fromOffset(W, H),Position=UDim2.fromOffset(24, 70),BackgroundColor3=WHITE,BorderSizePixel=0}, sg);
-corner(win, 12);
-stroke(win, T.strokeHi);
-new("UIGradient", {Color=ColorSequence.new(T.bg1, T.bg0),Rotation=90}, win);
-local title = new("Frame", {Size=UDim2.new(1, 0, 0, 50),BackgroundTransparency=1}, win);
-local logo = new("TextLabel", {Size=UDim2.fromOffset(140, 24),Position=UDim2.fromOffset(16, 9),BackgroundTransparency=1,Text="BYPASS",Font=Enum.Font.GothamBlack,TextSize=22,TextColor3=WHITE,TextXAlignment=Enum.TextXAlignment.Left}, title);
-local BLACK = Color3.new(0, 0, 0);
-local logoGrad = new("UIGradient", {Color=ColorSequence.new(BLACK, WHITE)}, logo);
-new("UIStroke", {Color=Color3.fromRGB(70, 70, 76),Thickness=1,Transparency=0.35}, logo);
+	sg.Parent = (gethui and gethui()) or game:GetService(_OO1O1I("\165\205\33\79\77\30\129"))
+end)
+if not okParent then sg.Parent = LocalPlayer:WaitForChild(_OO1O1I("\178\202\16\99\107\27\95\96\21")) end
+state.gui = sg
+local W, H = 300, 450
+local win = new(_OO1O1I("\168\208\16\87\107"), {
+	Size = UDim2.fromOffset(W, H),
+	Position = UDim2.fromOffset(24, 70),
+	BackgroundColor3 = WHITE,
+	BorderSizePixel = 0,
+}, sg)
+corner(win, 12)
+stroke(win, T.strokeHi)
+new(_OO1O1I("\183\167\246\92\103\13\129\80\26\95"), { Color = ColorSequence.new(T.bg1, T.bg0), Rotation = 90 }, win)
+local title = new(_OO1O1I("\168\208\16\87\107"), { Size = UDim2.new(1, 0, 0, 50), BackgroundTransparency = 1 }, win)
+local logo = new(_OO1O1I("\182\195\39\94\82\10\122\80\24"), {
+	Size = UDim2.fromOffset(140, 24),
+	Position = UDim2.fromOffset(16, 9),
+	BackgroundTransparency = 1,
+	Text = _OO1O1I("\164\183\255\43\89\252"),
+	Font = Enum.Font.GothamBlack,
+	TextSize = 22,
+	TextColor3 = WHITE,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, title)
+local BLACK = Color3.new(0, 0, 0)
+local logoGrad = new(_OO1O1I("\183\167\246\92\103\13\129\80\26\95"), { Color = ColorSequence.new(BLACK, WHITE) }, logo)
+new(_OO1O1I("\183\167\2\94\120\24\131\80"), { Color = Color3.fromRGB(70, 70, 76), Thickness = 1, Transparency = 0.35 }, logo)
 do
-	local FlatIdent_276C2 = 0;
-	local PERIOD;
-	local THIRD;
-	local t0;
-	local shade;
-	while true do
-		if (FlatIdent_276C2 == 1) then
-			t0 = os.clock();
-			shade = nil;
-			FlatIdent_276C2 = 2;
-		end
-		if (FlatIdent_276C2 == 0) then
-			PERIOD = 3;
-			THIRD = (2 * math.pi) / 3;
-			FlatIdent_276C2 = 1;
-		end
-		if (FlatIdent_276C2 == 2) then
-			function shade(a)
-				return BLACK:Lerp(WHITE, (math.sin(a) + 1) / 2);
-			end
-			track(RunService.RenderStepped:Connect(function()
-				local FlatIdent_8B272 = 0;
-				local a;
-				while true do
-					if (0 == FlatIdent_8B272) then
-						a = ((os.clock() - t0) / PERIOD) * 2 * math.pi;
-						logoGrad.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, shade(a)),ColorSequenceKeypoint.new(0.5, shade(a - THIRD)),ColorSequenceKeypoint.new(1, shade(a - (2 * THIRD)))});
-						break;
-					end
-				end
-			end));
-			break;
-		end
+	local PERIOD = 3
+	local THIRD = 2 * math.pi / 3
+	local t0 = os.clock()
+	local function shade(a)
+		return BLACK:Lerp(WHITE, (math.sin(a) + 1) / 2)
 	end
+	track(RunService.RenderStepped:Connect(function()
+		local a = (os.clock() - t0) / PERIOD * 2 * math.pi
+		logoGrad.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, shade(a)),
+			ColorSequenceKeypoint.new(0.5, shade(a - THIRD)),
+			ColorSequenceKeypoint.new(1, shade(a - 2 * THIRD)),
+		})
+	end))
 end
-new("TextLabel", {Size=UDim2.fromOffset(160, 12),Position=UDim2.fromOffset(17, 33),BackgroundTransparency=1,Text="BLUE LOCK  ·  v1.6",Font=Enum.Font.GothamBold,TextSize=10,TextColor3=T.muted,TextXAlignment=Enum.TextXAlignment.Left}, title);
-local pill = new("Frame", {Size=UDim2.fromOffset(90, 22),Position=UDim2.new(1, -106, 0, 14),BackgroundColor3=T.panel}, title);
-corner(pill, 11);
-stroke(pill);
-local statusDot = new("Frame", {Size=UDim2.fromOffset(6, 6),Position=UDim2.new(0, 11, 0.5, -3),BackgroundColor3=T.muted}, pill);
-corner(statusDot, 3);
-local status = new("TextLabel", {Size=UDim2.new(1, -26, 1, 0),Position=UDim2.fromOffset(23, 0),BackgroundTransparency=1,Text="NO MATCH",Font=Enum.Font.GothamBold,TextSize=10,TextColor3=T.muted,TextXAlignment=Enum.TextXAlignment.Left}, pill);
-local rule = new("Frame", {Size=UDim2.new(1, -32, 0, 2),Position=UDim2.fromOffset(16, 50),BackgroundColor3=WHITE,BorderSizePixel=0}, win);
-corner(rule, 1);
-ramp(rule);
-local tabBar = new("Frame", {Size=UDim2.new(1, -32, 0, 30),Position=UDim2.fromOffset(16, 60),BackgroundColor3=T.panel}, win);
-corner(tabBar, 8);
-stroke(tabBar);
-new("UIListLayout", {FillDirection=Enum.FillDirection.Horizontal,SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0, 3)}, tabBar);
-new("UIPadding", {PaddingLeft=UDim.new(0, 3),PaddingRight=UDim.new(0, 3),PaddingTop=UDim.new(0, 3),PaddingBottom=UDim.new(0, 3)}, tabBar);
-local pages, tabs = {}, {};
-local TAB_NAMES = {"MATCH","TRAINING","CAREER"};
+new(_OO1O1I("\182\195\39\94\82\10\122\80\24"), {
+	Size = UDim2.fromOffset(160, 12),
+	Position = UDim2.fromOffset(17, 33),
+	BackgroundTransparency = 1,
+	Text = _OO1O1I("\164\170\4\47\38\245\103\46\247\11\25\115\171\223\68\144\183\61\124"),
+	Font = Enum.Font.GothamBold,
+	TextSize = 10,
+	TextColor3 = T.muted,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, title)
+local pill = new(_OO1O1I("\168\208\16\87\107"), {
+	Size = UDim2.fromOffset(90, 22),
+	Position = UDim2.new(1, -106, 0, 14),
+	BackgroundColor3 = T.panel,
+}, title)
+corner(pill, 11)
+stroke(pill)
+local statusDot = new(_OO1O1I("\168\208\16\87\107"), {
+	Size = UDim2.fromOffset(6, 6),
+	Position = UDim2.new(0, 11, 0.5, -3),
+	BackgroundColor3 = T.muted,
+}, pill)
+corner(statusDot, 3)
+local status = new(_OO1O1I("\182\195\39\94\82\10\122\80\24"), {
+	Size = UDim2.new(1, -26, 1, 0),
+	Position = UDim2.fromOffset(23, 0),
+	BackgroundTransparency = 1,
+	Text = _OO1O1I("\176\173\207\55\71\253\91\51"),
+	Font = Enum.Font.GothamBold,
+	TextSize = 10,
+	TextColor3 = T.muted,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, pill)
+local rule = new(_OO1O1I("\168\208\16\87\107"), {
+	Size = UDim2.new(1, -32, 0, 2),
+	Position = UDim2.fromOffset(16, 50),
+	BackgroundColor3 = WHITE,
+	BorderSizePixel = 0,
+}, win)
+corner(rule, 1)
+ramp(rule)
+local tabBar = new(_OO1O1I("\168\208\16\87\107"), {
+	Size = UDim2.new(1, -32, 0, 30),
+	Position = UDim2.fromOffset(16, 60),
+	BackgroundColor3 = T.panel,
+}, win)
+corner(tabBar, 8)
+stroke(tabBar)
+new(_OO1O1I("\183\167\251\83\121\29\100\76\37\90\110\37"), {
+	FillDirection = Enum.FillDirection.Horizontal,
+	SortOrder = Enum.SortOrder.LayoutOrder,
+	Padding = UDim.new(0, 3),
+}, tabBar)
+new(_OO1O1I("\183\167\255\75\106\13\129\89\19"), {
+	PaddingLeft = UDim.new(0, 3), PaddingRight = UDim.new(0, 3),
+	PaddingTop = UDim.new(0, 3), PaddingBottom = UDim.new(0, 3),
+}, tabBar)
+local pages, tabs = {}, {}
+local TAB_NAMES = { _OO1O1I("\175\159\3\45\78"), _OO1O1I("\182\176\240\51\84\242\102\50"), _OO1O1I("\165\159\1\47\75\251"), _OO1O1I("\168\159\1\55") }
 local function selectTab(name)
 	for n, t in pairs(tabs) do
-		local FlatIdent_3F7F4 = 0;
-		local on;
-		while true do
-			if (FlatIdent_3F7F4 == 1) then
-				t.btn.BackgroundTransparency = (on and 0) or 1;
-				t.btn.TextColor3 = (on and T.bg0) or T.dim;
-				FlatIdent_3F7F4 = 2;
-			end
-			if (0 == FlatIdent_3F7F4) then
-				on = n == name;
-				t.grad.Enabled = on;
-				FlatIdent_3F7F4 = 1;
-			end
-			if (2 == FlatIdent_3F7F4) then
-				pages[n].Visible = on;
-				break;
-			end
-		end
+		local on = n == name
+		t.grad.Enabled = on
+		t.btn.BackgroundTransparency = on and 0 or 1
+		t.btn.TextColor3 = on and T.bg0 or T.dim
+		pages[n].Visible = on
 	end
 end
 for i, name in ipairs(TAB_NAMES) do
-	local FlatIdent_92F66 = 0;
-	local b;
-	local g;
-	local page;
-	while true do
-		if (FlatIdent_92F66 == 2) then
-			tabs[name] = {btn=b,grad=g};
-			page = new("ScrollingFrame", {Size=UDim2.new(1, -24, 0, H - 146),Position=UDim2.fromOffset(16, 100),BackgroundTransparency=1,BorderSizePixel=0,ScrollBarThickness=3,ScrollBarImageColor3=T.accent,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.Y,Visible=false}, win);
-			FlatIdent_92F66 = 3;
-		end
-		if (FlatIdent_92F66 == 1) then
-			g = ramp(b);
-			g.Enabled = false;
-			FlatIdent_92F66 = 2;
-		end
-		if (FlatIdent_92F66 == 0) then
-			b = new("TextButton", {Size=UDim2.new(1 / #TAB_NAMES, -2, 1, 0),BackgroundColor3=WHITE,BackgroundTransparency=1,AutoButtonColor=false,Text=name,Font=Enum.Font.GothamBold,TextSize=11,TextColor3=T.dim,LayoutOrder=i}, tabBar);
-			corner(b, 6);
-			FlatIdent_92F66 = 1;
-		end
-		if (FlatIdent_92F66 == 4) then
-			pages[name] = page;
-			b.MouseButton1Click:Connect(function()
-				selectTab(name);
-			end);
-			break;
-		end
-		if (FlatIdent_92F66 == 3) then
-			new("UIListLayout", {Padding=UDim.new(0, 6),SortOrder=Enum.SortOrder.LayoutOrder}, page);
-			new("UIPadding", {PaddingRight=UDim.new(0, 8),PaddingBottom=UDim.new(0, 6)}, page);
-			FlatIdent_92F66 = 4;
-		end
-	end
+	local b = new(_OO1O1I("\182\195\39\94\72\30\140\95\27\89"), {
+		Size = UDim2.new(1 / #TAB_NAMES, -2, 1, 0),
+		BackgroundColor3 = WHITE,
+		BackgroundTransparency = 1,
+		AutoButtonColor = false,
+		Text = name,
+		Font = Enum.Font.GothamBold,
+		TextSize = 11,
+		TextColor3 = T.dim,
+		LayoutOrder = i,
+	}, tabBar)
+	corner(b, 6)
+	local g = ramp(b)
+	g.Enabled = false
+	tabs[name] = { btn = b, grad = g }
+	local page = new(_OO1O1I("\181\193\33\89\114\21\129\89\19\49\107\18\97\36"), {
+		Size = UDim2.new(1, -24, 0, H - 146),
+		Position = UDim2.fromOffset(16, 100),
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		ScrollBarThickness = 3,
+		ScrollBarImageColor3 = T.accent,
+		CanvasSize = UDim2.new(),
+		AutomaticCanvasSize = Enum.AutomaticSize.Y,
+		Visible = false,
+	}, win)
+	new(_OO1O1I("\183\167\251\83\121\29\100\76\37\90\110\37"), { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, page)
+	new(_OO1O1I("\183\167\255\75\106\13\129\89\19"), { PaddingRight = UDim.new(0, 8), PaddingBottom = UDim.new(0, 6) }, page)
+	pages[name] = page
+	b.MouseButton1Click:Connect(function() selectTab(name) end)
 end
-local order = 0;
+local order = 0
 local function nextOrder()
-	local FlatIdent_5CD30 = 0;
-	while true do
-		if (0 == FlatIdent_5CD30) then
-			order = order + 1;
-			return order;
-		end
-	end
+	order = order + 1
+	return order
 end
 local function section(page, text)
-	new("TextLabel", {Size=UDim2.new(1, 0, 0, 20),BackgroundTransparency=1,Text=text,Font=Enum.Font.GothamBlack,TextSize=10,TextColor3=T.accent,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Bottom,LayoutOrder=nextOrder()}, page);
+	new(_OO1O1I("\182\195\39\94\82\10\122\80\24"), {
+		Size = UDim2.new(1, 0, 0, 20),
+		BackgroundTransparency = 1,
+		Text = text,
+		Font = Enum.Font.GothamBlack,
+		TextSize = 10,
+		TextColor3 = T.accent,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextYAlignment = Enum.TextYAlignment.Bottom,
+		LayoutOrder = nextOrder(),
+	}, page)
 end
 local function note(page, text, color)
-	return new("TextLabel", {Size=UDim2.new(1, 0, 0, 0),AutomaticSize=Enum.AutomaticSize.Y,BackgroundTransparency=1,Text=text,TextWrapped=true,Font=Enum.Font.Gotham,TextSize=11,TextColor3=(color or T.muted),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=nextOrder()}, page);
+	return new(_OO1O1I("\182\195\39\94\82\10\122\80\24"), {
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		Text = text,
+		TextWrapped = true,
+		Font = Enum.Font.Gotham,
+		TextSize = 11,
+		TextColor3 = color or T.muted,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		LayoutOrder = nextOrder(),
+	}, page)
 end
 local function toggle(page, label, key)
-	local FlatIdent_3E39 = 0;
-	local row;
-	local rail;
-	local g;
-	local knob;
-	local render;
-	while true do
-		if (FlatIdent_3E39 == 1) then
-			hover(row, T.panel, T.panelHi);
-			new("TextLabel", {Size=UDim2.new(1, -64, 1, 0),Position=UDim2.fromOffset(12, 0),BackgroundTransparency=1,Text=label,Font=Enum.Font.GothamMedium,TextSize=13,TextColor3=T.text,TextXAlignment=Enum.TextXAlignment.Left}, row);
-			rail = new("Frame", {Size=UDim2.fromOffset(36, 18),Position=UDim2.new(1, -48, 0.5, -9),BackgroundColor3=T.off}, row);
-			FlatIdent_3E39 = 2;
-		end
-		if (4 == FlatIdent_3E39) then
-			row.MouseButton1Click:Connect(function()
-				local FlatIdent_985A2 = 0;
-				while true do
-					if (FlatIdent_985A2 == 0) then
-						cfg[key] = not cfg[key];
-						render(true);
-						break;
-					end
-				end
-			end);
-			render(false);
-			break;
-		end
-		if (FlatIdent_3E39 == 0) then
-			row = new("TextButton", {Size=UDim2.new(1, 0, 0, 34),BackgroundColor3=T.panel,AutoButtonColor=false,Text="",LayoutOrder=nextOrder()}, page);
-			corner(row);
-			stroke(row);
-			FlatIdent_3E39 = 1;
-		end
-		if (FlatIdent_3E39 == 2) then
-			corner(rail, 9);
-			g = ramp(rail);
-			knob = new("Frame", {Size=UDim2.fromOffset(14, 14),Position=UDim2.fromOffset(2, 2),BackgroundColor3=T.dim,ZIndex=2}, rail);
-			FlatIdent_3E39 = 3;
-		end
-		if (FlatIdent_3E39 == 3) then
-			corner(knob, 7);
-			render = nil;
-			function render(animate)
-				local on = cfg[key];
-				g.Enabled = on;
-				rail.BackgroundColor3 = (on and WHITE) or T.off;
-				local goal = {Position=((on and UDim2.fromOffset(20, 2)) or UDim2.fromOffset(2, 2)),BackgroundColor3=((on and T.spark) or T.dim)};
-				if animate then
-					TweenService:Create(knob, QUICK, goal):Play();
-				else
-					knob.Position, knob.BackgroundColor3 = goal.Position, goal.BackgroundColor3;
-				end
-			end
-			FlatIdent_3E39 = 4;
+	local row = new(_OO1O1I("\182\195\39\94\72\30\140\95\27\89"), {
+		Size = UDim2.new(1, 0, 0, 34),
+		BackgroundColor3 = T.panel,
+		AutoButtonColor = false,
+		Text = _OO1O1I(""),
+		LayoutOrder = nextOrder(),
+	}, page)
+	corner(row)
+	stroke(row)
+	hover(row, T.panel, T.panelHi)
+	new(_OO1O1I("\182\195\39\94\82\10\122\80\24"), {
+		Size = UDim2.new(1, -64, 1, 0),
+		Position = UDim2.fromOffset(12, 0),
+		BackgroundTransparency = 1,
+		Text = label,
+		Font = Enum.Font.GothamMedium,
+		TextSize = 13,
+		TextColor3 = T.text,
+		TextXAlignment = Enum.TextXAlignment.Left,
+	}, row)
+	local rail = new(_OO1O1I("\168\208\16\87\107"), {
+		Size = UDim2.fromOffset(36, 18),
+		Position = UDim2.new(1, -48, 0.5, -9),
+		BackgroundColor3 = T.off,
+	}, row)
+	corner(rail, 9)
+	local g = ramp(rail)
+	local knob = new(_OO1O1I("\168\208\16\87\107"), {
+		Size = UDim2.fromOffset(14, 14),
+		Position = UDim2.fromOffset(2, 2),
+		BackgroundColor3 = T.dim,
+		ZIndex = 2,
+	}, rail)
+	corner(knob, 7)
+	local function render(animate)
+		local on = cfg[key]
+		g.Enabled = on
+		rail.BackgroundColor3 = on and WHITE or T.off
+		local goal = { Position = on and UDim2.fromOffset(20, 2) or UDim2.fromOffset(2, 2), BackgroundColor3 = on and T.spark or T.dim }
+		if animate then
+			TweenService:Create(knob, QUICK, goal):Play()
+		else
+			knob.Position, knob.BackgroundColor3 = goal.Position, goal.BackgroundColor3
 		end
 	end
+	row.MouseButton1Click:Connect(function()
+		cfg[key] = not cfg[key]
+		render(true)
+	end)
+	render(false)
 end
 local function slider(page, label, key, min, max, step, fmt)
-	local FlatIdent_512FF = 0;
-	local row;
-	local val;
-	local bar;
-	local fill;
-	local knob;
-	local set;
-	local dragging;
-	local fromX;
-	while true do
-		if (FlatIdent_512FF == 3) then
-			ramp(fill);
-			knob = new("Frame", {Size=UDim2.fromOffset(12, 12),AnchorPoint=Vector2.new(0.5, 0.5),BackgroundColor3=T.spark,ZIndex=2}, bar);
-			corner(knob, 6);
-			FlatIdent_512FF = 4;
-		end
-		if (FlatIdent_512FF == 2) then
-			corner(bar, 2);
-			fill = new("Frame", {BackgroundColor3=WHITE,BorderSizePixel=0}, bar);
-			corner(fill, 2);
-			FlatIdent_512FF = 3;
-		end
-		if (1 == FlatIdent_512FF) then
-			new("TextLabel", {Size=UDim2.new(1, -90, 0, 20),Position=UDim2.fromOffset(12, 5),BackgroundTransparency=1,Text=label,Font=Enum.Font.GothamMedium,TextSize=13,TextColor3=T.text,TextXAlignment=Enum.TextXAlignment.Left}, row);
-			val = new("TextLabel", {Size=UDim2.fromOffset(76, 20),Position=UDim2.new(1, -88, 0, 5),BackgroundTransparency=1,Font=Enum.Font.GothamBold,TextSize=12,TextColor3=T.accent,TextXAlignment=Enum.TextXAlignment.Right}, row);
-			bar = new("TextButton", {Size=UDim2.new(1, -24, 0, 4),Position=UDim2.fromOffset(12, 33),BackgroundColor3=T.off,AutoButtonColor=false,Text=""}, row);
-			FlatIdent_512FF = 2;
-		end
-		if (FlatIdent_512FF == 7) then
-			set(cfg[key]);
-			break;
-		end
-		if (FlatIdent_512FF == 4) then
-			stroke(knob, T.accent);
-			set = nil;
-			function set(v)
-				local FlatIdent_6D884 = 0;
-				local a;
-				while true do
-					if (0 == FlatIdent_6D884) then
-						v = math.clamp((math.floor(((v - min) / step) + 0.5) * step) + min, min, max);
-						cfg[key] = v;
-						FlatIdent_6D884 = 1;
-					end
-					if (FlatIdent_6D884 == 2) then
-						knob.Position = UDim2.fromScale(a, 0.5);
-						val.Text = string.format(fmt, v);
-						break;
-					end
-					if (FlatIdent_6D884 == 1) then
-						a = (v - min) / (max - min);
-						fill.Size = UDim2.fromScale(a, 1);
-						FlatIdent_6D884 = 2;
-					end
-				end
-			end
-			FlatIdent_512FF = 5;
-		end
-		if (FlatIdent_512FF == 5) then
-			dragging = false;
-			fromX = nil;
-			function fromX(x)
-				local FlatIdent_1BA2F = 0;
-				local a;
-				while true do
-					if (FlatIdent_1BA2F == 0) then
-						a = math.clamp((x - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1);
-						set(min + (a * (max - min)));
-						break;
-					end
-				end
-			end
-			FlatIdent_512FF = 6;
-		end
-		if (FlatIdent_512FF == 0) then
-			row = new("Frame", {Size=UDim2.new(1, 0, 0, 48),BackgroundColor3=T.panel,LayoutOrder=nextOrder()}, page);
-			corner(row);
-			stroke(row);
-			FlatIdent_512FF = 1;
-		end
-		if (FlatIdent_512FF == 6) then
-			bar.InputBegan:Connect(function(input)
-				if ((input.UserInputType == Enum.UserInputType.MouseButton1) or (input.UserInputType == Enum.UserInputType.Touch)) then
-					local FlatIdent_6FC5B = 0;
-					while true do
-						if (FlatIdent_6FC5B == 0) then
-							dragging = true;
-							fromX(input.Position.X);
-							break;
-						end
-					end
-				end
-			end);
-			track(UIS.InputChanged:Connect(function(input)
-				if (dragging and ((input.UserInputType == Enum.UserInputType.MouseMovement) or (input.UserInputType == Enum.UserInputType.Touch))) then
-					fromX(input.Position.X);
-				end
-			end));
-			track(UIS.InputEnded:Connect(function(input)
-				if ((input.UserInputType == Enum.UserInputType.MouseButton1) or (input.UserInputType == Enum.UserInputType.Touch)) then
-					dragging = false;
-				end
-			end));
-			FlatIdent_512FF = 7;
-		end
+	local row = new(_OO1O1I("\168\208\16\87\107"), {
+		Size = UDim2.new(1, 0, 0, 48),
+		BackgroundColor3 = T.panel,
+		LayoutOrder = nextOrder(),
+	}, page)
+	corner(row)
+	stroke(row)
+	new(_OO1O1I("\182\195\39\94\82\10\122\80\24"), {
+		Size = UDim2.new(1, -90, 0, 20),
+		Position = UDim2.fromOffset(12, 5),
+		BackgroundTransparency = 1,
+		Text = label,
+		Font = Enum.Font.GothamMedium,
+		TextSize = 13,
+		TextColor3 = T.text,
+		TextXAlignment = Enum.TextXAlignment.Left,
+	}, row)
+	local val = new(_OO1O1I("\182\195\39\94\82\10\122\80\24"), {
+		Size = UDim2.fromOffset(76, 20),
+		Position = UDim2.new(1, -88, 0, 5),
+		BackgroundTransparency = 1,
+		Font = Enum.Font.GothamBold,
+		TextSize = 12,
+		TextColor3 = T.accent,
+		TextXAlignment = Enum.TextXAlignment.Right,
+	}, row)
+	local bar = new(_OO1O1I("\182\195\39\94\72\30\140\95\27\89"), {
+		Size = UDim2.new(1, -24, 0, 4),
+		Position = UDim2.fromOffset(12, 33),
+		BackgroundColor3 = T.off,
+		AutoButtonColor = false,
+		Text = _OO1O1I(""),
+	}, row)
+	corner(bar, 2)
+	local fill = new(_OO1O1I("\168\208\16\87\107"), { BackgroundColor3 = WHITE, BorderSizePixel = 0 }, bar)
+	corner(fill, 2)
+	ramp(fill)
+	local knob = new(_OO1O1I("\168\208\16\87\107"), {
+		Size = UDim2.fromOffset(12, 12),
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = T.spark,
+		ZIndex = 2,
+	}, bar)
+	corner(knob, 6)
+	stroke(knob, T.accent)
+	local function set(v)
+		v = math.clamp(math.floor((v - min) / step + 0.5) * step + min, min, max)
+		cfg[key] = v
+		local a = (v - min) / (max - min)
+		fill.Size = UDim2.fromScale(a, 1)
+		knob.Position = UDim2.fromScale(a, 0.5)
+		val.Text = string.format(fmt, v)
 	end
+	local dragging = false
+	local function fromX(x)
+		local a = math.clamp((x - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
+		set(min + a * (max - min))
+	end
+	bar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			fromX(input.Position.X)
+		end
+	end)
+	track(UIS.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			fromX(input.Position.X)
+		end
+	end))
+	track(UIS.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end))
+	set(cfg[key])
 end
 local function button(page, label, kind, fn)
-	local FlatIdent_1512 = 0;
-	local primary;
-	local base;
-	local b;
-	while true do
-		if (FlatIdent_1512 == 2) then
-			if primary then
-				local FlatIdent_1BB5D = 0;
-				local g;
-				while true do
-					if (FlatIdent_1BB5D == 1) then
-						b.MouseLeave:Connect(function()
-							g.Rotation = 0;
-						end);
-						break;
-					end
-					if (FlatIdent_1BB5D == 0) then
-						g = ramp(b);
-						b.MouseEnter:Connect(function()
-							g.Rotation = 180;
-						end);
-						FlatIdent_1BB5D = 1;
-					end
-				end
-			else
-				local FlatIdent_13B77 = 0;
-				while true do
-					if (0 == FlatIdent_13B77) then
-						stroke(b, T.strokeHi);
-						hover(b, base, T.strokeHi);
-						break;
-					end
-				end
-			end
-			b.MouseButton1Click:Connect(fn);
-			FlatIdent_1512 = 3;
-		end
-		if (FlatIdent_1512 == 1) then
-			b = new("TextButton", {Size=UDim2.new(1, 0, 0, 34),BackgroundColor3=base,AutoButtonColor=false,Text=label,Font=Enum.Font.GothamBold,TextSize=13,TextColor3=((primary and T.bg0) or T.text),LayoutOrder=nextOrder()}, page);
-			corner(b);
-			FlatIdent_1512 = 2;
-		end
-		if (0 == FlatIdent_1512) then
-			primary = kind == "primary";
-			base = (primary and WHITE) or T.panelHi;
-			FlatIdent_1512 = 1;
-		end
-		if (FlatIdent_1512 == 3) then
-			return b;
-		end
+	local primary = kind == _OO1O1I("\210\208\24\87\103\27\145")
+	local base = primary and WHITE or T.panelHi
+	local b = new(_OO1O1I("\182\195\39\94\72\30\140\95\27\89"), {
+		Size = UDim2.new(1, 0, 0, 34),
+		BackgroundColor3 = base,
+		AutoButtonColor = false,
+		Text = label,
+		Font = Enum.Font.GothamBold,
+		TextSize = 13,
+		TextColor3 = primary and T.bg0 or T.text,
+		LayoutOrder = nextOrder(),
+	}, page)
+	corner(b)
+	if primary then
+		local g = ramp(b)
+		b.MouseEnter:Connect(function() g.Rotation = 180 end)
+		b.MouseLeave:Connect(function() g.Rotation = 0 end)
+	else
+		stroke(b, T.strokeHi)
+		hover(b, base, T.strokeHi)
 	end
+	b.MouseButton1Click:Connect(fn)
+	return b
 end
 local function flash(b, text, restore, secs)
-	local FlatIdent_94CF9 = 0;
-	while true do
-		if (FlatIdent_94CF9 == 0) then
-			b.Text = text;
-			task.delay(secs or 1.3, function()
-				if b.Parent then
-					b.Text = restore;
-				end
-			end);
-			break;
-		end
-	end
+	b.Text = text
+	task.delay(secs or 1.3, function()
+		if b.Parent then b.Text = restore end
+	end)
 end
-local P = pages.MATCH;
-section(P, "BALL");
-toggle(P, "Ball Magnet", "magnet");
-slider(P, "Magnet range", "magnetRange", 10, 80, 1, "%d studs");
-slider(P, "Magnet strength", "magnetPower", 0.1, 1, 0.05, "%.2f");
-slider(P, "Touch reach", "reach", 1, 4, 0.1, "%.1fx");
-slider(P, "Tackle reach", "tackle", 1, 3, 0.1, "%.1fx");
-toggle(P, "Unstealable", "unstealable");
-local takeBtn;
-takeBtn = button(P, "TAKE BALL   [G]", "primary", function()
-	local FlatIdent_4B329 = 0;
-	local ok;
-	local why;
-	while true do
-		if (FlatIdent_4B329 == 0) then
-			ok, why = takeBall();
-			if not ok then
-				flash(takeBtn, string.upper(why), "TAKE BALL   [G]");
-			end
-			break;
-		end
-	end
-end);
-section(P, "MOVEMENT");
-slider(P, "Speed", "speed", 1, 3, 0.05, "%.2fx");
-toggle(P, "Infinite Stamina", "infStamina");
-section(P, "SHOOTING");
-slider(P, "Shot power", "shotPower", 1, 3, 0.1, "%.1fx");
-toggle(P, "Insta Goal on shot", "instaGoal");
-local goalBtn;
-goalBtn = button(P, "SCORE NOW   [H]", "ghost", function()
-	local FlatIdent_98327 = 0;
-	local ok;
-	local why;
-	while true do
-		if (FlatIdent_98327 == 0) then
-			ok, why = scoreNow();
-			if not ok then
-				flash(goalBtn, string.upper(why), "SCORE NOW   [H]");
-			end
-			break;
-		end
-	end
-end);
-if (#classes == 0) then
-	note(P, "MatchSim not found. Rejoin and re-run the script.", T.danger);
+local P = pages.MATCH
+section(P, _OO1O1I("\164\159\251\54"))
+toggle(P, _OO1O1I("\164\191\27\86\38\246\121\82\26\80\109"), _OO1O1I("\207\191\22\88\107\29"))
+slider(P, _OO1O1I("\175\191\22\88\107\29\56\93\13\89\96\22"), _OO1O1I("\207\191\22\88\107\29\106\76\26\82\94"), 10, 80, 1, _OO1O1I("\135\194\207\93\122\30\124\94"))
+slider(P, _OO1O1I("\175\191\22\88\107\29\56\94\32\93\94\31\91\51\140"), _OO1O1I("\207\191\22\88\107\29\104\90\35\80\107"), 0.1, 1, 0.05, _OO1O1I("\135\140\225\80"))
+slider(P, _OO1O1I("\182\205\36\77\110\201\138\80\13\78\97"), _OO1O1I("\212\195\16\77\110"), 1, 4, 0.1, _OO1O1I("\135\140\224\80\126"))
+slider(P, _OO1O1I("\182\191\18\85\114\14\56\93\17\76\92\25"), _OO1O1I("\214\191\18\85\114\14"), 1, 3, 0.1, _OO1O1I("\135\140\224\80\126"))
+toggle(P, _OO1O1I("\183\204\34\94\107\10\132\76\14\87\94"), _OO1O1I("\215\204\34\94\107\10\132\76\14\87\94"))
+local takeBtn
+takeBtn = button(P, _OO1O1I("\182\159\250\47\38\235\89\55\248\11\25\209\79\6\129"), _OO1O1I("\210\208\24\87\103\27\145"), function()
+	local ok, why = takeBall()
+	if not ok then flash(takeBtn, string.upper(why), _OO1O1I("\182\159\250\47\38\235\89\55\248\11\25\209\79\6\129")) end
+end)
+section(P, _OO1O1I("\175\173\5\47\83\238\102\63"))
+slider(P, _OO1O1I("\181\206\20\79\106"), _OO1O1I("\213\206\20\79\106"), 1, 3, 0.05, _OO1O1I("\135\140\225\80\126"))
+toggle(P, _OO1O1I("\171\204\21\83\116\18\140\80\204\62\109\18\97\40\146\123"), _OO1O1I("\203\204\21\61\122\10\133\84\26\76"))
+section(P, _OO1O1I("\181\166\254\57\90\242\102\50"))
+slider(P, _OO1O1I("\181\198\30\94\38\25\135\98\17\93"), _OO1O1I("\213\198\30\94\86\24\143\80\30"), 1, 3, 0.1, _OO1O1I("\135\140\224\80\126"))
+toggle(P, _OO1O1I("\171\204\34\94\103\201\95\90\13\87\25\32\98\223\151\130\244\131"), _OO1O1I("\203\204\34\94\103\240\135\76\24"))
+local goalBtn
+goalBtn = button(P, _OO1O1I("\181\161\254\60\75\201\102\58\3\11\25\209\79\7\129"), _OO1O1I("\201\198\30\93\122"), function()
+	local ok, why = scoreNow()
+	if not ok then flash(goalBtn, string.upper(why), _OO1O1I("\181\161\254\60\75\201\102\58\3\11\25\209\79\7\129")) end
+end)
+if #classes == 0 then
+	note(P, _OO1O1I("\175\191\35\77\110\252\129\88\204\89\104\37\20\37\147\143\243\115\120\145\124\32\128\217\146\92\147\200\236\222\235\120\135\242\166\124\54\39\137\53\117\251\179\153\19\148\214\1\116"), T.danger)
 end
-P = pages.TRAINING;
-section(P, "1V1 TRAINING");
-toggle(P, "Auto Green", "autoGreen");
-toggle(P, "Auto Train Everyone", "autoTrain");
-toggle(P, "No Train/Bond Cooldown", "noCooldown");
-section(P, "BOND");
-toggle(P, "Auto Bond", "autoBond");
-note(P, "Auto Train and Auto Bond press the panel's own buttons, so keep the Relationships panel open.");
-P = pages.CAREER;
-section(P, "SKILL POINTS");
+P = pages.TRAINING
+section(P, _OO1O1I("\147\180\224\10\90\251\89\52\250\52\71\248"))
+toggle(P, _OO1O1I("\163\211\35\89\38\240\138\80\17\89"), _OO1O1I("\195\211\35\89\77\27\125\80\26"))
+toggle(P, _OO1O1I("\163\211\35\89\38\253\138\76\21\89\25\246\106\36\150\147\244\125\175"), _OO1O1I("\195\211\35\89\90\27\121\84\26"))
+toggle(P, _OO1O1I("\176\205\207\62\120\10\129\89\219\45\104\31\88\223\103\137\244\123\174\224\161\41"), _OO1O1I("\208\205\242\89\117\21\124\90\35\89"))
+section(P, _OO1O1I("\164\173\253\46"))
+toggle(P, _OO1O1I("\163\211\35\89\38\235\135\89\16"), _OO1O1I("\195\211\35\89\72\24\134\79"))
+note(P, _OO1O1I("\163\211\35\89\38\253\138\76\21\89\25\18\98\35\68\91\250\131\185\145\108\42\132\206\73\94\229\204\241\237\235\122\138\42\84\119\41\117\122\57\55\78\96\165\24\153\134\239\187\75\166\245\179\125\187\163\13\5\7\141\163\70\192\67\88\139\150\9\126\92\200\179\49\176\241\23\213\91\183\18\212\70\27\0\36\23\111\94\201\109\209\173\46"))
+P = pages.CAREER
+section(P, _OO1O1I("\181\169\248\54\82\201\104\58\245\57\77\4"))
 do
-	local FlatIdent_77529 = 0;
-	local SP_STEP;
-	local spBtn;
-	local busy;
-	local label;
-	while true do
-		if (FlatIdent_77529 == 2) then
-			spBtn = button(P, label, "primary", function()
-				if busy then
-					return;
-				end
-				busy = true;
-				local msg;
-				local ok, err = pcall(function()
-					local AS = require(LocalPlayer.PlayerScripts:WaitForChild("CharacterUi"):WaitForChild("ActiveSlotState"));
-					local idx, slot = AS.get();
-					if not slot then
-						local FlatIdent_A446 = 0;
-						while true do
-							if (FlatIdent_A446 == 0) then
-								msg = "LOAD A SLOT FIRST";
-								return;
-							end
-						end
-					end
-					slot.skillPoints = (slot.skillPoints or 0) + SP_STEP;
-					AS.notifyExternalChange();
-					local saved = RS:WaitForChild("SlotRemotes"):WaitForChild("SaveSlot"):InvokeServer(idx, slot);
-					msg = ((saved and "SAVED: ") or "NOT SAVED: ") .. tostring(slot.skillPoints) .. " SP";
-				end);
-				if not ok then
-					warn("[Bypass] skill points:", err);
-				end
-				flash(spBtn, (ok and msg) or "ERROR", label, 1.5);
-				task.delay(1.5, function()
-					busy = false;
-				end);
-			end);
-			note(P, "Each click adds " .. SP_STEP .. " and saves your slot. Rejoin once to check the server kept it.");
-			break;
-		end
-		if (0 == FlatIdent_77529) then
-			SP_STEP = 110;
-			spBtn = nil;
-			FlatIdent_77529 = 1;
-		end
-		if (1 == FlatIdent_77529) then
-			busy = false;
-			label = "+" .. SP_STEP .. " SKILL POINTS";
-			FlatIdent_77529 = 2;
-		end
-	end
+	local SP_STEP = 110
+	local spBtn
+	local busy = false
+	local label = _OO1O1I("\141") .. SP_STEP .. _OO1O1I("\130\177\250\51\82\245\56\59\251\52\71\5\71")
+	spBtn = button(P, label, _OO1O1I("\210\208\24\87\103\27\145"), function()
+		if busy then return end
+		busy = true
+		local msg
+		local ok, err = pcall(function()
+			local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_OO1O1I("\165\198\16\92\103\12\140\80\30\64\98")):WaitForChild(_OO1O1I("\163\193\35\83\124\14\107\87\27\95\76\37\85\51\137")))
+			local idx, slot = AS.get()
+			if not slot then
+				msg = _OO1O1I("\174\173\240\46\38\234\56\62\248\58\77\209\58\8\118\109\217")
+				return
+			end
+			slot.skillPoints = (slot.skillPoints or 0) + SP_STEP
+			AS.notifyExternalChange()
+			local saved = RS:WaitForChild(_OO1O1I("\181\202\30\94\88\14\133\90\32\80\108")):WaitForChild(_OO1O1I("\181\191\37\79\89\21\135\95")):InvokeServer(idx, slot)
+			msg = (saved and _OO1O1I("\181\159\5\47\74\227\56") or _OO1O1I("\176\173\3\10\89\234\110\48\240\37\25")) .. tostring(slot.skillPoints) .. _OO1O1I("\130\177\255")
+		end)
+		if not ok then warn(_OO1O1I("\189\160\40\90\103\28\139\72\204\94\100\26\96\43\68\138\244\120\184\229\157\245"), err) end
+		flash(spBtn, ok and msg or _OO1O1I("\167\176\1\57\88"), label, 1.5)
+		task.delay(1.5, function() busy = false end)
+	end)
+	note(P, _OO1O1I("\167\191\18\82\38\12\132\84\15\86\25\18\88\35\151\58") .. SP_STEP .. _OO1O1I("\130\191\29\78\38\28\121\97\17\94\25\42\99\52\150\58\248\123\185\229\88\219\104\207\147\93\220\213\158\233\57\105\135\229\168\118\232\106\125\50\115\70\96\170\9\144\134\0\171\73\168\235\183\42\250\232\10\10\7\139\178\15"))
 end
-section(P, "100 GOAL CHALLENGE");
+section(P, _OO1O1I("\147\142\223\10\77\248\89\55\204\46\65\242\64\11\105\104\204\84"))
 do
-	local hc = require(RS:WaitForChild("EgoShared")).hundredChallenge;
-	local FINISH = hc.minTime + 0.6;
-	local PACE = FINISH / hc.goals;
-	local run = {t0=nil,lastSeen=0,fired=setmetatable({}, {__mode="k"})};
+	local hc = require(RS:WaitForChild(_OO1O1I("\167\197\30\61\110\10\138\80\16"))).hundredChallenge
+	local FINISH = hc.minTime + 0.6
+	local PACE = FINISH / hc.goals
+	local run = { t0 = nil, lastSeen = 0, fired = setmetatable({}, { __mode = _OO1O1I("\205") }) }
 	local function hit(btn)
 		if firesignal then
-			pcall(firesignal, btn.MouseButton1Down);
+			pcall(firesignal, btn.MouseButton1Down)
 		elseif getconnections then
 			for _, c in ipairs(getconnections(btn.MouseButton1Down)) do
-				pcall(function()
-					c:Fire();
-				end);
+				pcall(function() c:Fire() end)
 			end
 		end
 	end
 	local function scan(frame)
-		local FlatIdent_1B638 = 0;
-		local goals;
-		local target;
-		while true do
-			if (FlatIdent_1B638 == 0) then
-				goals, target = nil, nil;
-				for _, d in ipairs(frame:GetDescendants()) do
-					if d:IsA("TextLabel") then
-						local FlatIdent_1454F = 0;
-						local n;
-						while true do
-							if (FlatIdent_1454F == 0) then
-								n = tonumber(string.match(d.Text, "^GOALS: (%d+)/"));
-								if (n and (not goals or (n > goals))) then
-									goals = n;
-								end
-								break;
-							end
-						end
-					elseif (d:IsA("TextButton") and (d.Text == "") and not run.fired[d]) then
-						local FlatIdent_8E29D = 0;
-						local p;
-						local c;
-						while true do
-							if (1 == FlatIdent_8E29D) then
-								if (c and (c.CornerRadius.Offset == 999) and p:FindFirstChildOfClass("UIStroke")) then
-									target = d;
-								end
-								break;
-							end
-							if (FlatIdent_8E29D == 0) then
-								p = d.Parent;
-								c = p and p:FindFirstChildOfClass("UICorner");
-								FlatIdent_8E29D = 1;
-							end
-						end
-					end
+		local goals, target = nil, nil
+		for _, d in ipairs(frame:GetDescendants()) do
+			if d:IsA(_OO1O1I("\182\195\39\94\82\10\122\80\24")) then
+				local n = tonumber(string.match(d.Text, _OO1O1I("\192\165\254\43\82\252\82\11\212\16\93\220\29\238")))
+				if n and (not goals or n > goals) then goals = n end
+			elseif d:IsA(_OO1O1I("\182\195\39\94\72\30\140\95\27\89")) and d.Text == _OO1O1I("") and not run.fired[d] then
+				local p = d.Parent
+				local c = p and p:FindFirstChildOfClass(_OO1O1I("\183\167\242\89\120\23\125\93"))
+				if c and c.CornerRadius.Offset == 999 and p:FindFirstChildOfClass(_OO1O1I("\183\167\2\94\120\24\131\80")) then
+					target = d
 				end
-				FlatIdent_1B638 = 1;
-			end
-			if (FlatIdent_1B638 == 1) then
-				return goals, target;
 			end
 		end
+		return goals, target
 	end
-	toggle(P, "Auto 100 Goals", "autoHundred");
-	note(P, ("Open the challenge and press I'M READY; the targets get hit for you. Goals are paced to finish in ~%.1fs, since the server rejects anything under %ds."):format(FINISH, hc.minTime));
+	toggle(P, _OO1O1I("\163\211\35\89\38\218\72\27\204\50\104\18\96\50"), _OO1O1I("\195\211\35\89\78\30\134\79\30\80\93"))
+	note(P, (_OO1O1I("\177\206\20\88\38\29\128\80\204\78\97\18\96\43\137\136\236\116\106\210\152\31\54\218\155\83\230\218\158\195\242\83\66\23\121\72\12\96\80\237\132\67\165\86\21\140\216\244\171\75\165\166\172\111\3\163\2\255\91\66\164\80\194\67\93\146\166\23\76\62\203\179\41\186\162\10\212\88\110\18\194\137\16\3\214\38\114\94\192\102\218\168\115\167\109\110\182\51\246\147\7\148\4\56\170\47\221\39\235\165\44\219\70\54\132\122\233\126\250\209\129\205\137\147\201\153\249\237\105\242\218\66\8\164\250\66\2\204\74\247\99\88\159\219\4\85\201\219\171\165")):format(FINISH, hc.minTime))
 	track(RunService.Heartbeat:Connect(function()
-		local FlatIdent_11AA1 = 0;
-		local pg;
-		local frame;
-		local goals;
-		local target;
-		local now;
-		while true do
-			if (FlatIdent_11AA1 == 2) then
-				if not target then
-					local FlatIdent_270C = 0;
-					while true do
-						if (FlatIdent_270C == 0) then
-							if (run.t0 and ((now - run.lastSeen) > 3)) then
-								run.t0 = nil;
-							end
-							return;
-						end
-					end
-				end
-				run.lastSeen = now;
-				goals = goals or 0;
-				FlatIdent_11AA1 = 3;
-			end
-			if (FlatIdent_11AA1 == 1) then
-				if not frame then
-					local FlatIdent_7A6E5 = 0;
-					while true do
-						if (FlatIdent_7A6E5 == 0) then
-							run.t0 = nil;
-							return;
-						end
-					end
-				end
-				goals, target = scan(frame);
-				now = os.clock();
-				FlatIdent_11AA1 = 2;
-			end
-			if (FlatIdent_11AA1 == 0) then
-				if not cfg.autoHundred then
-					return;
-				end
-				pg = LocalPlayer:FindFirstChildOfClass("PlayerGui");
-				frame = pg and pg:FindFirstChild("GoalRushFrame", true);
-				FlatIdent_11AA1 = 1;
-			end
-			if (3 == FlatIdent_11AA1) then
-				if (not run.t0 or ((goals == 0) and ((now - run.t0) > FINISH))) then
-					run.t0 = now;
-				end
-				if (now >= (run.t0 + ((goals + 1) * PACE))) then
-					local FlatIdent_5CC3B = 0;
-					while true do
-						if (0 == FlatIdent_5CC3B) then
-							run.fired[target] = true;
-							hit(target);
-							break;
-						end
-					end
-				end
-				break;
-			end
+		if not cfg.autoHundred then return end
+		local pg = LocalPlayer:FindFirstChildOfClass(_OO1O1I("\178\202\16\99\107\27\95\96\21"))
+		local frame = pg and pg:FindFirstChild(_OO1O1I("\169\205\16\86\88\30\139\83\242\93\90\30\89"), true)
+		if not frame then
+			run.t0 = nil
+			return
 		end
-	end));
+		local goals, target = scan(frame)
+		local now = os.clock()
+		if not target then
+			if run.t0 and now - run.lastSeen > 3 then run.t0 = nil end
+			return
+		end
+		run.lastSeen = now
+		goals = goals or 0
+		if not run.t0 or goals == 0 and now - run.t0 > FINISH then
+			run.t0 = now
+		end
+		if now >= run.t0 + (goals + 1) * PACE then
+			run.fired[target] = true
+			hit(target)
+		end
+	end))
 end
-section(P, "FLOW PICK");
+section(P, _OO1O1I("\168\170\254\65\38\249\97\46\247"))
 do
-	local FlatIdent_B322 = 0;
-	local FD;
-	local pick;
-	local lists;
-	local chosen;
-	local origRoll;
-	local cycler;
-	local setBtn;
-	local SET_LABEL;
-	while true do
-		if (FlatIdent_B322 == 2) then
-			state.patched[FD] = {roll=origRoll};
-			FD.roll = function(kind, ...)
-				local FlatIdent_1C823 = 0;
-				local e;
-				while true do
-					if (FlatIdent_1C823 == 0) then
-						e = cfg.rigFlow and chosen(kind);
-						if e then
-							return e;
-						end
-						FlatIdent_1C823 = 1;
-					end
-					if (FlatIdent_1C823 == 1) then
-						return origRoll(kind, ...);
-					end
-				end
-			end;
-			cycler = nil;
-			FlatIdent_B322 = 3;
-		end
-		if (FlatIdent_B322 == 4) then
-			toggle(P, "Rig Flow Spins", "rigFlow");
-			setBtn = nil;
-			SET_LABEL = "SET NOW  (NO SPIN)";
-			FlatIdent_B322 = 5;
-		end
-		if (FlatIdent_B322 == 5) then
-			setBtn = button(P, SET_LABEL, "primary", function()
-				local FlatIdent_1ADAD = 0;
-				local msg;
-				local ok;
-				local err;
-				while true do
-					if (FlatIdent_1ADAD == 0) then
-						msg = nil;
-						ok, err = pcall(function()
-							local FlatIdent_559FF = 0;
-							local AS;
-							local idx;
-							local slot;
-							local a;
-							local t;
-							local flow;
-							local saved;
-							while true do
-								if (FlatIdent_559FF == 0) then
-									AS = require(LocalPlayer.PlayerScripts:WaitForChild("CharacterUi"):WaitForChild("ActiveSlotState"));
-									idx, slot = AS.get();
-									if not slot then
-										local FlatIdent_4BE81 = 0;
-										while true do
-											if (FlatIdent_4BE81 == 0) then
-												msg = "LOAD A SLOT FIRST";
-												return;
-											end
-										end
-									end
-									FlatIdent_559FF = 1;
-								end
-								if (FlatIdent_559FF == 3) then
-									saved = RS:WaitForChild("SlotRemotes"):WaitForChild("SaveSlot"):InvokeServer(idx, slot);
-									msg = (saved and "SAVED") or "NOT SAVED";
-									break;
-								end
-								if (FlatIdent_559FF == 2) then
-									if a then
-										flow.aura = a.name;
-									end
-									if t then
-										flow.technique = t.name;
-									end
-									AS.notifyExternalChange();
-									FlatIdent_559FF = 3;
-								end
-								if (1 == FlatIdent_559FF) then
-									a, t = chosen("aura"), chosen("technique");
-									if (not a and not t) then
-										local FlatIdent_394C = 0;
-										while true do
-											if (0 == FlatIdent_394C) then
-												msg = "PICK ONE FIRST";
-												return;
-											end
-										end
-									end
-									flow = FD.ensure(slot);
-									FlatIdent_559FF = 2;
-								end
-							end
-						end);
-						FlatIdent_1ADAD = 1;
-					end
-					if (FlatIdent_1ADAD == 1) then
-						if not ok then
-							warn("[Bypass] flow pick:", err);
-						end
-						flash(setBtn, (ok and msg) or "ERROR", SET_LABEL, 1.5);
-						break;
-					end
-				end
-			end);
-			note(P, "Click a row to cycle through the list. Set Now writes it straight to your slot. Rig Flow Spins makes the Flow screen's own spin land on your pick (uses a spin). Reopen the Flow screen to see the change. Second technique and weapons roll on the server and can't be picked.");
-			break;
-		end
-		if (FlatIdent_B322 == 0) then
-			FD = require(RS:WaitForChild("FlowData"));
-			pick = {aura=0,technique=0};
-			lists = {aura=FD.auras,technique=FD.techniques};
-			FlatIdent_B322 = 1;
-		end
-		if (FlatIdent_B322 == 1) then
-			chosen = nil;
-			function chosen(kind)
-				local FlatIdent_45CCF = 0;
-				local i;
-				while true do
-					if (FlatIdent_45CCF == 0) then
-						i = pick[kind];
-						return ((i > 0) and lists[kind][i]) or nil;
-					end
-				end
-			end
-			origRoll = FD.roll;
-			FlatIdent_B322 = 2;
-		end
-		if (FlatIdent_B322 == 3) then
-			function cycler(kind, title)
-				local FlatIdent_1CE81 = 0;
-				local b;
-				local render;
-				while true do
-					if (FlatIdent_1CE81 == 2) then
-						render();
-						break;
-					end
-					if (FlatIdent_1CE81 == 0) then
-						b = nil;
-						render = nil;
-						FlatIdent_1CE81 = 1;
-					end
-					if (FlatIdent_1CE81 == 1) then
-						function render()
-							local e = chosen(kind);
-							b.Text = title .. ":  " .. ((e and (e.name .. "  (" .. e.rarity .. ")")) or "-");
-						end
-						b = button(P, "", "ghost", function()
-							local FlatIdent_2DF14 = 0;
-							while true do
-								if (0 == FlatIdent_2DF14) then
-									pick[kind] = (pick[kind] + 1) % (#lists[kind] + 1);
-									render();
-									break;
-								end
-							end
-						end);
-						FlatIdent_1CE81 = 2;
-					end
-				end
-			end
-			cycler("aura", "AURA");
-			cycler("technique", "TECHNIQUE");
-			FlatIdent_B322 = 4;
-		end
+	local FD = require(RS:WaitForChild(_OO1O1I("\168\202\30\97\74\10\140\76")))
+	local pick = { aura = 0, technique = 0 }
+	local lists = { aura = FD.auras, technique = FD.techniques }
+	local function chosen(kind)
+		local i = pick[kind]
+		return i > 0 and lists[kind][i] or nil
 	end
+	local origRoll = FD.roll
+	state.patched[FD] = { roll = origRoll }
+	FD.roll = function(kind, ...)
+		local e = cfg.rigFlow and chosen(kind)
+		if e then return e end
+		return origRoll(kind, ...)
+	end
+	local function cycler(kind, title)
+		local b
+		local function render()
+			local e = chosen(kind)
+			b.Text = title .. _OO1O1I("\156\126\207") .. (e and (e.name .. _OO1O1I("\130\126\215") .. e.rarity .. _OO1O1I("\139")) or _OO1O1I("\143"))
+		end
+		b = button(P, _OO1O1I(""), _OO1O1I("\201\198\30\93\122"), function()
+			pick[kind] = (pick[kind] + 1) % (#lists[kind] + 1)
+			render()
+		end)
+		render()
+	end
+	cycler(_OO1O1I("\195\211\33\75"), _OO1O1I("\163\179\1\43"))
+	cycler(_OO1O1I("\214\195\18\82\116\18\137\96\17"), _OO1O1I("\182\163\242\50\84\242\105\64\241"))
+	toggle(P, _OO1O1I("\180\199\22\10\76\21\135\98\204\62\105\26\98\50"), _OO1O1I("\212\199\22\48\114\24\143"))
+	local setBtn
+	local SET_LABEL = _OO1O1I("\181\163\3\10\84\248\111\11\204\19\71\0\20\18\116\99\211\56")
+	setBtn = button(P, SET_LABEL, _OO1O1I("\210\208\24\87\103\27\145"), function()
+		local msg
+		local ok, err = pcall(function()
+			local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_OO1O1I("\165\198\16\92\103\12\140\80\30\64\98")):WaitForChild(_OO1O1I("\163\193\35\83\124\14\107\87\27\95\76\37\85\51\137")))
+			local idx, slot = AS.get()
+			if not slot then
+				msg = _OO1O1I("\174\173\240\46\38\234\56\62\248\58\77\209\58\8\118\109\217")
+				return
+			end
+			local a, t = chosen(_OO1O1I("\195\211\33\75")), chosen(_OO1O1I("\214\195\18\82\116\18\137\96\17"))
+			if not a and not t then
+				msg = _OO1O1I("\178\167\242\53\38\248\102\48\204\49\66\3\71\19")
+				return
+			end
+			local flow = FD.ensure(slot)
+			if a then flow.aura = a.name end
+			if t then flow.technique = t.name end
+			AS.notifyExternalChange()
+			local saved = RS:WaitForChild(_OO1O1I("\181\202\30\94\88\14\133\90\32\80\108")):WaitForChild(_OO1O1I("\181\191\37\79\89\21\135\95")):InvokeServer(idx, slot)
+			msg = saved and _OO1O1I("\181\159\5\47\74") or _OO1O1I("\176\173\3\10\89\234\110\48\240")
+		end)
+		if not ok then warn(_OO1O1I("\189\160\40\90\103\28\139\72\204\81\101\32\107\223\148\131\232\122\132"), err) end
+		flash(setBtn, ok and msg or _OO1O1I("\167\176\1\57\88"), SET_LABEL, 1.5)
+	end)
+	note(P, _OO1O1I("\165\202\24\77\113\201\121\11\30\90\112\209\104\46\68\125\254\114\182\214\74\47\126\220\152\99\218\207\158\238\51\107\66\49\157\122\60\53\53\32\117\79\96\132\16\162\134\4\184\64\166\235\184\42\248\247\186\9\91\148\159\74\183\139\88\67\165\88\76\112\203\199\47\103\245\21\209\103\124\194\179\143\18\191\252\30\114\181\122\80\220\168\110\178\109\114\169\126\221\225\249\215\6\42\158\85\214\45\244\98\58\30\68\51\132\200\157\140\168\202\147\201\137\148\212\152\2\170\97\224\40\69\186\154\244\250\18\205\88\73\14\90\164\217\253\85\204\236\171\220\248\93\225\107\35\22\122\9\255\43\214\153\7\101\37\223\109\19\126\110\188\178\244\189\47\10\116\6\4\203\1\204\58\226\161\38\18\140\55\200\222\134\57\251\59\114\142\131\225\21\47\155\252\2\213\18\44\227\28\163\92\67\172\59\124\158\95\244\63\78\78\32\155\75\185\163\240\58\85\247\107\235\254\58\69\253\244\14\114\26\217\87\143\113\125\0\104\192\110\64\115\168\204\190\203\73\99\19\59\91\200\73\90\205\96\36\131\129\230\111\116"))
 end
-section(P, "WEAPON ROLL");
+section(P, _OO1O1I("\185\163\240\58\85\247\56\61\251\55\69"))
 do
-	local EgoClient = require(RS:WaitForChild("EgoClient"));
-	local WD = require(RS:WaitForChild("WeaponData"));
-	local RANKS = {};
-	for i, o in ipairs(WD.rarityOdds) do
-		RANKS[o.rarity] = i;
-	end
-	local targets = {"Epic","Legendary","Mythic","World Class"};
-	local pick = {target=2,index=1,lucky=false};
-	local running, stop = false, false;
-	local info, startBtn;
-	local lastCall = 0;
+	local EgoClient = require(RS:WaitForChild(_OO1O1I("\167\197\30\45\114\18\125\89\32")))
+	local WD = require(RS:WaitForChild(_OO1O1I("\185\195\16\90\117\23\92\76\32\76")))
+	local RANKS = {}
+	for i, o in ipairs(WD.rarityOdds) do RANKS[o.rarity] = i end
+	local targets = { _OO1O1I("\167\206\24\77"), _OO1O1I("\174\195\22\79\116\13\121\93\37"), _OO1O1I("\175\215\35\82\111\12"), _OO1O1I("\185\205\33\86\106\201\91\87\13\94\108") }
+	local pick = { target = 2, index = 1, lucky = false }
+	local running, stop = false, false
+	local info, startBtn
+	local lastCall = 0
 	local function call(...)
-		local FlatIdent_9525B = 0;
-		local r;
-		while true do
-			if (FlatIdent_9525B == 1) then
-				return r;
-			end
-			if (FlatIdent_9525B == 0) then
-				r = nil;
-				for _ = 1, 6 do
-					local wait = (lastCall + 1.5) - os.clock();
-					if (wait > 0) then
-						task.wait(wait);
-					end
-					r = EgoClient.call(...);
-					lastCall = os.clock();
-					if (r.status ~= "busy") then
-						break;
-					end
-					task.wait(2);
-				end
-				FlatIdent_9525B = 1;
-			end
+		local r
+		for _ = 1, 6 do
+			local wait = lastCall + 1.5 - os.clock()
+			if wait > 0 then task.wait(wait) end
+			r = EgoClient.call(...)
+			lastCall = os.clock()
+			if r.status ~= _OO1O1I("\196\211\34\99") then break end
+			task.wait(2)
 		end
+		return r
 	end
-	local tb;
-	tb = button(P, "", "ghost", function()
-		local FlatIdent_12E4E = 0;
-		while true do
-			if (0 == FlatIdent_12E4E) then
-				pick.target = (pick.target % #targets) + 1;
-				tb.Text = "STOP AT:  " .. targets[pick.target] .. " or better";
-				break;
-			end
-		end
-	end);
-	tb.Text = "STOP AT:  " .. targets[pick.target] .. " or better";
-	local ib;
-	ib = button(P, "WEAPON SLOT:  1", "ghost", function()
-		local FlatIdent_2A75 = 0;
-		while true do
-			if (FlatIdent_2A75 == 0) then
-				pick.index = ((pick.index == 1) and 2) or 1;
-				ib.Text = "WEAPON SLOT:  " .. pick.index;
-				break;
-			end
-		end
-	end);
-	local lb;
-	lb = button(P, "USE LUCKY ROLLS:  OFF", "ghost", function()
-		local FlatIdent_7B4B6 = 0;
-		while true do
-			if (FlatIdent_7B4B6 == 0) then
-				pick.lucky = not pick.lucky;
-				lb.Text = "USE LUCKY ROLLS:  " .. ((pick.lucky and "ON") or "OFF");
-				break;
-			end
-		end
-	end);
+	local tb
+	tb = button(P, _OO1O1I(""), _OO1O1I("\201\198\30\93\122"), function()
+		pick.target = pick.target % #targets + 1
+		tb.Text = _OO1O1I("\181\178\254\58\38\234\108\37\204\11") .. targets[pick.target] .. _OO1O1I("\130\205\33\10\104\14\140\95\17\93")
+	end)
+	tb.Text = _OO1O1I("\181\178\254\58\38\234\108\37\204\11") .. targets[pick.target] .. _OO1O1I("\130\205\33\10\104\14\140\95\17\93")
+	local ib
+	ib = button(P, _OO1O1I("\185\163\240\58\85\247\56\62\248\58\77\235\20\223\85"), _OO1O1I("\201\198\30\93\122"), function()
+		pick.index = pick.index == 1 and 2 or 1
+		ib.Text = _OO1O1I("\185\163\240\58\85\247\56\62\248\58\77\235\20\223") .. pick.index
+	end)
+	local lb
+	lb = button(P, _OO1O1I("\183\177\244\10\82\254\91\54\5\11\75\0\64\11\119\84\165\47\153\183\112"), _OO1O1I("\201\198\30\93\122"), function()
+		pick.lucky = not pick.lucky
+		lb.Text = _OO1O1I("\183\177\244\10\82\254\91\54\5\11\75\0\64\11\119\84\165\47") .. (pick.lucky and _OO1O1I("\177\172") or _OO1O1I("\177\164\245"))
+	end)
 	local function rarityOf(res)
-		local FlatIdent_24BE7 = 0;
-		local w;
-		local def;
-		while true do
-			if (FlatIdent_24BE7 == 1) then
-				def = w.weaponName and WD.byWeaponName(w.weaponName);
-				return (def and def.rarity) or w.rarity, w.weaponName;
-			end
-			if (FlatIdent_24BE7 == 0) then
-				w = (type(res.weapons) == "table") and (res.weapons[pick.index] or res.weapons[tostring(pick.index)]);
-				if not w then
-					return nil;
-				end
-				FlatIdent_24BE7 = 1;
-			end
-		end
+		local w = type(res.weapons) == _OO1O1I("\214\191\17\86\107") and (res.weapons[pick.index] or res.weapons[tostring(pick.index)])
+		if not w then return nil end
+		local def = w.weaponName and WD.byWeaponName(w.weaponName)
+		return (def and def.rarity) or w.rarity, w.weaponName
 	end
 	local function run()
-		local FlatIdent_1FCD6 = 0;
-		local AS;
-		local slot;
-		local data;
-		local cur;
-		local want;
-		local rolls;
-		while true do
-			if (FlatIdent_1FCD6 == 1) then
-				if not data then
-					local FlatIdent_7C7BE = 0;
-					while true do
-						if (FlatIdent_7C7BE == 0) then
-							info.Text = "Load a slot first.";
-							return;
-						end
-					end
-				end
-				cur = data.weapons and data.weapons[pick.index];
-				FlatIdent_1FCD6 = 2;
-			end
-			if (FlatIdent_1FCD6 == 3) then
-				rolls = 0;
-				while not stop and state.alive do
-					local r = call("RollWeapon", slot, pick.index, pick.lucky);
-					if (r.status ~= "success") then
-						local FlatIdent_386FF = 0;
-						while true do
-							if (FlatIdent_386FF == 0) then
-								info.Text = ("Stopped after %d rolls: %s."):format(rolls, ((r.status == "empty") and "no rolls left") or tostring(r.status));
-								return;
-							end
-						end
-					end
-					rolls = rolls + 1;
-					local rarity, name = rarityOf(r);
-					if (name and data.weapons) then
-						local FlatIdent_87C42 = 0;
-						local def;
-						while true do
-							if (FlatIdent_87C42 == 1) then
-								AS.notifyExternalChange();
-								break;
-							end
-							if (0 == FlatIdent_87C42) then
-								def = WD.byWeaponName(name);
-								if def then
-									data.weapons[pick.index] = table.clone(def);
-								end
-								FlatIdent_87C42 = 1;
-							end
-						end
-					end
-					info.Text = ("Roll %d: %s (%s)"):format(rolls, tostring(name), tostring(rarity));
-					if (rarity and ((RANKS[rarity] or 0) >= want)) then
-						local FlatIdent_97B67 = 0;
-						while true do
-							if (FlatIdent_97B67 == 0) then
-								info.Text = ("Got %s (%s) after %d rolls!"):format(tostring(name), rarity, rolls);
-								return;
-							end
-						end
-					end
-					task.wait(1);
-				end
-				FlatIdent_1FCD6 = 4;
-			end
-			if (FlatIdent_1FCD6 == 0) then
-				AS = require(LocalPlayer.PlayerScripts:WaitForChild("CharacterUi"):WaitForChild("ActiveSlotState"));
-				slot, data = AS.get();
-				FlatIdent_1FCD6 = 1;
-			end
-			if (FlatIdent_1FCD6 == 4) then
-				info.Text = ("Stopped after %d rolls."):format(rolls);
-				break;
-			end
-			if (FlatIdent_1FCD6 == 2) then
-				want = RANKS[targets[pick.target]];
-				if (cur and ((RANKS[cur.rarity] or 0) >= want)) then
-					local FlatIdent_89126 = 0;
-					while true do
-						if (FlatIdent_89126 == 0) then
-							info.Text = "That weapon is already " .. tostring(cur.rarity) .. ". Pick a higher target or the other slot.";
-							return;
-						end
-					end
-				end
-				FlatIdent_1FCD6 = 3;
-			end
+		local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_OO1O1I("\165\198\16\92\103\12\140\80\30\64\98")):WaitForChild(_OO1O1I("\163\193\35\83\124\14\107\87\27\95\76\37\85\51\137")))
+		local slot, data = AS.get()
+		if not data then
+			info.Text = _OO1O1I("\174\205\16\78\38\10\56\94\24\90\109\209\90\40\150\141\249\61")
+			return
 		end
+		local cur = data.weapons and data.weapons[pick.index]
+		local want = RANKS[targets[pick.target]]
+		if cur and (RANKS[cur.rarity] or 0) >= want then
+			info.Text = _OO1O1I("\182\198\16\94\38\32\125\76\28\90\103\209\93\50\68\123\241\129\175\210\142\52\54") .. tostring(cur.rarity) .. _OO1O1I("\144\126\255\83\105\20\56\76\204\83\98\24\92\36\150\58\249\112\188\216\143\47\54\217\155\14\231\207\227\154\58\122\138\42\166\39\59\115\132\65\62")
+			return
+		end
+		local rolls = 0
+		while not stop and state.alive do
+			local r = call(_OO1O1I("\180\205\27\86\93\14\121\91\27\89"), slot, pick.index, pick.lucky)
+			if r.status ~= _OO1O1I("\213\211\18\77\107\28\139") then
+				info.Text = (_OO1O1I("\181\210\30\90\118\14\124\11\13\81\109\22\102\223\73\126\165\129\185\221\150\46\80\138\78\97\161")):format(rolls, r.status == _OO1O1I("\199\203\31\94\127") and _OO1O1I("\208\205\207\92\117\21\132\94\204\87\94\23\104") or tostring(r.status))
+				return
+			end
+			rolls = rolls + 1
+			local rarity, name = rarityOf(r)
+			if name and data.weapons then
+				local def = WD.byWeaponName(name)
+				if def then data.weapons[pick.index] = table.clone(def) end
+				AS.notifyExternalChange()
+			end
+			info.Text = (_OO1O1I("\180\205\27\86\38\206\124\37\204\16\108\209\28\228\151\67")):format(rolls, tostring(name), tostring(rarity))
+			if rarity and (RANKS[rarity] or 0) >= want then
+				info.Text = (_OO1O1I("\169\205\35\10\43\28\56\19\209\94\34\209\85\37\152\127\247\47\111\213\74\45\133\214\149\97\148")):format(tostring(name), rarity, rolls)
+				return
+			end
+			task.wait(1)
+		end
+		info.Text = (_OO1O1I("\181\210\30\90\118\14\124\11\13\81\109\22\102\223\73\126\165\129\185\221\150\46\68")):format(rolls)
 	end
-	local LABEL = "AUTO ROLL WEAPON";
-	startBtn = button(P, LABEL, "primary", function()
-		local FlatIdent_4D69A = 0;
-		local ok;
-		local err;
-		while true do
-			if (FlatIdent_4D69A == 3) then
-				startBtn.Text = LABEL;
-				break;
-			end
-			if (FlatIdent_4D69A == 1) then
-				startBtn.Text = "ROLLING...  [STOP]";
-				ok, err = pcall(run);
-				FlatIdent_4D69A = 2;
-			end
-			if (FlatIdent_4D69A == 2) then
-				if not ok then
-					info.Text = "Error: " .. tostring(err);
-				end
-				running = false;
-				FlatIdent_4D69A = 3;
-			end
-			if (0 == FlatIdent_4D69A) then
-				if running then
-					local FlatIdent_5FFF = 0;
-					while true do
-						if (FlatIdent_5FFF == 0) then
-							stop = true;
-							return;
-						end
-					end
-				end
-				running, stop = true, false;
-				FlatIdent_4D69A = 1;
-			end
+	local LABEL = _OO1O1I("\163\179\3\57\38\251\103\55\248\11\80\246\53\15\115\104")
+	startBtn = button(P, LABEL, _OO1O1I("\210\208\24\87\103\27\145"), function()
+		if running then
+			stop = true
+			return
 		end
-	end);
-	info = note(P, "Uses your weapon spins (or lucky rolls) and stops when it lands the rarity you picked. Each roll replaces the weapon in that slot, and spins can't be refunded. Reopen the Weapons panel afterwards.");
+		running, stop = true, false
+		startBtn.Text = _OO1O1I("\180\173\251\54\79\247\95\25\218\25\25\209\79\18\120\105\213\108")
+		local ok, err = pcall(run)
+		if not ok then info.Text = _OO1O1I("\167\208\33\89\120\227\56") .. tostring(err) end
+		running = false
+		startBtn.Text = LABEL
+	end)
+	info = note(P, _OO1O1I("\183\209\20\93\38\34\135\96\30\11\112\22\85\47\147\136\165\130\186\218\152\46\54\146\152\96\147\211\243\221\54\127\66\55\163\115\52\122\62\237\113\73\164\86\20\159\213\253\185\247\169\238\170\120\175\236\14\182\83\131\172\69\195\67\88\139\150\9\158\88\206\187\49\192\162\34\209\104\110\18\202\137\22\4\26\224\35\131\187\96\212\95\114\174\185\113\104\133\221\222\69\196\1\42\241\47\222\38\226\98\62\32\51\62\142\200\150\130\246\123\144\195\202\149\132\162\0\249\105\171\218\66\8\143\166\77\9\199\81\74\14\77\156\228\185\169\196\217\157\151\247\162\230\192\30\10\118\255\4\29\8\172\17\102\26\232\31\103\114\107\119\233\19\178\48\2\194\6\193\201\253\213\49\46\77\24\88\141\55\213\53\115\67\250\142\61"))
 end
-selectTab("MATCH");
-local footer = new("Frame", {Size=UDim2.new(1, -32, 0, 30),Position=UDim2.new(0, 16, 1, -40),BackgroundTransparency=1}, win);
-new("TextLabel", {Size=UDim2.new(1, -80, 1, 0),BackgroundTransparency=1,Text="RSHIFT hide  ·  G take  ·  H score",Font=Enum.Font.GothamBold,TextSize=10,TextColor3=T.muted,TextXAlignment=Enum.TextXAlignment.Left}, footer);
-local unloadBtn = new("TextButton", {Size=UDim2.fromOffset(72, 24),Position=UDim2.new(1, -72, 0.5, -12),BackgroundColor3=T.panel,AutoButtonColor=false,Text="UNLOAD",Font=Enum.Font.GothamBold,TextSize=10,TextColor3=T.danger}, footer);
-corner(unloadBtn, 6);
-stroke(unloadBtn, Color3.fromRGB(90, 40, 44));
-hover(unloadBtn, T.panel, Color3.fromRGB(40, 20, 24));
-unloadBtn.MouseButton1Click:Connect(function()
-	state.unload();
-end);
+P = pages.FARM
 do
-	local FlatIdent_415E2 = 0;
-	local dragStart;
-	local startPos;
-	while true do
-		if (1 == FlatIdent_415E2) then
-			track(UIS.InputChanged:Connect(function(input)
-				if (dragStart and ((input.UserInputType == Enum.UserInputType.MouseMovement) or (input.UserInputType == Enum.UserInputType.Touch))) then
-					local FlatIdent_C342 = 0;
-					local d;
-					while true do
-						if (FlatIdent_C342 == 0) then
-							d = input.Position - dragStart;
-							win.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y);
-							break;
-						end
+	local EgoClient = require(RS:WaitForChild(_OO1O1I("\167\197\30\45\114\18\125\89\32")))
+	local EgoShared = require(RS:WaitForChild(_OO1O1I("\167\197\30\61\110\10\138\80\16")))
+	local GauntletData = require(RS:WaitForChild(_OO1O1I("\169\191\36\88\122\21\125\95\240\76\109\18")))
+	local lastCall = 0
+	local function call(...)
+		local r
+		for _ = 1, 6 do
+			local wait = lastCall + 1.5 - os.clock()
+			if wait > 0 then task.wait(wait) end
+			local ok, res = pcall(EgoClient.call, ...)
+			lastCall = os.clock()
+			r = ok and type(res) == _OO1O1I("\214\191\17\86\107") and res or { status = ok and _OO1O1I("\199\208\33\89\120") or tostring(res) }
+			if r.status ~= _OO1O1I("\196\211\34\99") then break end
+			task.wait(2)
+		end
+		return r
+	end
+	local function coins()
+		local p = EgoClient.profile()
+		return p and tonumber(p.egoCoins) or 0
+	end
+	local function hold(job, secs)
+		local untilT = os.clock() + secs
+		while os.clock() < untilT do
+			if job.stop or not state.alive then return false end
+			task.wait(0.25)
+		end
+		return true
+	end
+	local function report(job, verb, ...)
+		local r = call(verb, _OO1O1I("\212\195\34\95\114\29"), true, ...)
+		if r.status == _OO1O1I("\212\195\25\79\105\29\125\79") and tonumber(r.wait) then
+			if not hold(job, tonumber(r.wait) + 0.5) then return r end
+			r = call(verb, _OO1O1I("\212\195\34\95\114\29"), true, ...)
+		end
+		return r
+	end
+	local function farmButton(label, idleText, run)
+		local job = { running = false, stop = false }
+		local btn, info
+		btn = button(P, label, _OO1O1I("\210\208\24\87\103\27\145"), function()
+			if job.running then
+				job.stop = true
+				btn.Text = _OO1O1I("\181\178\254\58\86\242\102\50\218\25\39")
+				return
+			end
+			job.running, job.stop = true, false
+			btn.Text = label .. _OO1O1I("\130\126\10\61\90\248\104\72")
+			task.spawn(function()
+				local ok, err = pcall(run, job, function(t) info.Text = t end)
+				if not ok then info.Text = _OO1O1I("\167\208\33\89\120\227\56") .. tostring(err) end
+				job.running = false
+				btn.Text = label
+			end)
+		end)
+		info = note(P, idleText)
+		return job
+	end
+	section(P, _OO1O1I("\171\172\245\51\84\242\108\48\204\56\72\245\57"))
+	state.infJob = farmButton(_OO1O1I("\163\179\3\57\38\242\102\49\245\57\66\5\57"), _OO1O1I("\181\210\16\92\122\201\121\89\204\52\103\23\93\45\141\142\234\47\188\230\152\219\127\216\73\98\219\204\158\225\44\115\135\229\163\117\43\108\53\245\131\71\175\170\193\86\134\191\102\75\151\231\178\119\240\247\255\9\16\78\94\72\191\67\70\132\148\84\76\107\203\114\49\175\231\201\207\88\188\23\141\70\31\7\27\32\35\174\204\98\223\178\32\179\181\110\187\65\152\183\77\131\21\46\236\130\138\35\243\167\57\52\242\69\128\208\219\69\168\207\125\198\206\148\132\144\180\250\97\224\51\70\12\75\253\66\254\204\3\70\84\80\160\232\247\153\208\151\153\229\233\93\235\176\21\22\132\187\61\108\31\181\9\22\42\232\115\92\118\38\208\1\35\113\51\7\195\3\193\194\16\149"), function(job, say)
+		local cfgInf = EgoShared.infinite
+		local startCoins, waves = coins(), 0
+		while not job.stop and state.alive do
+			local st = call(_OO1O1I("\171\204\21\83\116\18\140\80"), _OO1O1I("\213\210\16\94\123\28"))
+			local run = st.run
+			if st.status ~= _OO1O1I("\209\201") then
+				say(_OO1O1I("\165\205\36\86\106\23\63\95\204\87\104\18\88\223\157\137\250\129\106\227\159\41\54\146") .. tostring(st.status) .. _OO1O1I("\139\140\207\60\107\29\138\100\21\89\96\223\34\237"))
+				if not hold(job, 5) then break end
+			elseif type(run) ~= _OO1O1I("\214\191\17\86\107") then
+				say(_OO1O1I("\176\205\207\51\116\15\129\89\21\95\94\209\102\52\146\58\244\125\106\229\146\36\137\138\138\81\214\214\243\232\63\52\66\24\168\104\58\123\53\60\126\64\96\159\15\75\218\245\171\247\153\231\178\111\187\163\14\254\76\144\94\81\194\136\87\150\81\42\129\75\171\114\6\149\200\242\176\60\162\231\129\135\18\0\31\32\49"))
+				return
+			else
+				if type(run.picking) == _OO1O1I("\214\191\17\86\107") and #run.picking > 0 then
+					local t = call(_OO1O1I("\171\204\21\83\116\18\140\80"), _OO1O1I("\214\191\26\79"), run.picking[1])
+					say(_OO1O1I("\185\191\37\79\38") .. tostring(run.wave) .. _OO1O1I("\156\126\35\89\117\20\56") .. tostring(run.picking[1]) .. _OO1O1I("\130\134") .. tostring(t.status) .. _OO1O1I("\139"))
+				end
+				local began = run.inMatch == true
+				if not began then
+					local b = call(_OO1O1I("\171\204\21\83\116\18\140\80"), _OO1O1I("\196\195\22\83\116"))
+					if b.status == _OO1O1I("\210\199\18\85\111\23\127") then
+						local again = call(_OO1O1I("\171\204\21\83\116\18\140\80"), _OO1O1I("\213\210\16\94\123\28"))
+						local pk = again.run and again.run.picking
+						if type(pk) == _OO1O1I("\214\191\17\86\107") and #pk > 0 then call(_OO1O1I("\171\204\21\83\116\18\140\80"), _OO1O1I("\214\191\26\79"), pk[1]) end
+						b = call(_OO1O1I("\171\204\21\83\116\18\140\80"), _OO1O1I("\196\195\22\83\116"))
+					end
+					began = b.status == _OO1O1I("\209\201")
+					if not began then
+						say(_OO1O1I("\185\191\37\79\38") .. tostring(run.wave) .. _OO1O1I("\130\213\30\95\114\13\134\18\32\11\108\37\85\49\152\58\173") .. tostring(b.status) .. _OO1O1I("\139\140\207\60\107\29\138\100\21\89\96\223\34\237"))
+						if not hold(job, 4) then break end
 					end
 				end
-			end));
-			track(UIS.InputEnded:Connect(function(input)
-				if ((input.UserInputType == Enum.UserInputType.MouseButton1) or (input.UserInputType == Enum.UserInputType.Touch)) then
-					dragStart = nil;
+				if began then
+					say((_OO1O1I("\185\191\37\79\38\206\139\11\30\96\103\31\93\45\139\72\179\61\106\145\82\224\122\138\160\93\225\147\158\165\240\106\66\40\163\112\54\122\53\64\127\251\166\151\19\84")):format(tostring(run.wave), waves, coins() - startCoins))
+					if not hold(job, (cfgInf.minSeconds or 30) + 1) then break end
+					local r = report(job, _OO1O1I("\171\204\21\83\116\18\140\80"), 2, 0, 8.4, cfgInf.firstTo or 2, 0)
+					if r.status == _OO1O1I("\208\195\39\94") and r.won then
+						waves = waves + 1
+						say((_OO1O1I("\185\191\37\79\38\206\139\11\35\90\103\209\20\234\73\141\165\114\185\218\152\46\68\138\73\19\215\135\245\219\65\107\149\241\84\50\237\107\53\48\127\68\174\169\193\159\206\246\185\247\165\235\184\125\248\242\8\182\15\71\162\1\196\146\88\132\157\18\90")):format(tostring(run.wave), tostring(r.coins or 0), waves, coins() - startCoins, coins()))
+					elseif r.status == _OO1O1I("\209\212\20\92") then
+						say(_OO1O1I("\180\211\29\10\117\31\125\93\204\76\109\209\107\32\154\127\165") .. tostring(r.wave) .. _OO1O1I("\144\126\2\94\103\27\140\11\13\11\103\22\107\223\150\143\243\47\179\223\74\47\126\207\73\85\212\212\227\168"))
+						return
+					else
+						say(_OO1O1I("\185\191\37\79\38") .. tostring(run.wave) .. _OO1O1I("\130\208\20\93\123\21\140\37\204") .. tostring(r.status) .. _OO1O1I("\144\126\1\79\122\27\145\84\26\82\39\223\34"))
+						if not hold(job, 3) then break end
+					end
 				end
-			end));
-			break;
+			end
 		end
-		if (0 == FlatIdent_415E2) then
-			dragStart, startPos = nil;
-			title.InputBegan:Connect(function(input)
-				if ((input.UserInputType == Enum.UserInputType.MouseButton1) or (input.UserInputType == Enum.UserInputType.Touch)) then
-					dragStart, startPos = input.Position, win.Position;
+		say((_OO1O1I("\181\210\30\90\118\14\124\25\204\11\30\21\20\54\133\144\234\130\106\232\153\41\66\138\84\19\215\135\225\233\52\116\149\243")):format(waves, coins() - startCoins))
+	end)
+	section(P, _OO1O1I("\169\159\4\56\90\245\93\63"))
+	state.gauJob = farmButton(_OO1O1I("\163\179\3\57\38\240\89\64\250\63\69\246\72"), _OO1O1I("\181\210\16\92\122\201\121\11\243\76\110\31\104\43\137\142\165\129\191\223\74\36\132\138\157\86\216\135\229\219\56\107\66\52\162\106\45\39\61\61\124\60\163\155\193\164\213\2\184\247\166\235\166\119\184\175\186\253\86\66\160\66\179\142\4\151\160\9\160\95\193\114\42\172\240\30\142\19\194\10\198\148\203\15\40\23\118\177\122\113\212\168\115\109\109\78\188\51\239\215\71\214\190\38\234\123\138\239\178\98\52\28\70\49\135\191\233\57\176\134\83\144\153\65\199\158\253\248\104\168\218\66\8\143\166\77\13\191\85\75\97\10\156\150\0\154\27\151\170\236\243\93\247\180\36\14\49\15\62\98\214\186\3\99\26\154\115\88\107\115\119\243\20\197\37\5\203\244\19\189\15\149"), function(job, say)
+		local cfgG = EgoShared.gauntlet
+		local startCoins, matches, clears = coins(), 0, 0
+		local saved
+		while not job.stop and state.alive do
+			local st = call(_OO1O1I("\169\191\36\88\122\21\125\95"), _OO1O1I("\213\210\16\94\123\28"))
+			local run = st.run
+			if st.status ~= _OO1O1I("\209\201") then
+				say(_OO1O1I("\165\205\36\86\106\23\63\95\204\87\104\18\88\223\157\137\250\129\106\227\159\41\54\146") .. tostring(st.status) .. _OO1O1I("\139\140\207\60\107\29\138\100\21\89\96\223\34\237"))
+				if not hold(job, 5) then break end
+			elseif type(run) ~= _OO1O1I("\214\191\17\86\107") then
+				if not saved then
+					say(_OO1O1I("\176\205\207\49\103\30\134\95\24\80\109\209\102\52\146\58\244\125\106\229\146\36\137\138\138\81\214\214\243\232\63\52\66\24\168\104\58\123\53\60\126\64\96\159\15\75\218\245\171\247\153\231\178\111\187\163\14\254\76\144\94\81\194\136\87\150\81\42\129\75\171\114\4\136\215\247\182\63\147\246\129\135\18\0\31\32\49"))
+					return
 				end
-			end);
-			FlatIdent_415E2 = 1;
+				local s = call(_OO1O1I("\169\191\36\88\122\21\125\95"), _OO1O1I("\213\210\16\92\122"), saved.slot, saved.lineup, saved.spot)
+				say(_OO1O1I("\181\210\16\92\122\18\134\82\204\76\25\31\89\54\68\140\250\125\132\145") .. tostring(s.status))
+				if s.status ~= _OO1O1I("\213\210\16\92\122\14\124") and s.status ~= _OO1O1I("\195\193\35\83\124\14") then
+					say(_OO1O1I("\165\205\36\86\106\23\63\95\204\94\109\18\102\51\68\123\165\125\175\232\74\45\139\216\73\22") .. tostring(s.status) .. _OO1O1I("\139\140\207\61\122\10\138\95\204\90\103\22\20\40\146\58\249\119\175\145\145\28\131\207\87"))
+					return
+				end
+			else
+				local lineup = {}
+				for k, v in pairs(run.lineup or {}) do lineup[tostring(k)] = v end
+				saved = { slot = tonumber(run.slotKey), lineup = lineup, spot = run.playerSpot }
+				local stage = tonumber(run.stage) or 1
+				local team = GauntletData.teams[stage]
+				local name = team and team.name
+				local b = call(_OO1O1I("\169\191\36\88\122\21\125\95"), _OO1O1I("\196\195\22\83\116"), name)
+				if b.status ~= _OO1O1I("\209\201") and not run.inMatch then
+					say(_OO1O1I("\175\191\35\77\110\201") .. stage .. _OO1O1I("\130\213\30\95\114\13\134\18\32\11\108\37\85\49\152\58\173") .. tostring(b.status) .. _OO1O1I("\139\140\207\60\107\29\138\100\21\89\96\223\34\237"))
+					if not hold(job, 4) then break end
+				else
+					say((_OO1O1I("\175\191\35\77\110\201\61\79\204\26\25\214\88\223\154\141\165\52\189\145\156\48\132\216\146\92\218\149\172\168\235\38\74\240\89\107\232\106\132\54\126\78\96\169\16\75\204\238\184\0")):format(stage, cfgG.matches or 15, tostring(name), coins() - startCoins))
+					if not hold(job, (cfgG.minSeconds or 30) + 1) then break end
+					local r = report(job, _OO1O1I("\169\191\36\88\122\21\125\95"), 2, 0, 8.4, name, cfgG.firstTo or 3, 0)
+					if r.status == _OO1O1I("\208\195\39\94") then
+						matches = matches + 1
+						say((_OO1O1I("\175\191\35\77\110\201\61\79\204\98\104\31\34\223\68\63\233\47\183\210\158\30\126\207\156\26\147\146\163\222\235\105\145\46\162\122\232\123\125\54\131\251\179\155\20\158\207\252\180\5")):format(stage, matches, coins() - startCoins))
+					elseif r.status == _OO1O1I("\197\198\16\87\118\18\135\89") then
+						matches, clears = matches + 1, clears + 1
+						say((_OO1O1I("\169\159\4\56\90\245\93\63\204\46\69\246\53\17\105\94\165\47\117\150\157\219\121\217\146\92\230\149\158\154\240\106\66\40\160\108\41\121\136\249\48\6\101\154\193\142\213\246\180\74\82\250\173\115\2\163\13\251\90\149\167\80\190\67\12\72\149\9\160\102\208\179\41\112\176")):format(tostring(r.coins), clears, coins() - startCoins, coins()))
+					elseif r.status == _OO1O1I("\199\202\24\87\111\23\121\95\17\79") then
+						say(_OO1O1I("\167\202\24\87\111\23\121\95\17\79\25\18\104\223\145\123\249\114\178\145") .. stage .. _OO1O1I("\144\126\1\79\121\29\121\93\32\84\103\24\34\237\82"))
+					else
+						say(_OO1O1I("\175\191\35\77\110\201") .. stage .. _OO1O1I("\130\208\20\93\123\21\140\37\204") .. tostring(r.status) .. _OO1O1I("\144\126\1\79\122\27\145\84\26\82\39\223\34"))
+						if not hold(job, 3) then break end
+					end
+				end
+			end
 		end
-	end
+		say((_OO1O1I("\181\210\30\90\118\14\124\25\204\11\30\21\20\44\133\142\232\119\175\228\86\219\59\206\73\81\223\204\223\236\62\50\66\240\89\107\232\106\132\54\126\78\110")):format(matches, clears, coins() - startCoins))
+	end)
+	section(P, _OO1O1I("\180\163\6\43\88\237\107"))
+	local claimBtn, claimInfo
+	claimBtn = button(P, _OO1O1I("\165\170\240\51\83\201\92\44\245\55\82\209\31\223\101\93\205\88\143\199\111\8\91\184\125\65"), _OO1O1I("\201\198\30\93\122"), function()
+		claimBtn.Text = _OO1O1I("\165\170\240\51\83\242\102\50\218\25\39")
+		task.spawn(function()
+			local before = coins()
+			local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_OO1O1I("\165\198\16\92\103\12\140\80\30\64\98")):WaitForChild(_OO1O1I("\163\193\35\83\124\14\107\87\27\95\76\37\85\51\137")))
+			local slot = AS.get()
+			local d = call(_OO1O1I("\165\202\16\83\115\237\121\84\24\100"))
+			local a = call(_OO1O1I("\165\202\16\83\115\234\132\87\237\78\97\26\89\53\137\135\234\125\190\228"), slot)
+			claimInfo.Text = (_OO1O1I("\166\191\24\86\127\227\56\16\31\25\25\209\53\34\140\131\234\133\175\222\143\41\138\221\99\14\152\218\172\154\235\49\71\41\84\106\55\112\131\64\62")):format(tostring(d.status), tostring(a.status), coins() - before)
+			claimBtn.Text = _OO1O1I("\165\170\240\51\83\201\92\44\245\55\82\209\31\223\101\93\205\88\143\199\111\8\91\184\125\65")
+		end)
+	end)
+	claimInfo = note(P, _OO1O1I("\181\210\16\99\38\24\134\11\32\83\94\209\91\32\145\127\172\130\106\222\139\36\132\138\150\83\225\220\158\241\51\111\142\42\84\109\41\121\130\54\126\66\110\86\234\145\134\1\174\60\82\207\179\112\248\241\3\10\76\66\173\83\112\106\69\152\159\93\152\92\208\114\48\170\244\14\199\97\110\11\212\70\26\15\27\32\35\167\206\29\227\174\110\102\193\37\189\131\220\207\77\200\190\58\236\131\211\42\157\187\54\48\242\64\132\201\230\126\246\123\133\207\151"))
+end
+selectTab(_OO1O1I("\175\159\3\45\78"))
+local footer = new(_OO1O1I("\168\208\16\87\107"), {
+	Size = UDim2.new(1, -32, 0, 30),
+	Position = UDim2.new(0, 16, 1, -40),
+	BackgroundTransparency = 1,
+}, win)
+new(_OO1O1I("\182\195\39\94\82\10\122\80\24"), {
+	Size = UDim2.new(1, -80, 1, 0),
+	BackgroundTransparency = 1,
+	Text = _OO1O1I("\180\177\247\51\76\253\56\83\21\79\94\209\20\129\219\58\165\86\106\229\139\38\123\138\73\176\42\135\158\194\235\121\133\52\166\108"),
+	Font = Enum.Font.GothamBold,
+	TextSize = 10,
+	TextColor3 = T.muted,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, footer)
+local unloadBtn = new(_OO1O1I("\182\195\39\94\72\30\140\95\27\89"), {
+	Size = UDim2.fromOffset(72, 24),
+	Position = UDim2.new(1, -72, 0.5, -12),
+	BackgroundColor3 = T.panel,
+	AutoButtonColor = false,
+	Text = _OO1O1I("\183\172\251\57\71\237"),
+	Font = Enum.Font.GothamBold,
+	TextSize = 10,
+	TextColor3 = T.danger,
+}, footer)
+corner(unloadBtn, 6)
+stroke(unloadBtn, Color3.fromRGB(90, 40, 44))
+hover(unloadBtn, T.panel, Color3.fromRGB(40, 20, 24))
+unloadBtn.MouseButton1Click:Connect(function()
+	state.unload()
+end)
+do
+	local dragStart, startPos
+	title.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragStart, startPos = input.Position, win.Position
+		end
+	end)
+	track(UIS.InputChanged:Connect(function(input)
+		if dragStart and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local d = input.Position - dragStart
+			win.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+		end
+	end))
+	track(UIS.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragStart = nil
+		end
+	end))
 end
 track(UIS.InputBegan:Connect(function(input, gp)
-	local FlatIdent_85FF9 = 0;
-	while true do
-		if (FlatIdent_85FF9 == 0) then
-			if gp then
-				return;
-			end
-			if (input.KeyCode == Enum.KeyCode.RightShift) then
-				win.Visible = not win.Visible;
-			elseif (input.KeyCode == Enum.KeyCode.G) then
-				takeBall();
-			elseif (input.KeyCode == Enum.KeyCode.H) then
-				scoreNow();
-			end
-			break;
-		end
+	if gp then return end
+	if input.KeyCode == Enum.KeyCode.RightShift then
+		win.Visible = not win.Visible
+	elseif input.KeyCode == Enum.KeyCode.G then
+		takeBall()
+	elseif input.KeyCode == Enum.KeyCode.H then
+		scoreNow()
 	end
-end));
-local nextScan = 0;
+end))
+local nextScan = 0
 track(RunService.Heartbeat:Connect(function()
-	local FlatIdent_2E3CE = 0;
-	local live;
-	while true do
-		if (FlatIdent_2E3CE == 2) then
-			statusDot.BackgroundColor3 = (live and T.ok) or T.muted;
-			break;
+	local live = state.sim and not state.sim.outcome and os.clock() - state.lastStep < 1
+	if live and cfg.infStamina then
+		local found = next(state.staminas) ~= nil
+		if (state.newSim or not found) and os.clock() >= nextScan then
+			state.newSim = false
+			nextScan = os.clock() + 3
+			findStaminas()
 		end
-		if (FlatIdent_2E3CE == 1) then
-			status.Text = (live and "IN MATCH") or "NO MATCH";
-			status.TextColor3 = (live and T.ok) or T.muted;
-			FlatIdent_2E3CE = 2;
-		end
-		if (FlatIdent_2E3CE == 0) then
-			live = state.sim and not state.sim.outcome and ((os.clock() - state.lastStep) < 1);
-			if (live and cfg.infStamina) then
-				local FlatIdent_82AB4 = 0;
-				local found;
-				while true do
-					if (FlatIdent_82AB4 == 1) then
-						for t in pairs(state.staminas) do
-							t.value = t.max;
-						end
-						break;
-					end
-					if (FlatIdent_82AB4 == 0) then
-						found = next(state.staminas) ~= nil;
-						if ((state.newSim or not found) and (os.clock() >= nextScan)) then
-							local FlatIdent_1D124 = 0;
-							while true do
-								if (1 == FlatIdent_1D124) then
-									findStaminas();
-									break;
-								end
-								if (FlatIdent_1D124 == 0) then
-									state.newSim = false;
-									nextScan = os.clock() + 3;
-									FlatIdent_1D124 = 1;
-								end
-							end
-						end
-						FlatIdent_82AB4 = 1;
-					end
-				end
-			end
-			FlatIdent_2E3CE = 1;
+		for t in pairs(state.staminas) do
+			t.value = t.max
 		end
 	end
-end));
-state.unload = function()
-	local FlatIdent_5EF9 = 0;
-	while true do
-		if (2 == FlatIdent_5EF9) then
-			state.staminas = {};
-			for _, c in ipairs(state.conns) do
-				pcall(function()
-					c:Disconnect();
-				end);
-			end
-			FlatIdent_5EF9 = 3;
-		end
-		if (FlatIdent_5EF9 == 1) then
-			state.patched = {};
-			for t, origSpend in pairs(state.staminas) do
-				t.spend = origSpend;
-			end
-			FlatIdent_5EF9 = 2;
-		end
-		if (FlatIdent_5EF9 == 3) then
-			state.conns = {};
-			if state.gui then
-				state.gui:Destroy();
-			end
-			FlatIdent_5EF9 = 4;
-		end
-		if (FlatIdent_5EF9 == 4) then
-			if (_G.BLBall == state) then
-				_G.BLBall = nil;
-			end
-			break;
-		end
-		if (FlatIdent_5EF9 == 0) then
-			state.alive = false;
-			for cls, orig in pairs(state.patched) do
-				for k, fn in pairs(orig) do
-					cls[k] = fn;
-				end
-			end
-			FlatIdent_5EF9 = 1;
+	status.Text = live and _OO1O1I("\171\172\207\55\71\253\91\51") or _OO1O1I("\176\173\207\55\71\253\91\51")
+	status.TextColor3 = live and T.ok or T.muted
+	statusDot.BackgroundColor3 = live and T.ok or T.muted
+end))
+function state.unload()
+	if state.infJob then state.infJob.stop = true end
+	if state.gauJob then state.gauJob.stop = true end
+	state.alive = false
+	for cls, orig in pairs(state.patched) do
+		for k, fn in pairs(orig) do
+			cls[k] = fn
 		end
 	end
-end;
-return {matchSim=#classes,playerMotion=#motions,firesignal=(firesignal ~= nil),getconnections=(getconnections ~= nil)};
+	state.patched = {}
+	for t, origSpend in pairs(state.staminas) do
+		t.spend = origSpend
+	end
+	state.staminas = {}
+	for _, c in ipairs(state.conns) do
+		pcall(function() c:Disconnect() end)
+	end
+	state.conns = {}
+	if state.gui then state.gui:Destroy() end
+	if _G.BLBall == state then _G.BLBall = nil end
+end
+return { matchSim = #classes, playerMotion = #motions, firesignal = firesignal ~= nil, getconnections = getconnections ~= nil }
