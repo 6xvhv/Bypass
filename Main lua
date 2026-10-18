@@ -1,22 +1,22 @@
-local _kl010Ol="\9\233\120\108\7\86\88\83\99\57\188\142\72\172\224\88\241\209\126\61\87\156\19\200\48\107\255\47\112\101\24\158\201\53\221\192\156\175\68\115\254\207"
-local _cl010Ol={}
-local function _l010Ol(e)
-local m=_cl010Ol[e] if m then return m end
-local K=_kl010Ol local n=#K local t=table.create(#e)
+local _kllIO00="\145\219\232\130\195\226\108\140\196\45\204\73\99\238\210\172\54\24\73\23\99\149\117\117\47\221\135\159"
+local _cllIO00={}
+local function _llIO00(e)
+local m=_cllIO00[e] if m then return m end
+local K=_kllIO00 local n=#K local t=table.create(#e)
 for i=1,#e do
 local k=string.byte(K,(i-1)%n+1)
 t[i]=string.char((string.byte(e,i)-k-i)%256)
 end
-local r=table.concat(t) _cl010Ol[e]=r return r
+local r=table.concat(t) _cllIO00[e]=r return r
 end
 return (function(...)
 if _G.BLBall and _G.BLBall.unload then
 	pcall(_G.BLBall.unload)
 end
-local Players = game:GetService(_l010Ol("\90\87\220\233\113\206\210"))
-local UIS = game:GetService(_l010Ol("\95\94\224\226\85\202\207\208\224\150\44\12\203\35\82\205"))
-local RunService = game:GetService(_l010Ol("\92\96\233\195\113\206\213\196\207\168"))
-local RS = game:GetService(_l010Ol("\92\80\235\220\117\191\192\207\209\167\26\14\196\44\80\207\103"))
+local Players = game:GetService(_llIO00("\226\73\76\255\45\90\230"))
+local UIS = game:GetService(_llIO00("\231\80\80\248\17\86\227\9\65\138\60\199\230\101\68\33"))
+local RunService = game:GetService(_llIO00("\228\82\89\217\45\90\233\253\48\156"))
+local RS = game:GetService(_llIO00("\228\66\91\242\49\75\212\8\50\155\42\201\223\110\66\35\172"))
 local LocalPlayer = Players.LocalPlayer
 local cfg = {
 	magnet = false,
@@ -34,6 +34,7 @@ local cfg = {
 	noCooldown = false,
 	instaGoal = false,
 	autoHundred = false,
+	hundredTime = 20.2,
 	rigFlow = false,
 	antiAfk = true,
 	skipRoll = true,
@@ -41,7 +42,7 @@ local cfg = {
 	skipGoalAnim = false,
 	skipCutscenes = false,
 }
-local state = { alive = true, sim = nil, myBody = nil, lastStep = 0, conns = {}, patched = {}, staminas = setmetatable({}, { __mode = _l010Ol("\117") }) }
+local state = { alive = true, sim = nil, myBody = nil, lastStep = 0, conns = {}, patched = {}, staminas = setmetatable({}, { __mode = _llIO00("\253") }) }
 _G.BLBall = state
 local function track(c)
 	state.conns[#state.conns + 1] = c
@@ -67,23 +68,23 @@ end
 local classes, motions, seen = {}, {}, {}
 local function hasFns(t, a, b, c)
 	local ok, yes = pcall(function()
-		return type(rawget(t, a)) == _l010Ol("\112\96\233\211\128\197\206\201") and type(rawget(t, b)) == _l010Ol("\112\96\233\211\128\197\206\201") and type(rawget(t, c)) == _l010Ol("\112\96\233\211\128\197\206\201")
+		return type(rawget(t, a)) == _llIO00("\248\82\89\233\60\81\226\2") and type(rawget(t, b)) == _llIO00("\248\82\89\233\60\81\226\2") and type(rawget(t, c)) == _llIO00("\248\82\89\233\60\81\226\2")
 	end)
 	return ok and yes
 end
 local function addClass(t)
-	if type(t) ~= _l010Ol("\126\76\221\220\113") or seen[t] then return end
-	if hasFns(t, _l010Ol("\109\90\233\228\113\207\211"), _l010Ol("\109\90\233\228\126\203\203\173\205\167\48\15\200"), _l010Ol("\126\76\230\213\92\203\210\206\209\182\58\3\196\40")) then
+	if type(t) ~= _llIO00("\6\62\77\242\45") or seen[t] then return end
+	if hasFns(t, _llIO00("\245\76\89\250\45\91\231"), _llIO00("\245\76\89\250\58\87\223\230\46\155\64\202\227"), _llIO00("\6\62\86\235\24\87\230\7\50\170\74\190\223\106")) then
 		seen[t] = true
 		classes[#classes + 1] = t
-	elseif hasFns(t, _l010Ol("\109\93\224\209\128\193\161\202\208\188"), _l010Ol("\125\95\224\224"), _l010Ol("\125\95\237\217\119\193")) then
+	elseif hasFns(t, _llIO00("\245\79\80\231\60\77\181\3\49\176"), _llIO00("\5\81\80\246"), _llIO00("\5\81\93\239\51\77")) then
 		seen[t] = true
 		motions[#motions + 1] = t
 	end
 end
 do
-	local engine = RS:WaitForChild(_l010Ol("\87\76\239\211\116\161\205\194\213\177\44"))
-	for _, name in ipairs({ _l010Ol("\87\76\239\211\116\175\200\200"), _l010Ol("\90\87\220\233\113\206\172\202\224\172\54\8") }) do
+	local engine = RS:WaitForChild(_llIO00("\223\62\95\233\48\45\225\251\54\165\60"))
+	for _, name in ipairs({ _llIO00("\223\62\95\233\48\59\220\1"), _llIO00("\226\73\76\255\45\90\192\3\65\160\70\195") }) do
 		local ok, mod = pcall(function()
 			return require(engine:WaitForChild(name))
 		end)
@@ -96,7 +97,7 @@ do
 	end
 end
 local function patchMotion(cls)
-	local orig = { step = rawget(cls, _l010Ol("\125\95\224\224")) }
+	local orig = { step = rawget(cls, _llIO00("\5\81\80\246")) }
 	state.patched[cls] = orig
 	cls.step = function(self, body, ...)
 		if body ~= state.myBody then
@@ -117,7 +118,7 @@ local function patchMotion(cls)
 end
 local function patch(cls)
 	local orig = {}
-	for _, k in ipairs({ _l010Ol("\109\90\233\228\126\203\203\173\205\167\48\15\200"), _l010Ol("\115\89\239\213\126\191\196\203\224\149\40\254\190\47\98"), _l010Ol("\126\76\222\219\120\193\177\188\208\172\60\13"), _l010Ol("\119\76\226\222\113\208"), _l010Ol("\124\80\238\223\120\210\196\175\205\166\50\6\186"), _l010Ol("\125\83\234\223\128") }) do
+	for _, k in ipairs({ _llIO00("\245\76\89\250\58\87\223\230\46\155\64\202\227"), _llIO00("\251\75\95\235\58\75\216\4\65\137\56\185\217\113\84"), _llIO00("\6\62\78\241\52\77\197\245\49\160\76\200"), _llIO00("\255\62\82\244\45\92"), _llIO00("\4\66\94\245\52\94\216\232\46\154\66\193\213"), _llIO00("\5\69\90\245\60") }) do
 		orig[k] = rawget(cls, k)
 	end
 	state.patched[cls] = orig
@@ -145,7 +146,7 @@ local function patch(cls)
 	end
 	cls.shoot = function(self, p, target, charge, ...)
 		if p and p.controlled and cfg.shotPower ~= 1 then
-			local base = charge or (0.65 + math.max(0, ((p.stats and p.stats[_l010Ol("\93\83\234\228\44\172\206\210\209\181")]) or 60) / 250) * 0.35)
+			local base = charge or (0.65 + math.max(0, ((p.stats and p.stats[_llIO00("\229\69\90\250\232\56\226\11\50\169")]) or 60) / 250) * 0.35)
 			charge = base * cfg.shotPower
 		end
 		local a, b = orig.shoot(self, p, target, charge, ...)
@@ -187,11 +188,11 @@ state.bridges = 0
 do
 	local bseen = {}
 	local function patchBridge(cls)
-		if type(cls) ~= _l010Ol("\126\76\221\220\113") or bseen[cls] then return end
-		if not hasFns(cls, _l010Ol("\109\80\231\213\110\206\192\207\209"), _l010Ol("\125\83\234\228\79\209\211\206\207\168\53\255"), _l010Ol("\109\93\224\212\117\208")) then return end
+		if type(cls) ~= _llIO00("\6\62\77\242\45") or bseen[cls] then return end
+		if not hasFns(cls, _llIO00("\245\66\87\235\42\90\212\8\50"), _llIO00("\5\69\90\250\11\93\231\7\48\156\69\186"), _llIO00("\245\79\80\234\49\92")) then return end
 		bseen[cls] = true
 		state.bridges = state.bridges + 1
-		local orig = { celebrate = rawget(cls, _l010Ol("\109\80\231\213\110\206\192\207\209")), shotCutscene = rawget(cls, _l010Ol("\125\83\234\228\79\209\211\206\207\168\53\255")), credit = rawget(cls, _l010Ol("\109\93\224\212\117\208")) }
+		local orig = { celebrate = rawget(cls, _llIO00("\245\66\87\235\42\90\212\8\50")), shotCutscene = rawget(cls, _llIO00("\5\69\90\250\11\93\231\7\48\156\69\186")), credit = rawget(cls, _llIO00("\245\79\80\234\49\92")) }
 		state.patched[cls] = orig
 		cls.celebrate = function(self, ...)
 			if cfg.skipGoalAnim then return end
@@ -204,32 +205,32 @@ do
 		cls.credit = function(self, ...)
 			local r = orig.credit(self, ...)
 			if cfg.skipGoalAnim then
-				pcall(function() LocalPlayer:SetAttribute(_l010Ol("\77\80\231\213\110\206\192\207\209\152\53\14\190\38"), 0) end)
+				pcall(function() LocalPlayer:SetAttribute(_llIO00("\213\66\87\235\42\90\212\8\50\140\69\201\217\104"), 0) end)
 			end
 			return r
 		end
 	end
 	local ok, mod = pcall(function()
-		return require(RS:WaitForChild(_l010Ol("\87\76\239\211\116\161\205\194\213\177\44")):WaitForChild(_l010Ol("\90\83\244\227\117\191\210\157\222\172\43\1\186"), 5))
+		return require(RS:WaitForChild(_llIO00("\223\62\95\233\48\45\225\251\54\165\60")):WaitForChild(_llIO00("\226\69\100\249\49\75\230\214\63\160\59\188\213"), 5))
 	end)
 	if ok then patchBridge(mod) end
 	if getgc then
 		for _, v in ipairs(getgc(true)) do
-			if type(v) == _l010Ol("\126\76\221\220\113") then patchBridge(v) end
+			if type(v) == _llIO00("\6\62\77\242\45") then patchBridge(v) end
 		end
 	end
 end
 local function findStaminas()
 	if not getgc then return end
 	for _, t in ipairs(getgc(true)) do
-		if type(t) == _l010Ol("\126\76\221\220\113") and not state.staminas[t] then
+		if type(t) == _llIO00("\6\62\77\242\45") and not state.staminas[t] then
 			local ok, yes = pcall(function()
-				return type(rawget(t, _l010Ol("\125\91\224\222\112"))) == _l010Ol("\112\96\233\211\128\197\206\201")
-					and type(rawget(t, _l010Ol("\128\76\231\229\113"))) == _l010Ol("\120\96\232\210\113\206")
-					and type(rawget(t, _l010Ol("\119\76\243"))) == _l010Ol("\120\96\232\210\113\206")
+				return type(rawget(t, _llIO00("\5\77\80\244\44"))) == _llIO00("\248\82\89\233\60\81\226\2")
+					and type(rawget(t, _llIO00("\8\62\87\251\45"))) == _llIO00("\0\82\88\232\45\90")
+					and type(rawget(t, _llIO00("\255\62\99"))) == _llIO00("\0\82\88\232\45\90")
 			end)
 			if ok and yes then
-				local origSpend = rawget(t, _l010Ol("\125\91\224\222\112"))
+				local origSpend = rawget(t, _llIO00("\5\77\80\244\44"))
 				state.staminas[t] = origSpend
 				t.spend = function(...)
 					if cfg.infStamina then return end
@@ -242,10 +243,10 @@ end
 local function takeBall()
 	local sim = state.sim
 	if not sim or sim.outcome or os.clock() - state.lastStep > 1 then
-		return false, _l010Ol("\120\90\155\220\117\210\196\123\217\164\59\253\189")
+		return false, _llIO00("\0\76\11\242\49\94\216\180\58\152\75\184\216")
 	end
 	local me = controlledOf(sim)
-	if not me then return false, _l010Ol("\120\90\155\211\123\202\211\205\219\175\51\255\185\218\95\212\99\92\246\195") end
+	if not me then return false, _llIO00("\0\76\11\233\55\86\231\6\60\163\67\186\212\28\81\40\168\163\193\157") end
 	sim.physics:kick(sim.ball, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0))
 	sim.ball.position = me.body.position + me.body.facing * 1.2 + Vector3.new(0, sim.physics.radius, 0)
 	sim.ball.spin = Vector3.new(0, 0, 0)
@@ -257,10 +258,10 @@ end
 local function scoreNow()
 	local sim = state.sim
 	if not sim or sim.outcome or os.clock() - state.lastStep > 1 then
-		return false, _l010Ol("\120\90\155\220\117\210\196\123\217\164\59\253\189")
+		return false, _llIO00("\0\76\11\242\49\94\216\180\58\152\75\184\216")
 	end
 	local me = controlledOf(sim)
-	if not me then return false, _l010Ol("\120\90\155\211\123\202\211\205\219\175\51\255\185\218\95\212\99\92\246\195") end
+	if not me then return false, _llIO00("\0\76\11\233\55\86\231\6\60\163\67\186\212\28\81\40\168\163\193\157") end
 	if sim.possession then sim:releaseBall(sim.possession) end
 	sim.pass = nil
 	state.putInGoal(sim, me)
@@ -283,21 +284,21 @@ local function pressButton(btn)
 end
 local function strike(btn)
 	if pressButton(btn) then return end
-	local vim = game:GetService(_l010Ol("\96\84\237\228\129\189\203\164\218\179\60\14\162\27\93\201\105\72\3"))
+	local vim = game:GetService(_llIO00("\232\70\93\250\61\73\223\221\59\167\76\201\189\93\79\29\174\143\206"))
 	vim:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
 	task.delay(0.03, function()
 		vim:SendKeyEvent(false, Enum.KeyCode.Space, false, game)
 	end)
 end
 local function playerGui()
-	return LocalPlayer:FindFirstChildOfClass(_l010Ol("\90\87\220\233\113\206\166\208\213"))
+	return LocalPlayer:FindFirstChildOfClass(_llIO00("\226\73\76\255\45\90\186\9\54"))
 end
 local function trainingParts(sg)
 	for _, d in ipairs(sg:GetDescendants()) do
-		if d:IsA(_l010Ol("\80\93\220\221\113")) and d.ClipsDescendants then
+		if d:IsA(_llIO00("\216\79\76\243\45")) and d.ClipsDescendants then
 			local zone, line
 			for _, c in ipairs(d:GetChildren()) do
-				if c:IsA(_l010Ol("\80\93\220\221\113")) then
+				if c:IsA(_llIO00("\216\79\76\243\45")) then
 					if c.Size.X.Offset == 6 and c.AnchorPoint == Vector2.new(0.5, 0.5) then
 						line = c
 					elseif c.Size.Y.Scale == 1 and c.Size.X.Scale > 0 then
@@ -306,7 +307,7 @@ local function trainingParts(sg)
 				end
 			end
 			if zone and line then
-				return zone, line, sg:FindFirstChildWhichIsA(_l010Ol("\94\80\243\228\78\209\211\207\219\177"), true)
+				return zone, line, sg:FindFirstChildWhichIsA(_llIO00("\230\66\99\250\10\93\231\8\60\165"), true)
 			end
 		end
 	end
@@ -315,7 +316,7 @@ local tr = { sg = nil, lastX = nil, pressedAt = 0, continued = false }
 track(RunService.RenderStepped:Connect(function()
 	if not cfg.autoGreen then return end
 	local pg = playerGui()
-	local sg = pg and pg:FindFirstChild(_l010Ol("\77\83\224\221\117\207\211\205\229\151\57\251\190\40\88\214\105"))
+	local sg = pg and pg:FindFirstChild(_llIO00("\213\69\80\243\49\91\231\6\70\139\73\182\217\106\74\42\174"))
 	if not sg then
 		tr.sg = nil
 		return
@@ -326,7 +327,7 @@ track(RunService.RenderStepped:Connect(function()
 		tr.lastX, tr.continued = nil, false
 	end
 	if not (tr.zone and tr.btn) then return end
-	if tr.btn.Text == _l010Ol("\77\58\201\196\85\170\180\160") then
+	if tr.btn.Text == _llIO00("\213\44\57\218\17\54\200\217") then
 		if not tr.continued then
 			tr.continued = true
 			local btn = tr.btn
@@ -353,13 +354,13 @@ task.spawn(function()
 	while state.alive do
 		task.wait(1)
 		local pg = playerGui()
-		if pg and (cfg.autoTrain or cfg.autoBond) and not pg:FindFirstChild(_l010Ol("\77\83\224\221\117\207\211\205\229\151\57\251\190\40\88\214\105")) then
+		if pg and (cfg.autoTrain or cfg.autoBond) and not pg:FindFirstChild(_llIO00("\213\69\80\243\49\91\231\6\70\139\73\182\217\106\74\42\174")) then
 			local trainBtn
 			for _, b in ipairs(pg:GetDescendants()) do
-				if b:IsA(_l010Ol("\94\80\243\228\78\209\211\207\219\177")) and b.Visible then
-					if cfg.autoBond and b.Text:match(_l010Ol("\104\45\202\190\80\124\132\134")) then
+				if b:IsA(_llIO00("\230\66\99\250\10\93\231\8\60\165")) and b.Visible then
+					if cfg.autoBond and b.Text:match(_llIO00("\240\31\58\212\12\8\152\191")) then
 						pressButton(b)
-					elseif cfg.autoTrain and not trainBtn and b.Text == _l010Ol("\94\61\188\185\90\124\144\177\157") then
+					elseif cfg.autoTrain and not trainBtn and b.Text == _llIO00("\230\47\44\207\22\8\164\234\254") then
 						trainBtn = b
 					end
 				end
@@ -373,12 +374,12 @@ task.spawn(function()
 end)
 do
 	local ok, Chem = pcall(function()
-		return require(RS:WaitForChild(_l010Ol("\77\83\224\221\117\207\211\205\229\135\40\14\182")))
+		return require(RS:WaitForChild(_llIO00("\213\69\80\243\49\91\231\6\70\123\56\201\209")))
 	end)
-	if ok and type(Chem) == _l010Ol("\126\76\221\220\113") and type(Chem.cooldownLeft) == _l010Ol("\112\96\233\211\128\197\206\201") then
+	if ok and type(Chem) == _llIO00("\6\62\77\242\45") and type(Chem.cooldownLeft) == _llIO00("\248\82\89\233\60\81\226\2") then
 		local origCooldown = Chem.cooldownLeft
 		Chem.cooldownLeft = function(data, who, kind, ...)
-			if cfg.noCooldown and (kind == _l010Ol("\126\93\220\217\122") or kind == _l010Ol("\108\90\233\212")) then
+			if cfg.noCooldown and (kind == _llIO00("\6\79\76\239\54") or kind == _llIO00("\244\76\89\234")) then
 				return 0
 			end
 			return origCooldown(data, who, kind, ...)
@@ -404,7 +405,7 @@ local T = {
 	off = Color3.fromRGB(40, 40, 44),
 }
 local WHITE = Color3.new(1, 1, 1)
-local TweenService = game:GetService(_l010Ol("\94\98\224\213\122\175\196\205\226\172\42\255"))
+local TweenService = game:GetService(_llIO00("\230\84\80\235\54\59\216\6\67\160\58\186"))
 local QUICK = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local function new(class, props, parent)
 	local i = Instance.new(class)
@@ -413,26 +414,26 @@ local function new(class, props, parent)
 	return i
 end
 local function corner(p, r)
-	new(_l010Ol("\95\52\190\223\126\202\196\205"), { CornerRadius = UDim.new(0, r or 8) }, p)
+	new(_llIO00("\231\38\46\245\58\86\216\6"), { CornerRadius = UDim.new(0, r or 8) }, p)
 end
 local function stroke(p, c)
-	return new(_l010Ol("\95\52\206\228\126\203\202\192"), { Color = c or T.stroke, Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, p)
+	return new(_llIO00("\231\38\62\250\58\87\222\249"), { Color = c or T.stroke, Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, p)
 end
 local function ramp(p, rot)
-	return new(_l010Ol("\95\52\194\226\109\192\200\192\218\183"), { Color = ColorSequence.new(T.accent, T.accent2), Rotation = rot or 0 }, p)
+	return new(_llIO00("\231\38\50\248\41\76\220\249\59\171"), { Color = ColorSequence.new(T.accent, T.accent2), Rotation = rot or 0 }, p)
 end
 local function hover(b, base, hi)
 	b.MouseEnter:Connect(function() TweenService:Create(b, QUICK, { BackgroundColor3 = hi }):Play() end)
 	b.MouseLeave:Connect(function() TweenService:Create(b, QUICK, { BackgroundColor3 = base }):Play() end)
 end
-local sg = new(_l010Ol("\93\78\237\213\113\202\166\208\213"), { Name = _l010Ol("\76\100\235\209\127\207"), ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, DisplayOrder = 999 })
+local sg = new(_llIO00("\229\64\93\235\45\86\186\9\54"), { Name = _llIO00("\212\86\91\231\59\91"), ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, DisplayOrder = 999 })
 local okParent = pcall(function()
-	sg.Parent = (gethui and gethui()) or game:GetService(_l010Ol("\77\90\237\213\83\209\200"))
+	sg.Parent = (gethui and gethui()) or game:GetService(_llIO00("\213\76\93\235\15\93\220"))
 end)
-if not okParent then sg.Parent = LocalPlayer:WaitForChild(_l010Ol("\90\87\220\233\113\206\166\208\213")) end
+if not okParent then sg.Parent = LocalPlayer:WaitForChild(_llIO00("\226\73\76\255\45\90\186\9\54")) end
 state.gui = sg
 local W, H = 300, 450
-local win = new(_l010Ol("\80\93\220\221\113"), {
+local win = new(_llIO00("\216\79\76\243\45"), {
 	Size = UDim2.fromOffset(W, H),
 	Position = UDim2.fromOffset(24, 70),
 	BackgroundColor3 = WHITE,
@@ -440,21 +441,21 @@ local win = new(_l010Ol("\80\93\220\221\113"), {
 }, sg)
 corner(win, 12)
 stroke(win, T.strokeHi)
-new(_l010Ol("\95\52\194\226\109\192\200\192\218\183"), { Color = ColorSequence.new(T.bg1, T.bg0), Rotation = 90 }, win)
-local title = new(_l010Ol("\80\93\220\221\113"), { Size = UDim2.new(1, 0, 0, 50), BackgroundTransparency = 1 }, win)
-local logo = new(_l010Ol("\94\80\243\228\88\189\193\192\216"), {
+new(_llIO00("\231\38\50\248\41\76\220\249\59\171"), { Color = ColorSequence.new(T.bg1, T.bg0), Rotation = 90 }, win)
+local title = new(_llIO00("\216\79\76\243\45"), { Size = UDim2.new(1, 0, 0, 50), BackgroundTransparency = 1 }, win)
+local logo = new(_llIO00("\230\66\99\250\20\73\213\249\57"), {
 	Size = UDim2.fromOffset(140, 24),
 	Position = UDim2.fromOffset(16, 9),
 	BackgroundTransparency = 1,
-	Text = _l010Ol("\76\68\203\177\95\175"),
+	Text = _llIO00("\212\54\59\199\27\59"),
 	Font = Enum.Font.GothamBlack,
 	TextSize = 22,
 	TextColor3 = WHITE,
 	TextXAlignment = Enum.TextXAlignment.Left,
 }, title)
 local BLACK = Color3.new(0, 0, 0)
-local logoGrad = new(_l010Ol("\95\52\194\226\109\192\200\192\218\183"), { Color = ColorSequence.new(BLACK, WHITE) }, logo)
-new(_l010Ol("\95\52\206\228\126\203\202\192"), { Color = Color3.fromRGB(70, 70, 76), Thickness = 1, Transparency = 0.35 }, logo)
+local logoGrad = new(_llIO00("\231\38\50\248\41\76\220\249\59\171"), { Color = ColorSequence.new(BLACK, WHITE) }, logo)
+new(_llIO00("\231\38\62\250\58\87\222\249"), { Color = Color3.fromRGB(70, 70, 76), Thickness = 1, Transparency = 0.35 }, logo)
 do
 	local PERIOD = 3
 	local THIRD = 2 * math.pi / 3
@@ -471,40 +472,40 @@ do
 		})
 	end))
 end
-new(_l010Ol("\94\80\243\228\88\189\193\192\216"), {
+new(_llIO00("\230\66\99\250\20\73\213\249\57"), {
 	Size = UDim2.fromOffset(160, 12),
 	Position = UDim2.fromOffset(17, 33),
 	BackgroundTransparency = 1,
-	Text = _l010Ol("\76\55\208\181\44\168\174\158\183\99\231\92\12\218\15\222\52\17\197"),
+	Text = _llIO00("\212\41\64\203\232\52\194\215\24\87\247\23\39\28\1\50\121\88\145\89\170"),
 	Font = Enum.Font.GothamBold,
 	TextSize = 10,
 	TextColor3 = T.muted,
 	TextXAlignment = Enum.TextXAlignment.Left,
 }, title)
-local pill = new(_l010Ol("\80\93\220\221\113"), {
+local pill = new(_llIO00("\216\79\76\243\45"), {
 	Size = UDim2.fromOffset(90, 22),
 	Position = UDim2.new(1, -106, 0, 14),
 	BackgroundColor3 = T.panel,
 }, title)
 corner(pill, 11)
 stroke(pill)
-local statusDot = new(_l010Ol("\80\93\220\221\113"), {
+local statusDot = new(_llIO00("\216\79\76\243\45"), {
 	Size = UDim2.fromOffset(6, 6),
 	Position = UDim2.new(0, 11, 0.5, -3),
 	BackgroundColor3 = T.muted,
 }, pill)
 corner(statusDot, 3)
-local status = new(_l010Ol("\94\80\243\228\88\189\193\192\216"), {
+local status = new(_llIO00("\230\66\99\250\20\73\213\249\57"), {
 	Size = UDim2.new(1, -26, 1, 0),
 	Position = UDim2.fromOffset(23, 0),
 	BackgroundTransparency = 1,
-	Text = _l010Ol("\88\58\155\189\77\176\162\163"),
+	Text = _llIO00("\224\44\11\211\9\60\182\220"),
 	Font = Enum.Font.GothamBold,
 	TextSize = 10,
 	TextColor3 = T.muted,
 	TextXAlignment = Enum.TextXAlignment.Left,
 }, pill)
-local rule = new(_l010Ol("\80\93\220\221\113"), {
+local rule = new(_llIO00("\216\79\76\243\45"), {
 	Size = UDim2.new(1, -32, 0, 2),
 	Position = UDim2.fromOffset(16, 50),
 	BackgroundColor3 = WHITE,
@@ -512,24 +513,24 @@ local rule = new(_l010Ol("\80\93\220\221\113"), {
 }, win)
 corner(rule, 1)
 ramp(rule)
-local tabBar = new(_l010Ol("\80\93\220\221\113"), {
+local tabBar = new(_llIO00("\216\79\76\243\45"), {
 	Size = UDim2.new(1, -32, 0, 30),
 	Position = UDim2.fromOffset(16, 60),
 	BackgroundColor3 = T.panel,
 }, win)
 corner(tabBar, 8)
 stroke(tabBar)
-new(_l010Ol("\95\52\199\217\127\208\171\188\229\178\60\14"), {
+new(_llIO00("\231\38\55\239\59\92\191\245\70\166\76\201"), {
 	FillDirection = Enum.FillDirection.Horizontal,
 	SortOrder = Enum.SortOrder.LayoutOrder,
 	Padding = UDim.new(0, 3),
 }, tabBar)
-new(_l010Ol("\95\52\203\209\112\192\200\201\211"), {
+new(_llIO00("\231\38\59\231\44\76\220\2\52"), {
 	PaddingLeft = UDim.new(0, 3), PaddingRight = UDim.new(0, 3),
 	PaddingTop = UDim.new(0, 3), PaddingBottom = UDim.new(0, 3),
 }, tabBar)
 local pages, tabs = {}, {}
-local TAB_NAMES = { _l010Ol("\87\44\207\179\84"), _l010Ol("\94\61\188\185\90\165\173\162"), _l010Ol("\77\44\205\181\81\174"), _l010Ol("\80\44\205\189") }
+local TAB_NAMES = { _llIO00("\223\30\63\201\16"), _llIO00("\230\47\44\207\22\49\193\219"), _llIO00("\213\30\61\203\13\58"), _llIO00("\216\30\61\211") }
 local function selectTab(name)
 	for n, t in pairs(tabs) do
 		local on = n == name
@@ -540,7 +541,7 @@ local function selectTab(name)
 	end
 end
 for i, name in ipairs(TAB_NAMES) do
-	local b = new(_l010Ol("\94\80\243\228\78\209\211\207\219\177"), {
+	local b = new(_llIO00("\230\66\99\250\10\93\231\8\60\165"), {
 		Size = UDim2.new(1 / #TAB_NAMES, -2, 1, 0),
 		BackgroundColor3 = WHITE,
 		BackgroundTransparency = 1,
@@ -555,7 +556,7 @@ for i, name in ipairs(TAB_NAMES) do
 	local g = ramp(b)
 	g.Enabled = false
 	tabs[name] = { btn = b, grad = g }
-	local page = new(_l010Ol("\93\78\237\223\120\200\200\201\211\137\57\251\194\31"), {
+	local page = new(_llIO00("\229\64\93\245\52\84\220\2\52\125\73\182\221\97"), {
 		Size = UDim2.new(1, -24, 0, H - 146),
 		Position = UDim2.fromOffset(16, 100),
 		BackgroundTransparency = 1,
@@ -566,8 +567,8 @@ for i, name in ipairs(TAB_NAMES) do
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		Visible = false,
 	}, win)
-	new(_l010Ol("\95\52\199\217\127\208\171\188\229\178\60\14"), { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, page)
-	new(_l010Ol("\95\52\203\209\112\192\200\201\211"), { PaddingRight = UDim.new(0, 8), PaddingBottom = UDim.new(0, 6) }, page)
+	new(_llIO00("\231\38\55\239\59\92\191\245\70\166\76\201"), { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, page)
+	new(_llIO00("\231\38\59\231\44\76\220\2\52"), { PaddingRight = UDim.new(0, 8), PaddingBottom = UDim.new(0, 6) }, page)
 	pages[name] = page
 	b.MouseButton1Click:Connect(function() selectTab(name) end)
 end
@@ -577,7 +578,7 @@ local function nextOrder()
 	return order
 end
 local function section(page, text)
-	new(_l010Ol("\94\80\243\228\88\189\193\192\216"), {
+	new(_llIO00("\230\66\99\250\20\73\213\249\57"), {
 		Size = UDim2.new(1, 0, 0, 20),
 		BackgroundTransparency = 1,
 		Text = text,
@@ -590,7 +591,7 @@ local function section(page, text)
 	}, page)
 end
 local function note(page, text, color)
-	return new(_l010Ol("\94\80\243\228\88\189\193\192\216"), {
+	return new(_llIO00("\230\66\99\250\20\73\213\249\57"), {
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
@@ -604,17 +605,17 @@ local function note(page, text, color)
 	}, page)
 end
 local function toggle(page, label, key)
-	local row = new(_l010Ol("\94\80\243\228\78\209\211\207\219\177"), {
+	local row = new(_llIO00("\230\66\99\250\10\93\231\8\60\165"), {
 		Size = UDim2.new(1, 0, 0, 34),
 		BackgroundColor3 = T.panel,
 		AutoButtonColor = false,
-		Text = _l010Ol(""),
+		Text = _llIO00(""),
 		LayoutOrder = nextOrder(),
 	}, page)
 	corner(row)
 	stroke(row)
 	hover(row, T.panel, T.panelHi)
-	new(_l010Ol("\94\80\243\228\88\189\193\192\216"), {
+	new(_llIO00("\230\66\99\250\20\73\213\249\57"), {
 		Size = UDim2.new(1, -64, 1, 0),
 		Position = UDim2.fromOffset(12, 0),
 		BackgroundTransparency = 1,
@@ -624,14 +625,14 @@ local function toggle(page, label, key)
 		TextColor3 = T.text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	}, row)
-	local rail = new(_l010Ol("\80\93\220\221\113"), {
+	local rail = new(_llIO00("\216\79\76\243\45"), {
 		Size = UDim2.fromOffset(36, 18),
 		Position = UDim2.new(1, -48, 0.5, -9),
 		BackgroundColor3 = T.off,
 	}, row)
 	corner(rail, 9)
 	local g = ramp(rail)
-	local knob = new(_l010Ol("\80\93\220\221\113"), {
+	local knob = new(_llIO00("\216\79\76\243\45"), {
 		Size = UDim2.fromOffset(14, 14),
 		Position = UDim2.fromOffset(2, 2),
 		BackgroundColor3 = T.dim,
@@ -656,14 +657,14 @@ local function toggle(page, label, key)
 	render(false)
 end
 local function slider(page, label, key, min, max, step, fmt)
-	local row = new(_l010Ol("\80\93\220\221\113"), {
+	local row = new(_llIO00("\216\79\76\243\45"), {
 		Size = UDim2.new(1, 0, 0, 48),
 		BackgroundColor3 = T.panel,
 		LayoutOrder = nextOrder(),
 	}, page)
 	corner(row)
 	stroke(row)
-	new(_l010Ol("\94\80\243\228\88\189\193\192\216"), {
+	new(_llIO00("\230\66\99\250\20\73\213\249\57"), {
 		Size = UDim2.new(1, -90, 0, 20),
 		Position = UDim2.fromOffset(12, 5),
 		BackgroundTransparency = 1,
@@ -673,7 +674,7 @@ local function slider(page, label, key, min, max, step, fmt)
 		TextColor3 = T.text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	}, row)
-	local val = new(_l010Ol("\94\80\243\228\88\189\193\192\216"), {
+	local val = new(_llIO00("\230\66\99\250\20\73\213\249\57"), {
 		Size = UDim2.fromOffset(76, 20),
 		Position = UDim2.new(1, -88, 0, 5),
 		BackgroundTransparency = 1,
@@ -682,18 +683,18 @@ local function slider(page, label, key, min, max, step, fmt)
 		TextColor3 = T.accent,
 		TextXAlignment = Enum.TextXAlignment.Right,
 	}, row)
-	local bar = new(_l010Ol("\94\80\243\228\78\209\211\207\219\177"), {
+	local bar = new(_llIO00("\230\66\99\250\10\93\231\8\60\165"), {
 		Size = UDim2.new(1, -24, 0, 4),
 		Position = UDim2.fromOffset(12, 33),
 		BackgroundColor3 = T.off,
 		AutoButtonColor = false,
-		Text = _l010Ol(""),
+		Text = _llIO00(""),
 	}, row)
 	corner(bar, 2)
-	local fill = new(_l010Ol("\80\93\220\221\113"), { BackgroundColor3 = WHITE, BorderSizePixel = 0 }, bar)
+	local fill = new(_llIO00("\216\79\76\243\45"), { BackgroundColor3 = WHITE, BorderSizePixel = 0 }, bar)
 	corner(fill, 2)
 	ramp(fill)
-	local knob = new(_l010Ol("\80\93\220\221\113"), {
+	local knob = new(_llIO00("\216\79\76\243\45"), {
 		Size = UDim2.fromOffset(12, 12),
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		BackgroundColor3 = T.spark,
@@ -733,9 +734,9 @@ local function slider(page, label, key, min, max, step, fmt)
 	set(cfg[key])
 end
 local function button(page, label, kind, fn)
-	local primary = kind == _l010Ol("\122\93\228\221\109\206\216")
+	local primary = kind == _llIO00("\2\79\84\243\41\90\236")
 	local base = primary and WHITE or T.panelHi
-	local b = new(_l010Ol("\94\80\243\228\78\209\211\207\219\177"), {
+	local b = new(_llIO00("\230\66\99\250\10\93\231\8\60\165"), {
 		Size = UDim2.new(1, 0, 0, 34),
 		BackgroundColor3 = base,
 		AutoButtonColor = false,
@@ -764,81 +765,81 @@ local function flash(b, text, restore, secs)
 	end)
 end
 local P = pages.MATCH
-section(P, _l010Ol("\76\44\199\188"))
-toggle(P, _l010Ol("\76\76\231\220\44\169\192\194\218\168\59"), _l010Ol("\119\76\226\222\113\208"))
-slider(P, _l010Ol("\87\76\226\222\113\208\127\205\205\177\46\255"), _l010Ol("\119\76\226\222\113\208\177\188\218\170\44"), 10, 80, 1, _l010Ol("\47\79\155\227\128\209\195\206"))
-slider(P, _l010Ol("\87\76\226\222\113\208\127\206\224\181\44\8\188\46\87"), _l010Ol("\119\76\226\222\113\208\175\202\227\168\57"), 0.1, 1, 0.05, _l010Ol("\47\25\173\214"))
-slider(P, _l010Ol("\94\90\240\211\116\124\209\192\205\166\47"), _l010Ol("\124\80\220\211\116"), 1, 4, 0.1, _l010Ol("\47\25\172\214\132"))
-slider(P, _l010Ol("\94\76\222\219\120\193\127\205\209\164\42\2"), _l010Ol("\126\76\222\219\120\193"), 1, 3, 0.1, _l010Ol("\47\25\172\214\132"))
-toggle(P, _l010Ol("\95\89\238\228\113\189\203\188\206\175\44"), _l010Ol("\127\89\238\228\113\189\203\188\206\175\44"))
+section(P, _llIO00("\212\30\55\210"))
+toggle(P, _llIO00("\212\62\87\242\232\53\212\251\59\156\75"), _llIO00("\255\62\82\244\45\92"))
+slider(P, _llIO00("\223\62\82\244\45\92\147\6\46\165\62\186"), _llIO00("\255\62\82\244\45\92\197\245\59\158\60"), 10, 80, 1, _llIO00("\183\65\11\249\60\93\215\7"))
+slider(P, _llIO00("\223\62\82\244\45\92\147\7\65\169\60\195\215\112\73"), _llIO00("\255\62\82\244\45\92\195\3\68\156\73"), 0.1, 1, 0.05, _llIO00("\183\11\29\236"))
+slider(P, _llIO00("\230\76\96\233\48\8\229\249\46\154\63"), _llIO00("\4\66\76\233\48"), 1, 4, 0.1, _llIO00("\183\11\28\236\64"))
+slider(P, _llIO00("\230\62\78\241\52\77\147\6\50\152\58\189"), _llIO00("\6\62\78\241\52\77"), 1, 3, 0.1, _llIO00("\183\11\28\236\64"))
+toggle(P, _llIO00("\231\75\94\250\45\73\223\245\47\163\60"), _llIO00("\7\75\94\250\45\73\223\245\47\163\60"))
 local takeBtn
-takeBtn = button(P, _l010Ol("\94\44\198\181\44\158\160\167\184\99\231\186\176\1\76"), _l010Ol("\122\93\228\221\109\206\216"), function()
+takeBtn = button(P, _llIO00("\230\30\54\203\232\42\180\224\25\87\247\117\203\67\62"), _llIO00("\2\79\84\243\41\90\236"), function()
 	local ok, why = takeBall()
-	if not ok then flash(takeBtn, string.upper(why), _l010Ol("\94\44\198\181\44\158\160\167\184\99\231\186\176\1\76")) end
+	if not ok then flash(takeBtn, string.upper(why), _llIO00("\230\30\54\203\232\42\180\224\25\87\247\117\203\67\62")) end
 end)
-section(P, _l010Ol("\87\58\209\181\89\161\173\175"))
-slider(P, _l010Ol("\93\91\224\213\112"), _l010Ol("\125\91\224\213\112"), 1, 3, 0.05, _l010Ol("\47\25\173\214\132"))
-toggle(P, _l010Ol("\83\89\225\217\122\197\211\192\140\150\59\251\194\35\93\201"), _l010Ol("\115\89\225\195\128\189\204\196\218\164"))
-section(P, _l010Ol("\93\51\202\191\96\165\173\162"))
-slider(P, _l010Ol("\93\83\234\228\44\204\206\210\209\181"), _l010Ol("\125\83\234\228\92\203\214\192\222"), 1, 3, 0.1, _l010Ol("\47\25\172\214\132"))
-toggle(P, _l010Ol("\83\89\238\228\109\124\166\202\205\175\231\9\195\218\98\208\113\87"), _l010Ol("\115\89\238\228\109\163\206\188\216"))
+section(P, _llIO00("\223\44\65\203\21\45\193\232"))
+slider(P, _llIO00("\229\77\80\235\44"), _llIO00("\5\77\80\235\44"), 1, 3, 0.05, _llIO00("\183\11\29\236\64"))
+toggle(P, _llIO00("\219\75\81\239\54\81\231\249\237\138\75\182\221\101\79\29"), _llIO00("\251\75\81\217\60\73\224\253\59\152"))
+section(P, _llIO00("\229\37\58\213\28\49\193\219"))
+slider(P, _llIO00("\229\69\90\250\232\88\226\11\50\169"), _llIO00("\5\69\90\250\24\87\234\249\63"), 1, 3, 0.1, _llIO00("\183\11\28\236\64"))
+toggle(P, _llIO00("\219\75\94\250\41\8\186\3\46\163\247\196\222\28\84\36\182\158"), _llIO00("\251\75\94\250\41\47\226\245\57"))
 local goalBtn
-goalBtn = button(P, _l010Ol("\93\46\202\194\81\124\173\170\195\99\231\186\176\2\76"), _l010Ol("\113\83\234\227\128"), function()
+goalBtn = button(P, _llIO00("\229\32\58\216\13\8\193\227\36\87\247\117\203\68\62"), _llIO00("\249\69\90\249\60"), function()
 	local ok, why = scoreNow()
-	if not ok then flash(goalBtn, string.upper(why), _l010Ol("\93\46\202\194\81\124\173\170\195\99\231\186\176\2\76")) end
+	if not ok then flash(goalBtn, string.upper(why), _llIO00("\229\32\58\216\13\8\193\227\36\87\247\117\203\68\62")) end
 end)
 if #classes == 0 then
-	note(P, _l010Ol("\87\76\239\211\116\175\200\200\140\177\54\14\117\32\94\221\112\71\191\113\190\23\148\79\178\243\58\172\251\231\87\48\79\132\114\89\47\245\223\3\140\25\167\120\23\3\166\250\183"), T.danger)
+	note(P, _llIO00("\223\62\95\233\48\59\220\1\237\165\70\201\144\98\80\49\181\142\138\75\202\16\246\252\177\101\194\28\28\93\39\20\73\49\1\37\87\115\103\217\241\56\112\59\213\175\232\187\194"), T.danger)
 end
-section(P, _l010Ol("\93\54\196\192"))
-toggle(P, _l010Ol("\93\86\228\224\44\163\206\188\216\99\8\8\190\39\80\220\107\82\255"), _l010Ol("\125\86\228\224\83\203\192\199\173\177\48\7"))
-toggle(P, _l010Ol("\93\86\228\224\44\175\202\196\216\175\231\221\202\46\98\203\103\81\246\196"), _l010Ol("\125\86\228\224\79\209\211\206\207\168\53\255\200"))
+section(P, _llIO00("\229\40\52\214"))
+toggle(P, _llIO00("\229\72\84\246\232\47\226\245\57\87\24\195\217\105\66\48\176\153\202"), _llIO00("\5\72\84\246\15\87\212\0\14\165\64\194"))
+toggle(P, _llIO00("\229\72\84\246\232\59\222\253\57\163\247\152\229\112\84\31\172\152\193\158"), _llIO00("\5\72\84\246\11\93\231\7\48\156\69\186\227"))
 if state.bridges == 0 then
-	note(P, _l010Ol("\90\83\244\227\117\191\210\157\222\172\43\1\186\218\93\215\118\3\247\192\225\32\142\14\105\215\127\181\252\236\165\222\75\197\100\4\51\58\152\13\156\103\84\137\13\255\86\249\236\247\255\221\101\242"), T.danger)
+	note(P, _llIO00("\226\69\100\249\49\75\230\214\63\160\59\188\213\28\79\43\187\74\194\154\237\25\240\187\104\73\7\37\29\98\117\194\69\114\243\208\91\184\32\227\1\134\29\76\203\171\152\186\247\57\17\25\216\65"), T.danger)
 end
 P = pages.TRAINING
-section(P, _l010Ol("\59\65\172\144\96\174\160\164\186\140\21\225"))
-toggle(P, _l010Ol("\75\96\239\223\44\163\209\192\209\177"), _l010Ol("\107\96\239\223\83\206\196\192\218"))
-toggle(P, _l010Ol("\75\96\239\223\44\176\209\188\213\177\231\223\203\31\97\225\113\81\246"), _l010Ol("\107\96\239\223\96\206\192\196\218"))
-toggle(P, _l010Ol("\88\90\155\196\126\189\200\201\155\133\54\8\185\218\50\215\113\79\245\192\227\32"), _l010Ol("\120\90\190\223\123\200\195\202\227\177"))
-section(P, _l010Ol("\76\58\201\180"))
-toggle(P, _l010Ol("\75\96\239\223\44\158\206\201\208"), _l010Ol("\107\96\239\223\78\203\205\191"))
-note(P, _l010Ol("\75\96\239\223\44\176\209\188\213\177\231\251\195\30\15\169\119\87\0\113\174\33\152\68\105\245\140\176\0\246\87\50\82\188\32\84\34\67\208\7\78\108\84\132\28\8\86\232\254\249\10\220\95\55\171\4\140\1\76\120\32\224\6\252\200\114\216\207\150\218\35\14\213\81\131\239\157\118\84\111\8\229\193\132\204\164\59\228\207\32\24\29\238"))
+section(P, _llIO00("\195\51\28\166\28\58\180\221\27\128\37\156"))
+toggle(P, _llIO00("\211\82\95\245\232\47\229\249\50\165"), _llIO00("\243\82\95\245\15\90\216\249\59"))
+toggle(P, _llIO00("\211\82\95\245\232\60\229\245\54\165\247\154\230\97\83\53\182\152\193"), _llIO00("\243\82\95\245\28\90\212\253\59"))
+toggle(P, _llIO00("\224\76\11\218\58\73\220\2\252\121\70\195\212\28\36\43\182\150\192\154\239\25"), _llIO00("\0\76\46\245\55\84\215\3\68\165"))
+section(P, _llIO00("\212\44\57\202"))
+toggle(P, _llIO00("\211\82\95\245\232\42\226\2\49"), _llIO00("\243\82\95\245\10\87\225\248"))
+note(P, _llIO00("\211\82\95\245\232\60\229\245\54\165\247\182\222\96\1\253\188\158\203\75\186\26\250\241\104\103\20\32\33\108\39\22\76\105\175\32\74\193\88\221\179\139\29\71\218\180\152\169\9\59\28\24\210\134\234\247\61\132\67\41\101\133\27\236\121\215\116\173\250\153\133\85\243\203\3\209\35\75\45\53\243\79\74\84\84\150\171\250\139\172\44\86\79"))
 P = pages.CAREER
-section(P, _l010Ol("\93\54\196\188\88\124\175\170\181\145\27\237"))
+section(P, _llIO00("\229\40\52\210\20\8\195\227\22\133\43\168"))
 do
 	local SP_STEP = 110
 	local spBtn
 	local busy = false
-	local label = _l010Ol("\53") .. SP_STEP .. _l010Ol("\42\62\198\185\88\168\127\171\187\140\21\238\168")
-	spBtn = button(P, label, _l010Ol("\122\93\228\221\109\206\216"), function()
+	local label = _llIO00("\189") .. SP_STEP .. _llIO00("\178\48\54\207\20\52\147\228\28\128\37\169\195")
+	spBtn = button(P, label, _llIO00("\2\79\84\243\41\90\236"), function()
 		if busy then return end
 		busy = true
 		local msg
 		local ok, err = pcall(function()
-			local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_l010Ol("\77\83\220\226\109\191\211\192\222\152\48")):WaitForChild(_l010Ol("\75\78\239\217\130\193\178\199\219\183\26\14\182\46\84")))
+			local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_llIO00("\213\69\76\248\41\75\231\249\63\140\64")):WaitForChild(_llIO00("\211\64\95\239\62\77\198\0\60\171\42\201\209\112\70")))
 			local idx, slot = AS.get()
 			if not slot then
-				msg = _l010Ol("\86\58\188\180\44\157\127\174\184\146\27\186\155\3\65\187\86")
+				msg = _llIO00("\222\44\44\202\232\41\147\231\25\134\43\117\182\69\51\15\155")
 				return
 			end
 			slot.skillPoints = (slot.skillPoints or 0) + SP_STEP
 			AS.notifyExternalChange()
-			local saved = RS:WaitForChild(_l010Ol("\93\87\234\228\94\193\204\202\224\168\58")):WaitForChild(_l010Ol("\93\76\241\213\95\200\206\207")):InvokeServer(idx, slot)
-			msg = (saved and _l010Ol("\93\44\209\181\80\150\127") or _l010Ol("\88\58\207\144\95\157\181\160\176\125\231")) .. tostring(slot.skillPoints) .. _l010Ol("\42\62\203")
+			local saved = RS:WaitForChild(_llIO00("\229\73\90\250\26\77\224\3\65\156\74")):WaitForChild(_llIO00("\229\62\97\235\27\84\226\8")):InvokeServer(idx, slot)
+			msg = (saved and _llIO00("\229\30\65\203\12\34\147") or _llIO00("\224\44\63\166\27\41\201\217\17\113\247")) .. tostring(slot.skillPoints) .. _llIO00("\178\48\59")
 		end)
-		if not ok then warn(_l010Ol("\101\45\244\224\109\207\210\184\140\182\50\3\193\38\15\216\113\76\255\197\223\236"), err) end
-		flash(spBtn, ok and msg or _l010Ol("\79\61\205\191\94"), label, 1.5)
+		if not ok then warn(_llIO00("\237\31\100\246\41\91\230\241\237\170\66\190\220\104\1\44\182\147\202\159\235\229"), err) end
+		flash(spBtn, ok and msg or _llIO00("\215\47\61\213\26"), label, 1.5)
 		task.delay(1.5, function() busy = false end)
 	end)
-	note(P, _l010Ol("\79\76\222\216\44\191\203\196\207\174\231\251\185\30\98\136") .. SP_STEP .. _l010Ol("\42\76\233\212\44\207\192\209\209\182\231\19\196\47\97\136\117\79\0\197\154\210\124\69\179\244\131\185\173\242\165\33\79\119\116\83\225\56\211\0\138\100\84\137\13\255\86\249\238\247\12\210\99\228\234\73\137\6\76\118\47\169"))
+	note(P, _llIO00("\215\62\78\238\232\75\223\253\48\162\247\182\212\96\84\220") .. SP_STEP .. _llIO00("\178\62\89\234\232\91\212\10\50\170\247\206\223\113\83\220\186\150\203\159\166\203\222\242\178\102\11\41\206\104\117\5\73\36\3\31\9\182\91\214\239\131\29\76\203\171\152\186\249\57\30\14\214\51\41\60\58\137\67\39\116\78"))
 end
-section(P, _l010Ol("\59\27\171\144\83\171\160\167\140\134\15\219\161\6\52\182\73\40"))
+section(P, _llIO00("\195\13\27\166\15\55\180\224\237\122\31\150\188\72\38\10\142\111"))
 do
-	local hc = require(RS:WaitForChild(_l010Ol("\79\82\234\195\116\189\209\192\208"))).hundredChallenge
-	local FINISH = hc.minTime + 0.6
-	local PACE = FINISH / hc.goals
-	local run = { t0 = nil, lastSeen = 0, fired = setmetatable({}, { __mode = _l010Ol("\117") }) }
+	local hc = require(RS:WaitForChild(_llIO00("\215\68\90\217\48\73\229\249\49"))).hundredChallenge
+	local OVERHEAD = 0.5
+	local function finishAt() return math.max(1, cfg.hundredTime - OVERHEAD) end
+	local run = { t0 = nil, lastSeen = 0, fired = setmetatable({}, { __mode = _llIO00("\253") }) }
 	local function hit(btn)
 		if firesignal then
 			pcall(firesignal, btn.MouseButton1Down)
@@ -851,25 +852,28 @@ do
 	local function scan(frame)
 		local goals, target = nil, nil
 		for _, d in ipairs(frame:GetDescendants()) do
-			if d:IsA(_l010Ol("\94\80\243\228\88\189\193\192\216")) then
-				local n = tonumber(string.match(d.Text, _l010Ol("\104\50\202\177\88\175\153\123\148\104\43\197\126\233")))
+			if d:IsA(_llIO00("\230\66\99\250\20\73\213\249\57")) then
+				local n = tonumber(string.match(d.Text, _llIO00("\240\36\58\199\20\59\173\180\245\92\59\128\153\43")))
 				if n and (not goals or n > goals) then goals = n end
-			elseif d:IsA(_l010Ol("\94\80\243\228\78\209\211\207\219\177")) and d.Text == _l010Ol("") and not run.fired[d] then
+			elseif d:IsA(_llIO00("\230\66\99\250\10\93\231\8\60\165")) and d.Text == _llIO00("") and not run.fired[d] then
 				local p = d.Parent
-				local c = p and p:FindFirstChildOfClass(_l010Ol("\95\52\190\223\126\202\196\205"))
-				if c and c.CornerRadius.Offset == 999 and p:FindFirstChildOfClass(_l010Ol("\95\52\206\228\126\203\202\192")) then
+				local c = p and p:IsA(_llIO00("\216\79\76\243\45")) and p:FindFirstChildOfClass(_llIO00("\231\38\46\245\58\86\216\6"))
+				if c and p:FindFirstChildOfClass(_llIO00("\231\38\62\250\58\87\222\249"))
+					and (c.CornerRadius.Offset >= 30 or c.CornerRadius.Scale >= 0.5)
+					and p.AbsoluteSize.X > 0 and p.AbsoluteSize.X < 300 then
 					target = d
 				end
 			end
 		end
 		return goals, target
 	end
-	toggle(P, _l010Ol("\75\96\239\223\44\141\143\139\140\138\54\251\193\45"), _l010Ol("\107\96\239\223\84\209\205\191\222\168\43"))
-	note(P, (_l010Ol("\89\91\224\222\44\208\199\192\140\166\47\251\193\38\84\214\105\72\177\178\218\22\74\80\187\234\141\190\173\204\94\11\10\169\69\37\5\46\166\187\155\97\153\53\25\251\168\237\238\249\9\141\88\41\243\4\129\251\160\45\33\234\8\252\205\121\232\221\100\188\38\14\205\91\52\226\156\115\11\111\246\40\182\135\126\179\62\228\198\25\33\24\51\255\59\87\23\46\193\225\132\104\75\24\236\38\241\157\11\60\211\191\85\63\240\50\177\16\198\174\122\155\223\97\224\183\237\204\109\97\170\59\75\82\94\41\174\134\58\88\226\84\228\198\129\239\15\148\27\140")):format(FINISH, hc.minTime))
+	toggle(P, _llIO00("\211\82\95\245\232\25\163\196\237\126\70\182\220\111"), _llIO00("\243\82\95\245\16\93\225\248\63\156\59"))
+	slider(P, _llIO00("\216\70\89\239\59\80\147\8\54\164\60"), _llIO00("\250\82\89\234\58\77\215\232\54\164\60"), hc.minTime - 1, hc.minTime + 3, 0.1, _llIO00("\183\11\28\236\59"))
+	note(P, (_llIO00("\225\77\80\244\232\92\219\249\237\154\63\182\220\104\70\42\174\143\124\140\230\15\172\253\186\92\21\46\206\66\46\239\4\86\212\241\45\172\46\145\0\128\98\248\215\167\234\174\249\59\27\201\203\120\50\247\50\126\151\222\102\143\29\236\126\222\132\185\200\100\57\97\232\213\7\200\35\17\228\24\229\163\250\103\78\150\95\78\133\169\44\8\149\243\144\201\55\181\167\134\0\240\208\242\52\110\85\77\0\107\104\116\101\188\205\90\102\120\8\104\176\199\176\56\0\224\185\145\215\7\53\9\81\136\113\106\216\208\134\75\127\204\218\119\196\232\114\91\121\44\201\1\93\168\223\189\65\214\91\24\125\170\56\92\35\216\122\139\136\172\231\78\198\213\109\133\187\56\171\29\138\5\242\215\84\242\109\71\64\180\84\161\89\19\190\207\187\207")):format(hc.minTime))
 	track(RunService.Heartbeat:Connect(function()
 		if not cfg.autoHundred then return end
-		local pg = LocalPlayer:FindFirstChildOfClass(_l010Ol("\90\87\220\233\113\206\166\208\213"))
-		local frame = pg and pg:FindFirstChild(_l010Ol("\81\90\220\220\94\209\210\195\178\181\40\7\186"), true)
+		local pg = LocalPlayer:FindFirstChildOfClass(_llIO00("\226\73\76\255\45\90\186\9\54"))
+		local frame = pg and pg:FindFirstChild(_llIO00("\217\76\76\242\26\93\230\252\19\169\56\194\213"), true)
 		if not frame then
 			run.t0 = nil
 			return
@@ -882,18 +886,19 @@ do
 		end
 		run.lastSeen = now
 		goals = goals or 0
-		if not run.t0 or goals == 0 and now - run.t0 > FINISH then
+		local finish = finishAt()
+		if not run.t0 or goals == 0 and now - run.t0 > finish then
 			run.t0 = now
 		end
-		if now >= run.t0 + (goals + 1) * PACE then
+		if now >= run.t0 + (goals + 1) * finish / hc.goals then
 			run.fired[target] = true
 			hit(target)
 		end
 	end))
 end
-section(P, _l010Ol("\80\55\202\199\44\172\168\158\183"))
+section(P, _llIO00("\216\41\58\221\232\56\188\215\24"))
 do
-	local FD = require(RS:WaitForChild(_l010Ol("\80\87\234\231\80\189\211\188")))
+	local FD = require(RS:WaitForChild(_llIO00("\216\73\90\253\12\73\231\245")))
 	local pick = { aura = 0, technique = 0 }
 	local lists = { aura = FD.auras, technique = FD.techniques }
 	local function chosen(kind)
@@ -911,52 +916,52 @@ do
 		local b
 		local function render()
 			local e = chosen(kind)
-			b.Text = title .. _l010Ol("\68\11\155") .. (e and (e.name .. _l010Ol("\42\11\163") .. e.rarity .. _l010Ol("\51")) or _l010Ol("\55"))
+			b.Text = title .. _llIO00("\204\253\11") .. (e and (e.name .. _llIO00("\178\253\19") .. e.rarity .. _llIO00("\187")) or _llIO00("\191"))
 		end
-		b = button(P, _l010Ol(""), _l010Ol("\113\83\234\227\128"), function()
+		b = button(P, _llIO00(""), _llIO00("\249\69\90\249\60"), function()
 			pick[kind] = (pick[kind] + 1) % (#lists[kind] + 1)
 			render()
 		end)
 		render()
 	end
-	cycler(_l010Ol("\107\96\237\209"), _l010Ol("\75\64\205\177"))
-	cycler(_l010Ol("\126\80\222\216\122\197\208\208\209"), _l010Ol("\94\48\190\184\90\165\176\176\177"))
-	toggle(P, _l010Ol("\92\84\226\144\82\200\206\210\140\150\55\3\195\45"), _l010Ol("\124\84\226\182\120\203\214"))
+	cycler(_llIO00("\243\82\93\231"), _llIO00("\211\50\61\199"))
+	cycler(_llIO00("\6\66\78\238\54\81\228\9\50"), _llIO00("\230\34\46\206\22\49\196\233\18"))
+	toggle(P, _llIO00("\228\70\82\166\14\84\226\11\237\138\71\190\222\111"), _llIO00("\4\70\82\204\52\87\234"))
 	local setBtn
-	local SET_LABEL = _l010Ol("\93\48\207\144\90\171\182\123\140\107\21\233\117\13\63\177\80\12")
-	setBtn = button(P, SET_LABEL, _l010Ol("\122\93\228\221\109\206\216"), function()
+	local SET_LABEL = _llIO00("\229\34\63\166\22\55\202\180\237\95\37\164\144\79\49\5\149\83")
+	setBtn = button(P, SET_LABEL, _llIO00("\2\79\84\243\41\90\236"), function()
 		local msg
 		local ok, err = pcall(function()
-			local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_l010Ol("\77\83\220\226\109\191\211\192\222\152\48")):WaitForChild(_l010Ol("\75\78\239\217\130\193\178\199\219\183\26\14\182\46\84")))
+			local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_llIO00("\213\69\76\248\41\75\231\249\63\140\64")):WaitForChild(_llIO00("\211\64\95\239\62\77\198\0\60\171\42\201\209\112\70")))
 			local idx, slot = AS.get()
 			if not slot then
-				msg = _l010Ol("\86\58\188\180\44\157\127\174\184\146\27\186\155\3\65\187\86")
+				msg = _llIO00("\222\44\44\202\232\41\147\231\25\134\43\117\182\69\51\15\155")
 				return
 			end
-			local a, t = chosen(_l010Ol("\107\96\237\209")), chosen(_l010Ol("\126\80\222\216\122\197\208\208\209"))
+			local a, t = chosen(_llIO00("\243\82\93\231")), chosen(_llIO00("\6\66\78\238\54\81\228\9\50"))
 			if not a and not t then
-				msg = _l010Ol("\90\52\190\187\44\171\173\160\140\137\16\236\168\14")
+				msg = _llIO00("\226\38\46\209\232\55\193\217\237\125\32\167\195\80")
 				return
 			end
 			local flow = FD.ensure(slot)
 			if a then flow.aura = a.name end
 			if t then flow.technique = t.name end
 			AS.notifyExternalChange()
-			local saved = RS:WaitForChild(_l010Ol("\93\87\234\228\94\193\204\202\224\168\58")):WaitForChild(_l010Ol("\93\76\241\213\95\200\206\207")):InvokeServer(idx, slot)
-			msg = saved and _l010Ol("\93\44\209\181\80") or _l010Ol("\88\58\207\144\95\157\181\160\176")
+			local saved = RS:WaitForChild(_llIO00("\229\73\90\250\26\77\224\3\65\156\74")):WaitForChild(_llIO00("\229\62\97\235\27\84\226\8")):InvokeServer(idx, slot)
+			msg = saved and _llIO00("\229\30\65\203\12") or _llIO00("\224\44\63\166\27\41\201\217\17")
 		end)
-		if not ok then warn(_l010Ol("\101\45\244\224\109\207\210\184\140\169\51\9\204\218\95\209\101\78\203"), err) end
-		flash(setBtn, ok and msg or _l010Ol("\79\61\205\191\94"), SET_LABEL, 1.5)
+		if not ok then warn(_llIO00("\237\31\100\246\41\91\230\241\237\157\67\196\231\28\81\37\170\149\150"), err) end
+		flash(setBtn, ok and msg or _llIO00("\215\47\61\213\26"), SET_LABEL, 1.5)
 	end)
-	note(P, _l010Ol("\77\87\228\211\119\124\192\123\222\178\62\186\201\41\15\203\123\70\253\182\140\38\146\82\184\250\129\179\173\247\159\35\10\195\105\87\53\3\139\238\140\109\84\99\20\17\86\253\251\238\10\210\100\228\232\88\57\5\160\127\28\228\253\68\200\42\231\30\100\238\38\34\211\8\135\237\153\130\25\31\231\46\184\67\164\171\62\59\128\3\35\24\46\10\59\91\10\121\168\47\118\171\77\10\224\76\234\163\20\249\225\2\83\60\240\128\101\30\116\167\140\151\223\98\235\182\246\137\101\79\248\62\253\72\88\225\190\135\72\170\141\86\233\196\122\239\18\165\27\195\58\35\249\233\126\113\30\170\145\3\158\180\164\194\89\126\19\151\38\251\136\56\250\112\118\122\52\94\210\180\98\199\5\48\30\250\89\108\121\191\242\252\89\146\226\86\157\140\77\205\247\45\200\223\206\224\130\177\51\193\80\34\176\170\76\151\162\162\163\53\250\218\139\172\56\159\53\37\210\145\177\164\110\33\135\195\12\140\205\117\125\248\33\73\69\27\5\29\162\223\25\44\116\75\151\207\105\198\130\203\136\161\40\182\193\31\78\207\99\67\187"))
+	note(P, _llIO00("\213\73\84\233\51\8\212\180\63\166\78\117\228\107\1\31\192\141\200\144\152\31\244\255\183\108\9\35\206\109\111\7\4\112\248\35\93\129\19\196\241\140\29\38\210\189\152\190\6\48\28\14\215\51\39\75\234\136\151\48\97\137\18\52\121\143\131\252\200\173\136\105\241\130\7\207\31\87\242\229\210\152\65\19\44\157\174\81\60\143\55\81\143\254\75\22\37\187\154\131\187\242\24\228\236\69\76\80\19\107\105\114\116\178\192\100\95\203\3\115\180\21\103\56\80\213\191\76\35\251\58\255\8\138\106\29\49\214\135\157\62\217\224\117\191\148\39\149\204\40\214\1\93\168\224\184\60\36\17\229\36\137\125\136\68\232\156\103\174\237\248\78\182\252\138\179\149\82\226\111\125\9\247\132\99\65\36\70\133\184\84\169\88\4\106\198\190\2\29\177\241\218\87\171\246\94\10\135\152\224\25\229\110\86\142\88\173\228\181\113\109\41\202\159\233\34\44\214\23\54\198\148\31\134\35\161\112\75\47\188\155\114\161\43\203\240\222\227\141\73\162\252\252\61\7\229\37\82\150\4\233\149\56\113\220\97\64\35\168\138\134"))
 end
-section(P, _l010Ol("\97\48\188\192\91\170\127\173\187\143\19"))
+section(P, _llIO00("\233\34\44\214\23\54\147\230\28\131\35"))
 do
-	local EgoClient = require(RS:WaitForChild(_l010Ol("\79\82\234\179\120\197\196\201\224")))
-	local WD = require(RS:WaitForChild(_l010Ol("\97\80\220\224\123\202\163\188\224\164")))
+	local EgoClient = require(RS:WaitForChild(_llIO00("\215\68\90\201\52\81\216\2\65")))
+	local WD = require(RS:WaitForChild(_llIO00("\233\66\76\246\55\86\183\245\65\152")))
 	local RANKS = {}
 	for i, o in ipairs(WD.rarityOdds) do RANKS[o.rarity] = i end
-	local targets = { _l010Ol("\79\91\228\211"), _l010Ol("\86\80\226\213\122\192\192\205\229"), _l010Ol("\87\100\239\216\117\191"), _l010Ol("\97\90\237\220\112\124\162\199\205\182\58") }
+	local targets = { _llIO00("\215\77\84\233"), _llIO00("\222\66\82\235\54\76\212\6\70"), _llIO00("\223\86\95\238\49\75"), _llIO00("\233\76\93\242\44\8\182\0\46\170\74") }
 	local pick = { target = 2, index = 1, lucky = false }
 	local running, stop = false, false
 	local info, startBtn
@@ -968,51 +973,51 @@ do
 			if wait > 0 then task.wait(wait) end
 			r = EgoClient.call(...)
 			lastCall = os.clock()
-			if r.status ~= _l010Ol("\108\96\238\233") then break end
+			if r.status ~= _llIO00("\244\82\94\255") then break end
 			task.wait(2)
 		end
 		return r
 	end
 	local tb
-	tb = button(P, _l010Ol(""), _l010Ol("\113\83\234\227\128"), function()
+	tb = button(P, _llIO00(""), _llIO00("\249\69\90\249\60"), function()
 		pick.target = pick.target % #targets + 1
-		tb.Text = _l010Ol("\93\63\202\192\44\157\179\149\140\99") .. targets[pick.target] .. _l010Ol("\42\90\237\144\110\193\211\207\209\181")
+		tb.Text = _llIO00("\229\49\58\214\232\41\199\206\237\87") .. targets[pick.target] .. _llIO00("\178\76\93\166\42\77\231\8\50\169")
 	end)
-	tb.Text = _l010Ol("\93\63\202\192\44\157\179\149\140\99") .. targets[pick.target] .. _l010Ol("\42\90\237\144\110\193\211\207\209\181")
+	tb.Text = _llIO00("\229\49\58\214\232\41\199\206\237\87") .. targets[pick.target] .. _llIO00("\178\76\93\166\42\77\231\8\50\169")
 	local ib
-	ib = button(P, _l010Ol("\97\48\188\192\91\170\127\174\184\146\27\212\117\218\32"), _l010Ol("\113\83\234\227\128"), function()
+	ib = button(P, _llIO00("\233\34\44\214\23\54\147\231\25\134\43\143\144\28\18"), _llIO00("\249\69\90\249\60"), function()
 		pick.index = pick.index == 1 and 2 or 1
-		ib.Text = _l010Ol("\97\48\188\192\91\170\127\174\184\146\27\212\117\218") .. pick.index
+		ib.Text = _llIO00("\233\34\44\214\23\54\147\231\25\134\43\143\144\28") .. pick.index
 	end)
 	local lb
-	lb = button(P, _l010Ol("\95\62\192\144\88\177\162\166\197\99\25\233\161\6\66\162\34\3\224\151\178"), _l010Ol("\113\83\234\227\128"), function()
+	lb = button(P, _llIO00("\231\48\48\166\20\61\182\223\38\87\41\164\188\72\52\246\103\74\171\113\190"), _llIO00("\249\69\90\249\60"), function()
 		pick.lucky = not pick.lucky
-		lb.Text = _l010Ol("\95\62\192\144\88\177\162\166\197\99\25\233\161\6\66\162\34\3") .. (pick.lucky and _l010Ol("\89\57") or _l010Ol("\89\49\193"))
+		lb.Text = _llIO00("\231\48\48\166\20\61\182\223\38\87\41\164\188\72\52\246\103\74") .. (pick.lucky and _llIO00("\225\43") or _llIO00("\225\35\49"))
 	end)
 	local function rarityOf(res)
-		local w = type(res.weapons) == _l010Ol("\126\76\221\220\113") and (res.weapons[pick.index] or res.weapons[tostring(pick.index)])
+		local w = type(res.weapons) == _llIO00("\6\62\77\242\45") and (res.weapons[pick.index] or res.weapons[tostring(pick.index)])
 		if not w then return nil end
 		local def = w.weaponName and WD.byWeaponName(w.weaponName)
 		return (def and def.rarity) or w.rarity, w.weaponName
 	end
 	local function run()
-		local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_l010Ol("\77\83\220\226\109\191\211\192\222\152\48")):WaitForChild(_l010Ol("\75\78\239\217\130\193\178\199\219\183\26\14\182\46\84")))
+		local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_llIO00("\213\69\76\248\41\75\231\249\63\140\64")):WaitForChild(_llIO00("\211\64\95\239\62\77\198\0\60\171\42\201\209\112\70")))
 		local slot, data = AS.get()
 		if not data then
-			info.Text = _l010Ol("\86\90\220\212\44\189\127\206\216\178\59\186\187\35\97\219\118\17")
+			info.Text = _llIO00("\222\76\76\234\232\73\147\7\57\166\75\117\214\101\83\47\187\88")
 			return
 		end
 		local cur = data.weapons and data.weapons[pick.index]
 		local want = RANKS[targets[pick.target]]
 		if cur and (RANKS[cur.rarity] or 0) >= want then
-			info.Text = _l010Ol("\94\83\220\228\44\211\196\188\220\178\53\186\190\45\15\201\110\85\246\178\208\43\74") .. tostring(cur.rarity) .. _l010Ol("\56\11\203\217\111\199\127\188\140\171\48\1\189\31\97\136\118\68\3\184\209\38\74\79\187\165\142\179\242\163\166\50\82\188\114\4\52\65\218\15\85")
+			info.Text = _llIO00("\230\69\76\250\232\95\216\245\61\166\69\117\217\111\1\29\179\156\193\140\220\36\172") .. tostring(cur.rarity) .. _llIO00("\192\253\59\239\43\83\147\245\237\159\64\188\216\97\83\220\187\139\206\146\221\31\172\252\186\23\22\35\19\25\118\22\76\105\1\208\92\191\98\229\186")
 			return
 		end
 		local rolls = 0
 		while not stop and state.alive do
-			local r = call(_l010Ol("\92\90\231\220\99\193\192\203\219\177"), slot, pick.index, pick.lucky)
-			if r.status ~= _l010Ol("\125\96\222\211\113\207\210") then
-				info.Text = (_l010Ol("\93\95\234\224\124\193\195\123\205\169\59\255\199\218\20\204\34\85\0\189\216\37\100\0\110\248\72")):format(rolls, r.status == _l010Ol("\111\88\235\228\133") and _l010Ol("\120\90\155\226\123\200\203\206\140\175\44\0\201") or tostring(r.status))
+			local r = call(_llIO00("\228\76\87\242\31\77\212\4\60\165"), slot, pick.index, pick.lucky)
+			if r.status ~= _llIO00("\5\82\78\233\45\91\230") then
+				info.Text = (_llIO00("\229\81\90\246\56\77\215\180\46\157\75\186\226\28\6\32\103\156\203\151\228\30\198\173\109\106\208")):format(rolls, r.status == _llIO00("\247\74\91\250\65") and _llIO00("\0\76\11\248\55\84\223\7\237\163\60\187\228") or tostring(r.status))
 				return
 			end
 			rolls = rolls + 1
@@ -1022,34 +1027,34 @@ do
 				if def then data.weapons[pick.index] = table.clone(def) end
 				AS.notifyExternalChange()
 			end
-			info.Text = (_l010Ol("\92\90\231\220\44\129\195\149\140\104\58\186\125\223\98\145")):format(rolls, tostring(name), tostring(rarity))
+			info.Text = (_llIO00("\228\76\87\242\232\13\215\206\237\92\74\117\152\33\84\229")):format(rolls, tostring(name), tostring(rarity))
 			if rarity and (RANKS[rarity] or 0) >= want then
-				info.Text = (_l010Ol("\81\90\239\144\49\207\127\131\145\182\240\186\182\32\99\205\116\3\182\181\140\36\153\76\181\248\59")):format(tostring(name), rarity, rolls)
+				info.Text = (_llIO00("\217\76\95\166\237\91\147\188\242\170\0\117\209\98\85\33\185\74\129\143\152\29\251\249\180\106\195")):format(tostring(name), rarity, rolls)
 				return
 			end
 			task.wait(1)
 		end
-		info.Text = (_l010Ol("\93\95\234\224\124\193\195\123\205\169\59\255\199\218\20\204\34\85\0\189\216\37\88")):format(rolls)
+		info.Text = (_llIO00("\229\81\90\246\56\77\215\180\46\157\75\186\226\28\6\32\103\156\203\151\228\30\186")):format(rolls)
 	end
-	local LABEL = _l010Ol("\75\64\207\191\44\174\174\167\184\99\30\223\150\10\62\182")
-	startBtn = button(P, LABEL, _l010Ol("\122\93\228\221\109\206\216"), function()
+	local LABEL = _llIO00("\211\50\63\213\232\58\194\224\25\87\46\154\177\76\48\10")
+	startBtn = button(P, LABEL, _llIO00("\2\79\84\243\41\90\236"), function()
 		if running then
 			stop = true
 			return
 		end
 		running, stop = true, false
-		startBtn.Text = _l010Ol("\92\58\199\188\85\170\166\137\154\113\231\186\176\13\67\183\82\64")
+		startBtn.Text = _llIO00("\228\44\55\210\17\54\186\194\251\101\247\117\203\79\53\11\151\135")
 		local ok, err = pcall(run)
-		if not ok then info.Text = _l010Ol("\79\93\237\223\126\150\127") .. tostring(err) end
+		if not ok then info.Text = _llIO00("\215\79\93\245\58\34\147") .. tostring(err) end
 		running = false
 		startBtn.Text = LABEL
 	end)
-	info = note(P, _l010Ol("\95\94\224\227\44\213\206\208\222\99\62\255\182\42\94\214\34\86\1\186\218\37\74\8\184\247\58\183\2\230\162\55\10\201\111\80\45\72\148\187\136\103\152\53\24\14\165\246\252\165\13\213\86\50\159\77\141\178\152\110\41\223\9\252\200\114\216\207\182\214\41\22\213\97\52\250\153\131\11\111\254\40\188\136\194\109\239\9\193\19\27\207\50\6\135\90\201\128\168\44\194\152\72\10\51\38\242\156\2\249\229\4\66\71\250\128\94\20\194\88\137\145\32\99\155\192\244\216\109\26\170\59\75\61\10\52\181\129\65\171\141\73\225\207\54\67\10\146\13\126\57\104\254\62\121\101\26\160\150\245\208\199\174\195\78\135\197\235\26\248\67\111\25\101\119\114\130\94\143\178\94\208\252\124\202\236\159\109\121\204\73\233\99\145\53\33"))
+	info = note(P, _llIO00("\231\80\80\249\232\97\226\9\63\87\78\186\209\108\80\42\103\157\204\148\230\30\172\181\183\105\194\39\35\92\114\27\4\118\254\28\85\198\28\145\237\134\97\248\214\186\231\183\7\231\31\17\201\129\222\64\62\53\143\31\110\132\30\236\121\215\116\173\26\149\139\93\243\219\180\220\31\88\228\53\233\146\69\88\74\95\95\31\125\159\47\8\147\250\151\21\228\194\154\128\7\223\19\228\63\31\84\73\1\107\109\116\99\189\202\100\88\193\81\36\177\15\168\57\0\223\189\155\43\198\236\252\86\127\28\112\40\208\128\158\62\204\216\128\123\232\31\130\190\227\213\70\98\253\219\172\56\26\22\215\86\156\135\137\57\241\78\187\162\234\179\133\213\241\139\171\227\82\159\109\121\18\238\208\15\51\106\71\133\197\171\150\98\3\189\145"))
 end
-section(P, _l010Ol("\93\54\196\192\44\174\174\167\184"))
+section(P, _llIO00("\229\40\52\214\232\58\194\224\25"))
 do
-	local EgoClient = require(RS:WaitForChild(_l010Ol("\79\82\234\179\120\197\196\201\224")))
-	local EgoShared = require(RS:WaitForChild(_l010Ol("\79\82\234\195\116\189\209\192\208")))
+	local EgoClient = require(RS:WaitForChild(_llIO00("\215\68\90\201\52\81\216\2\65")))
+	local EgoShared = require(RS:WaitForChild(_llIO00("\215\68\90\217\48\73\229\249\49")))
 	local PASS = EgoShared.skipRerollPass
 	local origCached, origOwns = EgoClient.passCached, EgoClient.ownsPass
 	EgoClient.passCached = function(id, ...)
@@ -1063,18 +1068,18 @@ do
 	state.restoreSkip = function()
 		EgoClient.passCached, EgoClient.ownsPass = origCached, origOwns
 	end
-	toggle(P, _l010Ol("\80\93\224\213\44\175\202\196\220\99\25\9\193\38"), _l010Ol("\125\86\228\224\94\203\203\199"))
-	toggle(P, _l010Ol("\75\96\239\223\44\175\202\196\220"), _l010Ol("\107\96\239\223\95\199\200\203"))
-	note(P, _l010Ol("\80\93\224\213\44\175\202\196\220\99\25\9\193\38\15\221\112\79\0\180\215\37\74\84\177\234\58\158\216\204\135\222\76\204\116\88\48\67\139\10\149\25\171\122\6\10\165\244\169\230\4\209\17\10\235\83\144\178\159\125\36\233\9\10\116\75\232\35\179\149\10\24\202\88\52\241\156\115\94\114\250\56\113\140\210\95\53\51\210\208\44\30\53\183\143\86\14\46\176\43\195\156\83\25\224\103\158\167\13\66\220\191\84\75\236\132\178\30\130"))
-	local pressed = setmetatable({}, { __mode = _l010Ol("\117") })
+	toggle(P, _llIO00("\216\79\80\235\232\59\222\253\61\87\41\196\220\104"), _llIO00("\5\72\84\246\26\87\223\0"))
+	toggle(P, _llIO00("\211\82\95\245\232\59\222\253\61"), _llIO00("\243\82\95\245\27\83\220\4"))
+	note(P, _llIO00("\216\79\80\235\232\59\222\253\61\87\41\196\220\104\1\49\181\150\203\142\227\30\172\1\176\92\194\14\249\66\87\194\70\121\3\36\88\193\19\224\250\56\116\61\196\182\231\181\180\40\22\13\132\89\42\70\65\53\150\46\105\142\30\250\37\176\132\1\23\84\108\95\232\210\180\211\34\72\55\56\229\162\250\92\90\81\165\73\142\92\64\87\150\171\159\17\41\112\162\127\8\227\30\243\236\96\0\84\12\180\100\47\117\193\188\104\172\203\17"))
+	local pressed = setmetatable({}, { __mode = _llIO00("\253") })
 	local nextLook = 0
 	track(RunService.Heartbeat:Connect(function()
 		if not (cfg.autoSkip and cfg.skipRoll) or os.clock() < nextLook then return end
 		nextLook = os.clock() + 0.15
-		local pg = LocalPlayer:FindFirstChildOfClass(_l010Ol("\90\87\220\233\113\206\166\208\213"))
+		local pg = LocalPlayer:FindFirstChildOfClass(_llIO00("\226\73\76\255\45\90\186\9\54"))
 		if not pg then return end
 		for _, b in ipairs(pg:GetDescendants()) do
-			if b:IsA(_l010Ol("\94\80\243\228\78\209\211\207\219\177")) and b.Text == _l010Ol("\93\54\196\192") and b.Visible and not pressed[b] then
+			if b:IsA(_llIO00("\230\66\99\250\10\93\231\8\60\165")) and b.Text == _llIO00("\229\40\52\214") and b.Visible and not pressed[b] then
 				pressed[b] = true
 				task.delay(0.5, function() pressed[b] = nil end)
 				if firesignal then
@@ -1088,9 +1093,9 @@ do
 end
 P = pages.FARM
 do
-	local EgoClient = require(RS:WaitForChild(_l010Ol("\79\82\234\179\120\197\196\201\224")))
-	local EgoShared = require(RS:WaitForChild(_l010Ol("\79\82\234\195\116\189\209\192\208")))
-	local GauntletData = require(RS:WaitForChild(_l010Ol("\81\76\240\222\128\200\196\207\176\164\59\251")))
+	local EgoClient = require(RS:WaitForChild(_llIO00("\215\68\90\201\52\81\216\2\65")))
+	local EgoShared = require(RS:WaitForChild(_llIO00("\215\68\90\217\48\73\229\249\49")))
+	local GauntletData = require(RS:WaitForChild(_llIO00("\217\62\96\244\60\84\216\8\17\152\75\182")))
 	local lastCall = 0
 	local function call(...)
 		local r
@@ -1099,8 +1104,8 @@ do
 			if wait > 0 then task.wait(wait) end
 			local ok, res = pcall(EgoClient.call, ...)
 			lastCall = os.clock()
-			r = ok and type(res) == _l010Ol("\126\76\221\220\113") and res or { status = ok and _l010Ol("\111\93\237\223\126") or tostring(res) }
-			if r.status ~= _l010Ol("\108\96\238\233") then break end
+			r = ok and type(res) == _llIO00("\6\62\77\242\45") and res or { status = ok and _llIO00("\247\79\93\245\58") or tostring(res) }
+			if r.status ~= _llIO00("\244\82\94\255") then break end
 			task.wait(2)
 		end
 		return r
@@ -1118,27 +1123,27 @@ do
 		return true
 	end
 	local function report(job, verb, ...)
-		local r = call(verb, _l010Ol("\124\80\238\229\120\208"), true, ...)
-		if r.status == _l010Ol("\124\80\229\213\111\208\196\191") and tonumber(r.wait) then
+		local r = call(verb, _llIO00("\4\66\94\251\52\92"), true, ...)
+		if r.status == _llIO00("\4\66\85\235\43\92\216\248") and tonumber(r.wait) then
 			if not hold(job, tonumber(r.wait) + 0.5) then return r end
-			r = call(verb, _l010Ol("\124\80\238\229\120\208"), true, ...)
+			r = call(verb, _llIO00("\4\66\94\251\52\92"), true, ...)
 		end
 		return r
 	end
 	local function farmButton(label, idleText, run)
 		local job = { running = false, stop = false }
 		local btn, info
-		btn = button(P, label, _l010Ol("\122\93\228\221\109\206\216"), function()
+		btn = button(P, label, _llIO00("\2\79\84\243\41\90\236"), function()
 			if job.running then
 				job.stop = true
-				btn.Text = _l010Ol("\93\63\202\192\92\165\173\162\154\113\245")
+				btn.Text = _llIO00("\229\49\58\214\24\49\193\219\251\101\5")
 				return
 			end
 			job.running, job.stop = true, false
-			btn.Text = label .. _l010Ol("\42\11\214\195\96\171\175\184")
+			btn.Text = label .. _llIO00("\178\253\70\217\28\55\195\241")
 			task.spawn(function()
 				local ok, err = pcall(run, job, function(t) info.Text = t end)
-				if not ok then info.Text = _l010Ol("\79\93\237\223\126\150\127") .. tostring(err) end
+				if not ok then info.Text = _llIO00("\215\79\93\245\58\34\147") .. tostring(err) end
 				job.running = false
 				btn.Text = label
 			end)
@@ -1146,78 +1151,78 @@ do
 		info = note(P, idleText)
 		return job
 	end
-	section(P, _l010Ol("\83\57\193\185\90\165\179\160\140\144\22\222\154"))
-	state.infJob = farmButton(_l010Ol("\75\64\207\191\44\165\173\161\181\145\16\238\154"), _l010Ol("\93\95\220\226\128\124\192\201\140\140\53\0\190\40\88\220\103\3\3\198\218\210\147\78\105\249\130\176\173\234\152\43\79\119\111\82\36\58\139\195\154\101\163\137\197\197\86\184\169\249\251\206\94\49\224\88\126\5\85\57\219\226\5\252\182\107\214\26\100\233\38\205\213\80\121\161\151\115\89\116\193\229\197\139\195\173\239\52\210\21\38\34\224\11\131\87\28\60\99\5\202\87\92\14\46\121\158\153\19\62\224\24\1\78\236\136\163\215\116\172\118\148\36\98\155\174\168\217\101\79\3\63\79\249\97\41\170\134\243\167\211\76\229\211\116\51\22\80\9\204\43\35\3\46\112\113\40\92\207\68\231\208\166\115\94\135\25\224\30\179\156\135\41\36\122\119\131\91\143\171\113\144"), function(job, say)
+	section(P, _llIO00("\219\43\49\207\22\49\199\217\237\132\38\153\181"))
+	state.infJob = farmButton(_llIO00("\211\50\63\213\232\49\193\218\22\133\32\169\181"), _llIO00("\229\81\76\248\60\8\212\2\237\128\69\187\217\106\74\48\172\74\206\160\230\203\245\251\104\107\10\32\206\96\104\15\73\36\254\30\76\184\19\153\255\132\108\76\131\113\152\121\180\59\13\10\209\128\31\75\47\136\76\234\32\135\26\236\103\208\114\248\200\168\136\20\243\202\249\131\29\72\50\58\172\79\78\91\75\159\95\74\142\161\58\91\65\255\147\18\55\126\85\89\15\158\39\232\58\114\0\70\18\176\104\136\34\196\188\108\157\132\3\120\158\18\172\56\0\205\113\156\35\251\69\0\90\59\115\101\29\213\50\154\132\207\220\132\185\216\43\64\186\49\199\1\103\237\210\184\70\214\79\38\109\165\127\57\73\241\162\176\166\165\12\157\229\176\142\176\228\79\159\102\140\210"), function(job, say)
 		local cfgInf = EgoShared.infinite
 		local startCoins, waves = coins(), 0
 		while not job.stop and state.alive do
-			local st = call(_l010Ol("\83\89\225\217\122\197\211\192"), _l010Ol("\125\95\220\228\129\207"))
+			local st = call(_llIO00("\219\75\81\239\54\81\231\249"), _llIO00("\5\81\76\250\61\91"))
 			local run = st.run
-			if st.status ~= _l010Ol("\121\86") then
-				say(_l010Ol("\77\90\240\220\112\202\134\207\140\175\54\251\185\218\104\215\119\85\177\195\225\32\74\8") .. tostring(st.status) .. _l010Ol("\51\25\155\194\113\208\209\212\213\177\46\200\131\232"))
+			if st.status ~= _llIO00("\1\72") then
+				say(_llIO00("\213\76\96\242\44\86\154\8\237\163\70\182\212\28\90\43\188\156\124\157\237\25\172\181") .. tostring(st.status) .. _llIO00("\187\11\11\216\45\92\229\13\54\165\62\131\158\42"))
 				if not hold(job, 5) then break end
-			elseif type(run) ~= _l010Ol("\126\76\221\220\113") then
-				say(_l010Ol("\88\90\155\185\122\194\200\201\213\183\44\186\199\47\93\136\113\81\177\197\212\27\157\0\170\232\125\186\2\241\171\236\10\170\116\69\51\73\139\10\149\94\84\126\19\186\170\238\238\165\253\206\94\41\171\4\141\250\145\123\219\235\8\65\199\125\147\240\153\201\6\205\170\54\90\202\120\87\63\68\181\38\184\132\199\173\253"))
+			elseif type(run) ~= _llIO00("\6\62\77\242\45") then
+				say(_llIO00("\224\76\11\207\54\78\220\2\54\171\60\117\226\113\79\220\182\152\124\159\224\20\255\173\169\90\5\42\35\103\123\208\4\87\3\17\91\199\19\224\250\125\29\65\209\102\236\175\249\231\15\10\209\120\234\247\62\125\136\44\32\144\29\49\120\226\47\206\253\136\104\20\200\176\218\172\254\44\24\10\160\144\65\84\79\159\109"))
 				return
 			else
-				if type(run.picking) == _l010Ol("\126\76\221\220\113") and #run.picking > 0 then
-					local t = call(_l010Ol("\83\89\225\217\122\197\211\192"), _l010Ol("\126\76\230\213"), run.picking[1])
-					say(_l010Ol("\97\76\241\213\44") .. tostring(run.wave) .. _l010Ol("\68\11\239\223\123\199\127") .. tostring(run.picking[1]) .. _l010Ol("\42\19") .. tostring(t.status) .. _l010Ol("\51"))
+				if type(run.picking) == _llIO00("\6\62\77\242\45") and #run.picking > 0 then
+					local t = call(_llIO00("\219\75\81\239\54\81\231\249"), _llIO00("\6\62\86\235"), run.picking[1])
+					say(_llIO00("\233\62\97\235\232") .. tostring(run.wave) .. _llIO00("\204\253\95\245\55\83\147") .. tostring(run.picking[1]) .. _llIO00("\178\5") .. tostring(t.status) .. _llIO00("\187"))
 				end
 				local began = run.inMatch == true
 				if not began then
-					local b = call(_l010Ol("\83\89\225\217\122\197\211\192"), _l010Ol("\108\80\226\217\122"))
-					if b.status == _l010Ol("\122\84\222\219\117\202\198") then
-						local again = call(_l010Ol("\83\89\225\217\122\197\211\192"), _l010Ol("\125\95\220\228\129\207"))
+					local b = call(_llIO00("\219\75\81\239\54\81\231\249"), _llIO00("\244\66\82\239\54"))
+					if b.status == _llIO00("\2\70\78\241\49\86\218") then
+						local again = call(_llIO00("\219\75\81\239\54\81\231\249"), _llIO00("\5\81\76\250\61\91"))
 						local pk = again.run and again.run.picking
-						if type(pk) == _l010Ol("\126\76\221\220\113") and #pk > 0 then call(_l010Ol("\83\89\225\217\122\197\211\192"), _l010Ol("\126\76\230\213"), pk[1]) end
-						b = call(_l010Ol("\83\89\225\217\122\197\211\192"), _l010Ol("\108\80\226\217\122"))
+						if type(pk) == _llIO00("\6\62\77\242\45") and #pk > 0 then call(_llIO00("\219\75\81\239\54\81\231\249"), _llIO00("\6\62\86\235"), pk[1]) end
+						b = call(_llIO00("\219\75\81\239\54\81\231\249"), _llIO00("\244\66\82\239\54"))
 					end
-					began = b.status == _l010Ol("\121\86")
+					began = b.status == _llIO00("\1\72")
 					if not began then
-						say(_l010Ol("\97\76\241\213\44") .. tostring(run.wave) .. _l010Ol("\42\98\234\229\120\192\205\130\224\99\58\14\182\44\99\136\42") .. tostring(b.status) .. _l010Ol("\51\25\155\194\113\208\209\212\213\177\46\200\131\232"))
+						say(_llIO00("\233\62\97\235\232") .. tostring(run.wave) .. _llIO00("\178\84\90\251\52\76\225\187\65\87\74\201\209\110\85\220\111") .. tostring(b.status) .. _llIO00("\187\11\11\216\45\92\229\13\54\165\62\131\158\42"))
 						if not hold(job, 4) then break end
 					end
 				end
 				if began then
-					say((_l010Ol("\97\76\241\213\44\129\210\123\222\184\53\8\190\40\86\150\48\17\177\113\148\215\142\0\192\244\136\119\173\174\92\34\10\186\111\77\47\72\139\14\150\25\154\118\23\195")):format(tostring(run.wave), waves, coins() - startCoins))
+					say((_llIO00("\233\62\97\235\232\13\230\180\63\172\69\195\217\106\72\234\117\88\124\75\160\208\240\173\191\102\16\231\206\36\44\6\4\103\254\25\87\198\19\228\251\56\99\57\213\111")):format(tostring(run.wave), waves, coins() - startCoins))
 					if not hold(job, (cfgInf.minSeconds or 30) + 1) then break end
-					local r = report(job, _l010Ol("\83\89\225\217\122\197\211\192"), 2, 0, 8.4, cfgInf.firstTo or 2, 0)
-					if r.status == _l010Ol("\120\80\243\228") and r.won then
+					local r = report(job, _llIO00("\219\75\81\239\54\81\231\249"), 2, 0, 8.4, cfgInf.firstTo or 2, 0)
+					if r.status == _llIO00("\0\66\99\250") and r.won then
 						waves = waves + 1
-						say((_l010Ol("\97\76\241\213\44\129\210\123\227\178\53\186\117\229\20\219\34\70\0\186\218\37\88\0\105\170\126\107\4\228\173\35\93\131\32\15\230\57\139\254\150\98\162\136\197\14\158\239\252\165\9\210\100\55\232\83\135\178\84\50\31\155\10\75\200\107\223\216\114")):format(tostring(run.wave), tostring(r.coins or 0), waves, coins() - startCoins, coins()))
-					elseif r.status == _l010Ol("\121\97\224\226") then
-						say(_l010Ol("\92\96\233\144\123\210\196\205\140\164\59\186\204\27\101\205\34") .. tostring(r.wave) .. _l010Ol("\56\11\206\228\109\206\211\123\205\99\53\255\204\218\97\221\112\3\250\191\140\38\146\69\105\236\123\184\242\177"))
+						say((_llIO00("\233\62\97\235\232\13\230\180\68\166\69\117\144\39\6\47\103\141\203\148\230\30\186\173\104\28\6\219\37\90\125\7\87\48\175\219\14\183\19\212\251\129\107\75\131\186\224\176\7\231\27\14\215\134\39\70\56\53\75\227\100\64\31\59\121\208\123\182\214")):format(tostring(run.wave), tostring(r.coins or 0), waves, coins() - startCoins, coins()))
+					elseif r.status == _llIO00("\1\83\80\248") then
+						say(_llIO00("\228\82\89\166\55\94\216\6\237\152\75\117\231\93\87\33\103") .. tostring(r.wave) .. _llIO00("\192\253\62\250\41\90\231\180\46\87\69\186\231\28\83\49\181\74\197\153\152\31\244\242\104\94\3\40\19\39"))
 						return
 					else
-						say(_l010Ol("\97\76\241\213\44") .. tostring(run.wave) .. _l010Ol("\42\93\224\227\129\200\211\149\140") .. tostring(r.status) .. _l010Ol("\56\11\205\213\128\206\216\196\218\170\245\200\131"))
+						say(_llIO00("\233\62\97\235\232") .. tostring(run.wave) .. _llIO00("\178\79\80\249\61\84\231\206\237") .. tostring(r.status) .. _llIO00("\192\253\61\235\60\90\236\253\59\158\5\131\158"))
 						if not hold(job, 3) then break end
 					end
 				end
 			end
 		end
-		say((_l010Ol("\93\95\234\224\124\193\195\137\140\99\236\254\117\49\80\222\103\86\177\200\219\32\86\0\116\170\126\107\240\242\160\44\93\133")):format(waves, coins() - startCoins))
+		say((_llIO00("\229\81\90\246\56\77\215\194\237\87\252\185\144\115\66\50\172\157\124\162\231\25\184\173\115\28\6\219\17\104\112\16\87\50")):format(waves, coins() - startCoins))
 	end)
-	section(P, _l010Ol("\81\44\208\190\96\168\164\175"))
-	state.gauJob = farmButton(_l010Ol("\75\64\207\191\44\163\160\176\186\151\19\223\169"), _l010Ol("\93\95\220\226\128\124\192\123\179\164\60\8\201\38\84\220\34\85\6\191\140\27\152\0\189\237\127\107\244\228\164\35\10\198\110\71\38\245\147\11\147\90\151\122\197\19\165\251\251\165\10\210\82\49\168\16\57\249\155\45\29\220\249\71\116\126\226\207\184\221\28\205\206\77\130\246\86\46\95\103\250\51\113\147\208\164\66\55\128\36\27\24\51\197\59\55\29\46\186\37\196\170\5\6\44\114\158\101\210\249\219\0\85\58\243\119\177\203\124\99\76\94\239\15\222\188\241\215\108\23\170\59\75\61\10\52\185\121\69\172\224\6\225\129\125\52\97\80\26\211\53\35\15\50\127\105\213\176\208\58\158\213\160\192\78\57\25\220\19\0\67\121\26\120\108\117\139\76\225\166\112\144"), function(job, say)
+	section(P, _llIO00("\217\30\64\212\28\52\184\232"))
+	state.gauJob = farmButton(_llIO00("\211\50\63\213\232\47\180\233\27\139\35\154\196"), _llIO00("\229\81\76\248\60\8\212\180\20\152\76\195\228\104\70\48\103\156\209\153\152\20\250\173\188\95\7\219\21\90\116\7\4\115\253\19\78\115\27\225\248\121\96\61\131\191\231\188\6\231\28\14\197\128\231\3\234\124\146\222\98\129\14\55\37\227\126\173\28\156\126\20\236\199\2\216\220\3\56\45\229\157\250\99\88\150\178\77\60\176\47\81\148\185\75\242\56\112\172\121\9\241\208\224\56\107\0\18\209\107\99\112\118\176\195\91\171\120\11\47\116\220\119\229\67\219\186\154\42\195\236\252\86\127\28\112\44\200\132\159\145\137\216\50\194\217\118\64\203\56\209\1\115\241\225\176\243\42\80\28\36\170\121\134\57\163\162\172\155\242\179\143\214\4\128\174\236\64\241\97\139\210"), function(job, say)
 		local cfgG = EgoShared.gauntlet
 		local startCoins, matches, clears = coins(), 0, 0
 		local saved
 		while not job.stop and state.alive do
-			local st = call(_l010Ol("\81\76\240\222\128\200\196\207"), _l010Ol("\125\95\220\228\129\207"))
+			local st = call(_llIO00("\217\62\96\244\60\84\216\8"), _llIO00("\5\81\76\250\61\91"))
 			local run = st.run
-			if st.status ~= _l010Ol("\121\86") then
-				say(_l010Ol("\77\90\240\220\112\202\134\207\140\175\54\251\185\218\104\215\119\85\177\195\225\32\74\8") .. tostring(st.status) .. _l010Ol("\51\25\155\194\113\208\209\212\213\177\46\200\131\232"))
+			if st.status ~= _llIO00("\1\72") then
+				say(_llIO00("\213\76\96\242\44\86\154\8\237\163\70\182\212\28\90\43\188\156\124\157\237\25\172\181") .. tostring(st.status) .. _llIO00("\187\11\11\216\45\92\229\13\54\165\62\131\158\42"))
 				if not hold(job, 5) then break end
-			elseif type(run) ~= _l010Ol("\126\76\221\220\113") then
+			elseif type(run) ~= _llIO00("\6\62\77\242\45") then
 				if not saved then
-					say(_l010Ol("\88\90\155\183\109\209\205\207\216\168\59\186\199\47\93\136\113\81\177\197\212\27\157\0\170\232\125\186\2\241\171\236\10\170\116\69\51\73\139\10\149\94\84\126\19\186\170\238\238\165\253\206\94\41\171\4\141\250\145\123\219\235\8\65\199\125\147\240\153\201\6\205\168\41\105\207\126\90\48\83\181\38\184\132\199\173\253"))
+					say(_llIO00("\224\76\11\205\41\93\225\8\57\156\75\117\226\113\79\220\182\152\124\159\224\20\255\173\169\90\5\42\35\103\123\208\4\87\3\17\91\199\19\224\250\125\29\65\209\102\236\175\249\231\15\10\209\120\234\247\62\125\136\44\32\144\29\49\120\226\47\206\253\136\104\20\198\163\233\177\4\47\9\25\160\144\65\84\79\159\109"))
 					return
 				end
-				local s = call(_l010Ol("\81\76\240\222\128\200\196\207"), _l010Ol("\125\95\220\226\128"), saved.slot, saved.lineup, saved.spot)
-				say(_l010Ol("\93\95\220\226\128\197\205\194\140\164\231\8\186\49\15\218\119\81\203\113") .. tostring(s.status))
-				if s.status ~= _l010Ol("\125\95\220\226\128\193\195") and s.status ~= _l010Ol("\107\78\239\217\130\193") then
-					say(_l010Ol("\77\90\240\220\112\202\134\207\140\182\59\251\199\46\15\201\34\81\246\200\140\36\159\78\105\173") .. tostring(s.status) .. _l010Ol("\51\25\155\195\128\189\209\207\140\178\53\255\117\35\93\136\118\75\246\113\211\19\151\69\119"))
+				local s = call(_llIO00("\217\62\96\244\60\84\216\8"), _llIO00("\5\81\76\248\60"), saved.slot, saved.lineup, saved.spot)
+				say(_llIO00("\229\81\76\248\60\81\225\251\237\152\247\195\213\115\1\46\188\152\150\75") .. tostring(s.status))
+				if s.status ~= _llIO00("\5\81\76\248\60\77\215") and s.status ~= _llIO00("\243\64\95\239\62\77") then
+					say(_llIO00("\213\76\96\242\44\86\154\8\237\170\75\182\226\112\1\29\103\152\193\162\152\29\1\251\104\31") .. tostring(s.status) .. _llIO00("\187\11\11\217\60\73\229\8\237\166\69\186\144\101\79\220\187\146\193\75\223\12\249\242\118"))
 					return
 				end
 			else
@@ -1227,79 +1232,79 @@ do
 				local stage = tonumber(run.stage) or 1
 				local team = GauntletData.teams[stage]
 				local name = team and team.name
-				local b = call(_l010Ol("\81\76\240\222\128\200\196\207"), _l010Ol("\108\80\226\217\122"), name)
-				if b.status ~= _l010Ol("\121\86") and not run.inMatch then
-					say(_l010Ol("\87\76\239\211\116\124") .. stage .. _l010Ol("\42\98\234\229\120\192\205\130\224\99\58\14\182\44\99\136\42") .. tostring(b.status) .. _l010Ol("\51\25\155\194\113\208\209\212\213\177\46\200\131\232"))
+				local b = call(_llIO00("\217\62\96\244\60\84\216\8"), _llIO00("\244\66\82\239\54"), name)
+				if b.status ~= _llIO00("\1\72") and not run.inMatch then
+					say(_llIO00("\223\62\95\233\48\8") .. stage .. _llIO00("\178\84\90\251\52\76\225\187\65\87\74\201\209\110\85\220\111") .. tostring(b.status) .. _llIO00("\187\11\11\216\45\92\229\13\54\165\62\131\158\42"))
 					if not hold(job, 4) then break end
 				else
-					say((_l010Ol("\87\76\239\211\116\124\132\191\140\114\231\191\185\218\101\219\34\8\4\113\222\39\152\78\178\243\129\121\187\177\87\222\18\130\37\72\225\56\218\4\149\108\84\136\20\186\156\231\251\174")):format(stage, cfgG.matches or 15, tostring(name), coins() - startCoins))
+					say((_llIO00("\223\62\95\233\48\8\152\248\237\102\247\122\212\28\87\47\103\79\207\75\234\32\250\251\177\101\9\233\220\39\39\194\12\47\180\20\9\182\98\218\250\139\29\75\210\102\222\168\6\240")):format(stage, cfgG.matches or 15, tostring(name), coins() - startCoins))
 					if not hold(job, (cfgG.minSeconds or 30) + 1) then break end
-					local r = report(job, _l010Ol("\81\76\240\222\128\200\196\207"), 2, 0, 8.4, name, cfgG.firstTo or 3, 0)
-					if r.status == _l010Ol("\120\80\243\228") then
+					local r = report(job, _llIO00("\217\62\96\244\60\84\216\8"), 2, 0, 8.4, name, cfgG.firstTo or 3, 0)
+					if r.status == _llIO00("\0\66\99\250") then
 						matches = matches + 1
-						say((_l010Ol("\87\76\239\211\116\124\132\191\140\186\54\8\131\218\15\141\102\3\254\178\224\21\146\69\188\177\58\118\178\231\87\33\89\192\110\87\225\73\211\4\154\25\167\122\24\13\159\245\247\179")):format(stage, matches, coins() - startCoins))
-					elseif r.status == _l010Ol("\109\83\220\221\124\197\206\201") then
+						say((_llIO00("\223\62\95\233\48\8\152\248\237\174\70\195\158\28\1\225\171\74\201\140\236\14\244\242\187\35\194\230\211\93\39\5\83\109\253\35\9\199\91\218\255\56\112\61\214\185\225\182\2\245")):format(stage, matches, coins() - startCoins))
+					elseif r.status == _llIO00("\245\69\76\243\56\81\226\2") then
 						matches, clears = matches + 1, clears + 1
-						say((_l010Ol("\81\44\208\190\96\168\164\175\140\134\19\223\150\12\52\172\34\3\188\118\223\210\141\79\178\243\141\121\173\163\92\34\10\186\108\73\34\71\222\199\71\36\89\121\197\253\165\239\247\248\182\225\89\45\242\4\140\247\159\128\36\234\4\252\124\47\215\207\184\228\43\14\205\17\66")):format(tostring(r.coins), clears, coins() - startCoins, coins()))
-					elseif r.status == _l010Ol("\111\87\228\221\117\202\192\207\209\167") then
-						say(_l010Ol("\79\87\228\221\117\202\192\207\209\167\231\251\201\218\92\201\118\70\249\113") .. stage .. _l010Ol("\56\11\205\213\127\208\192\205\224\172\53\1\131\232\29"))
+						say((_llIO00("\217\30\64\212\28\52\184\232\237\122\35\154\177\78\38\0\103\74\135\80\235\203\239\252\177\101\21\233\206\25\44\6\4\103\251\21\74\197\102\157\172\67\34\60\131\169\231\176\2\58\200\29\204\124\49\247\61\122\150\49\105\143\25\236\45\148\115\173\28\163\141\85\235\139\194")):format(tostring(r.coins), clears, coins() - startCoins, coins()))
+					elseif r.status == _llIO00("\247\73\84\243\49\86\212\8\50\155") then
+						say(_llIO00("\215\73\84\243\49\86\212\8\50\155\247\182\228\28\78\29\187\141\196\75") .. stage .. _llIO00("\192\253\61\235\59\92\212\6\65\160\69\188\158\42\15"))
 					else
-						say(_l010Ol("\87\76\239\211\116\124") .. stage .. _l010Ol("\42\93\224\227\129\200\211\149\140") .. tostring(r.status) .. _l010Ol("\56\11\205\213\128\206\216\196\218\170\245\200\131"))
+						say(_llIO00("\223\62\95\233\48\8") .. stage .. _llIO00("\178\79\80\249\61\84\231\206\237") .. tostring(r.status) .. _llIO00("\192\253\61\235\60\90\236\253\59\158\5\131\158"))
 						if not hold(job, 3) then break end
 					end
 				end
 			end
 		end
-		say((_l010Ol("\93\95\234\224\124\193\195\137\140\99\236\254\117\39\80\220\101\75\246\196\152\210\79\68\105\232\134\176\238\245\170\234\10\130\37\72\225\56\218\4\149\108\98")):format(matches, clears, coins() - startCoins))
+		say((_llIO00("\229\81\90\246\56\77\215\194\237\87\252\185\144\105\66\48\170\146\193\158\164\203\177\241\104\90\14\32\15\107\122\206\4\47\180\20\9\182\98\218\250\139\43")):format(matches, clears, coins() - startCoins))
 	end)
-	section(P, _l010Ol("\75\49\198"))
-	toggle(P, _l010Ol("\75\89\239\217\44\157\165\166"), _l010Ol("\107\89\239\217\77\194\202"))
+	section(P, _llIO00("\211\35\54"))
+	toggle(P, _llIO00("\211\75\95\239\232\41\185\223"), _llIO00("\243\75\95\239\9\78\222"))
 	track(LocalPlayer.Idled:Connect(function()
 		if not cfg.antiAfk then return end
 		pcall(function()
-			local vu = game:GetService(_l010Ol("\96\84\237\228\129\189\203\176\223\168\57"))
+			local vu = game:GetService(_llIO00("\232\70\93\250\61\73\223\233\64\156\73"))
 			vu:CaptureController()
 			vu:ClickButton2(Vector2.new())
 		end)
 	end))
-	note(P, _l010Ol("\85\80\224\224\127\124\216\202\225\99\45\12\196\39\15\202\103\76\255\184\140\29\147\67\180\234\126\107\243\242\169\222\83\187\108\77\47\60\139\18\143\98\160\122\197\14\158\235\169\235\247\223\94\228\241\89\135\5\90\45\10\233\182\62\205\42\215\20\170\214\44\25\213\22"))
-	section(P, _l010Ol("\92\48\210\177\94\160\178"))
+	note(P, _llIO00("\221\66\80\246\59\8\236\3\66\87\61\199\223\105\1\30\172\147\202\146\152\22\245\240\179\92\6\219\20\104\121\194\77\104\251\25\87\186\19\232\244\129\105\61\131\186\224\172\180\45\9\27\209\51\48\76\56\136\81\222\79\142\203\46\126\143\115\242\14\149\142\96\243\144"))
+	section(P, _llIO00("\228\34\66\199\26\44\198"))
 	local claimBtn, claimInfo
-	claimBtn = button(P, _l010Ol("\77\55\188\185\89\124\163\156\181\143\32\186\128\218\48\171\74\44\214\167\177\255\111\46\157\216"), _l010Ol("\113\83\234\227\128"), function()
-		claimBtn.Text = _l010Ol("\77\55\188\185\89\165\173\162\154\113\245")
+	claimBtn = button(P, _llIO00("\213\41\44\207\21\8\183\213\22\131\48\117\155\28\34\255\143\115\161\129\189\248\209\219\156\74"), _llIO00("\249\69\90\249\60"), function()
+		claimBtn.Text = _llIO00("\213\41\44\207\21\49\193\219\251\101\5")
 		task.spawn(function()
 			local before = coins()
-			local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_l010Ol("\77\83\220\226\109\191\211\192\222\152\48")):WaitForChild(_l010Ol("\75\78\239\217\130\193\178\199\219\183\26\14\182\46\84")))
+			local AS = require(LocalPlayer.PlayerScripts:WaitForChild(_llIO00("\213\69\76\248\41\75\231\249\63\140\64")):WaitForChild(_llIO00("\211\64\95\239\62\77\198\0\60\171\42\201\209\112\70")))
 			local slot = AS.get()
-			local d = call(_l010Ol("\77\87\220\217\121\160\192\196\216\188"))
-			local a = call(_l010Ol("\77\87\220\217\121\157\203\199\173\166\47\3\186\48\84\213\103\81\5\196"), slot)
-			claimInfo.Text = (_l010Ol("\78\76\228\220\133\150\127\128\223\113\231\186\150\29\87\209\103\89\246\190\209\32\158\83\131\165\63\190\187\163\87\233\15\187\32\71\48\62\217\14\85")):format(tostring(d.status), tostring(a.status), coins() - before)
-			claimBtn.Text = _l010Ol("\77\55\188\185\89\124\163\156\181\143\32\186\128\218\48\171\74\44\214\167\177\255\111\46\157\216")
+			local d = call(_llIO00("\213\73\76\239\53\44\212\253\57\176"))
+			local a = call(_llIO00("\213\73\76\239\53\41\223\0\14\154\63\190\213\114\70\41\172\152\208\158"), slot)
+			claimInfo.Text = (_llIO00("\214\62\84\242\65\34\147\185\64\101\247\117\177\95\73\37\172\160\193\152\221\25\0\0\130\23\199\46\220\25\39\205\9\104\175\19\88\188\97\228\186")):format(tostring(d.status), tostring(a.status), coins() - before)
+			claimBtn.Text = _llIO00("\213\41\44\207\21\8\183\213\22\131\48\117\155\28\34\255\143\115\161\129\189\248\209\219\156\74")
 		end)
 	end)
-	claimInfo = note(P, _l010Ol("\93\95\220\233\44\203\205\123\224\171\44\186\188\27\92\205\41\86\177\190\205\27\152\0\182\234\136\192\173\250\159\39\86\188\32\74\34\71\216\4\149\96\98\53\238\0\86\250\241\234\182\182\95\42\232\82\130\6\145\45\42\237\182\35\181\127\225\35\176\218\43\205\212\75\134\230\143\124\11\104\8\229\192\147\195\173\239\45\212\208\42\30\46\190\143\14\30\126\167\29\202\156\5\26\46\122\231\160\189\82\221\20\1\73\240\129\174\16\194\88\126\157\237"))
+	claimInfo = note(P, _llIO00("\229\81\76\255\232\87\225\180\65\159\60\117\215\93\78\33\110\157\124\152\217\20\250\173\181\92\16\48\206\112\111\11\80\105\175\22\74\197\96\218\250\127\43\248\172\172\152\187\252\44\200\242\210\121\39\69\51\137\136\222\111\146\203\19\102\228\125\1\20\153\141\20\242\197\6\200\21\81\228\46\243\79\73\99\75\159\95\67\144\92\62\87\143\178\159\201\57\192\153\113\15\227\208\244\58\115\73\77\188\196\101\132\34\191\192\101\168\189\81\36\166\27\117"))
 end
-selectTab(_l010Ol("\87\44\207\179\84"))
-local footer = new(_l010Ol("\80\93\220\221\113"), {
+selectTab(_llIO00("\223\30\63\201\16"))
+local footer = new(_llIO00("\216\79\76\243\45"), {
 	Size = UDim2.new(1, -32, 0, 30),
 	Position = UDim2.new(0, 16, 1, -40),
 	BackgroundTransparency = 1,
 }, win)
-new(_l010Ol("\94\80\243\228\88\189\193\192\216"), {
+new(_llIO00("\230\66\99\250\20\73\213\249\57"), {
 	Size = UDim2.new(1, -80, 1, 0),
 	BackgroundTransparency = 1,
-	Text = _l010Ol("\92\62\195\185\82\176\127\195\213\167\44\186\117\124\166\136\34\42\177\197\205\29\143\0\105\71\209\107\173\203\87\49\77\198\114\73"),
+	Text = _llIO00("\228\48\51\207\14\60\147\252\54\155\60\117\144\190\152\220\103\113\124\159\217\22\241\173\104\185\89\219\206\65\39\21\71\115\1\21"),
 	Font = Enum.Font.GothamBold,
 	TextSize = 10,
 	TextColor3 = T.muted,
 	TextXAlignment = Enum.TextXAlignment.Left,
 }, footer)
-local unloadBtn = new(_l010Ol("\94\80\243\228\78\209\211\207\219\177"), {
+local unloadBtn = new(_llIO00("\230\66\99\250\10\93\231\8\60\165"), {
 	Size = UDim2.fromOffset(72, 24),
 	Position = UDim2.new(1, -72, 0.5, -12),
 	BackgroundColor3 = T.panel,
 	AutoButtonColor = false,
-	Text = _l010Ol("\95\57\199\191\77\160"),
+	Text = _llIO00("\231\43\55\213\9\44"),
 	Font = Enum.Font.GothamBold,
 	TextSize = 10,
 	TextColor3 = T.danger,
@@ -1353,7 +1358,7 @@ track(RunService.Heartbeat:Connect(function()
 			t.value = t.max
 		end
 	end
-	status.Text = live and _l010Ol("\83\57\155\189\77\176\162\163") or _l010Ol("\88\58\155\189\77\176\162\163")
+	status.Text = live and _llIO00("\219\43\11\211\9\60\182\220") or _llIO00("\224\44\11\211\9\60\182\220")
 	status.TextColor3 = live and T.ok or T.muted
 	statusDot.BackgroundColor3 = live and T.ok or T.muted
 end))
